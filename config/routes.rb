@@ -1,3 +1,8 @@
+# frozen_string_literal: true
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  get 'verify', to: 'tokens#verify', defaults: {format: :json}
+  get 'g/:group_id', to: 'tokens#index', defaults: {format: :json}
+
+  resources :tokens, path: '', param: :secret, only: [:destroy, :create], defaults: {format: :json}
+  resources :tokens, path: '', param: :secret, only: [:show]
 end
