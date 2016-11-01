@@ -34,6 +34,9 @@ group :development, :test do
   gem 'assert_difference'
   gem 'better_errors'
   gem 'binding_of_caller'
+
+  gem 'brakeman', '~> 3.4.0'
+  gem 'bundler-audit', '~> 0.5.0'
 end
 
 group :development do

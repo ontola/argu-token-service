@@ -1,0 +1,11 @@
+image: ruby:2.3
+
+pipelines:
+  default:
+    - step:
+        script:
+          - bundle install --deployment --path vendor/bundle
+          - bundle exec brakeman -z
+          - bundle exec bundle-audit update
+          - bundle exec bundle-audit check
+          - bundle exec rubocop
