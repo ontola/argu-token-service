@@ -1,0 +1,16 @@
+development: &default
+  adapter: postgresql
+  encoding: unicode
+  database: <%= ENV['BEARER_TOKEN_SERVICE_DATABASE'] %>
+  pool: 5
+  username: <%= ENV['POSTGRESQL_USERNAME'] %>
+  password: <%= ENV['POSTGRESQL_PASSWORD'] %>
+  host: <%= ENV['POSTGRESQL_ADDRESS'] %>
+  port: <%= ENV['POSTGRESQL_PORT'] %>
+test:
+  <<: *default
+  database: argu_test
+production: &production
+  <<: *default
+staging:
+  <<: *production
