@@ -23,6 +23,7 @@ gem 'puma', '~> 3.0'
 gem 'service_base', git: 'git@bitbucket.org:arguweb/service_base.git'
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
+gem 'bugsnag', '~> 4.2.1'
 
 group :development, :test do
   gem 'rubocop', '~> 0.45.0'
