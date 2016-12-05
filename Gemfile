@@ -24,6 +24,7 @@ gem 'service_base', git: 'git@bitbucket.org:arguweb/service_base.git'
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 gem 'bugsnag', '~> 4.2.1'
+gem 'tzinfo-data'
 
 group :development, :test do
   gem 'rubocop', '~> 0.45.0'
@@ -47,6 +48,3 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

@@ -1,0 +1,11 @@
+build:
+  version: 2016-03-14
+  steps:
+    bearer_token_service:
+      name: argu/bearer_token_service
+      dockerfile: Dockerfile
+      secrets:
+        id_rsa:
+          type: file
+          value: _env(HOME)/.ssh/deploy_key
+
