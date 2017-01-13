@@ -12,3 +12,7 @@ pipelines:
           - bundle exec bundle-audit update
           - bundle exec bundle-audit check
           - bundle exec rubocop
+          - cp config/database.docker.yml config/database.yml
+          - cp config/secrets.docker.yml config/secrets.yml
+          - rake db:setup
+          - rake spec

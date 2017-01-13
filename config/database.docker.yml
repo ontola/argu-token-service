@@ -8,8 +8,11 @@ development: &default
   host: <%= ENV['POSTGRESQL_ADDRESS'] %>
   port: <%= ENV['POSTGRESQL_PORT'] %>
 test:
-  <<: *default
-  database: argu_test
+  adapter: sqlite3
+  encoding: unicode
+  database: db/test.sqlite3
+  pool: 5
+  timeout: 5000
 production: &production
   <<: *default
 staging:
