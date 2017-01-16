@@ -2,14 +2,14 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.0.1'
+gem 'rails', '~> 5.0.1'
 # Use Puma as the app server
 gem 'puma', '~> 3.6.2'
 
 gem 'active_model_serializers', '~> 0.10.3'
 gem 'bugsnag', '~> 5.0.1'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'service_base', git: 'git@bitbucket.org:arguweb/service_base.git'
+gem 'service_base', git: 'git@bitbucket.org:arguweb/service_base.git', tag: 'v0.0.3'
 gem 'tzinfo-data'
 
 group :development, :production do
