@@ -81,6 +81,6 @@ class TokensController < ApplicationController
   end
 
   def validate_active
-    send_file('public/403_inactive.html', disposition: :inline, status: 403) unless resource_by_secret.active?
+    render_status(403, 'status/403_inactive.html') unless resource_by_secret.active?
   end
 end

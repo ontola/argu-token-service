@@ -16,6 +16,7 @@ describe 'Token show' do
 
     expect(response.body).to include('404')
     expect(response.code).to eq('404')
+    expect(response.body).not_to include('MissingFile')
   end
 
   it 'guest should not show a retracted token' do
@@ -23,7 +24,9 @@ describe 'Token show' do
     get "/#{retracted_token.secret}"
 
     expect(response.body).to include('403')
+    expect(response.body).to include('The requested token has expired or has been retracted')
     expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
   end
 
   it 'guest should not show an expired token' do
@@ -31,7 +34,9 @@ describe 'Token show' do
     get "/#{expired_token.secret}"
 
     expect(response.body).to include('403')
+    expect(response.body).to include('The requested token has expired or has been retracted')
     expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
   end
 
   it 'guest should not show a used token' do
@@ -40,6 +45,7 @@ describe 'Token show' do
 
     expect(response.body).to include('403')
     expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
   end
 
   it 'guest should redirect to login page' do
@@ -71,6 +77,7 @@ describe 'Token show' do
 
     expect(response.code).to eq('403')
     expect(response.body).to include('403')
+    expect(response.body).not_to include('MissingFile')
   end
 
   ####################################
