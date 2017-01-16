@@ -13,7 +13,7 @@ class ApplicationController < ServiceBase::ApiController
       format.html do
         send_file File.expand_path('../../../public/404.html', __FILE__), disposition: :inline, status: 404
       end
-      format.json { render json_api_error(404, 'Please provide a valid token') }
+      format.json_api { render json_api_error(404, 'Please provide a valid token') }
     end
   end
 end
