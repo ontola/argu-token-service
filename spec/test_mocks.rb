@@ -18,9 +18,42 @@ module TestMocks
             id: id,
             type: 'users',
             attributes: {
-              display_name: "User#{id}",
+              '@context': {
+                schema: 'http://schema.org/',
+                hydra: 'http://www.w3.org/ns/hydra/core#',
+                argu: 'https://argu.co/ns/core#',
+                createdAt: 'http://schema.org/dateCreated',
+                updatedAt: 'http://schema.org/dateModified',
+                displayName: 'schema:name',
+                about: 'schema:description',
+                '@vocab': 'http://schema.org/'
+              },
+              '@type': 'schema:Person',
+              potentialAction: nil,
+              displayName: "User#{id}",
+              about: '',
               url: "user#{id}",
               email: "user#{id}@email.com"
+            },
+            relationships: {
+              profilePhoto: {
+                data: {
+                  id: '2407',
+                  type: 'photos'
+                },
+                links: {
+                  self: {
+                    meta: {'@type': 'http://schema.org/image'}
+                  },
+                  related: {
+                    href: 'https://argu.local/photos/2407',
+                    meta: {'@type': 'http://schema.org/ImageObject'}
+                  }
+                }
+              }
+            },
+            links: {
+              self: 'https://argu.local/u/95'
             }
           }
         }.to_json
