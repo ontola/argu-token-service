@@ -1,8 +1,8 @@
 build:
   version: 2016-03-14
   steps:
-    bearer_token_service:
-      name: argu/bearer_token_service
+    service:
+      name: _env(IMAGE_NAME)
       dockerfile: Dockerfile
       secrets:
         id_rsa:
