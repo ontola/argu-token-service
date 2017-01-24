@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Token create' do
   let(:token) { create(:token) }
@@ -97,7 +97,7 @@ describe 'Token create' do
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_truthy
     expect_data_keys(%w(id type attributes links))
-    expect_data_attributes_keys(%w(usages created-at expires-at retracted-at))
+    expect_data_attributes_keys(%w(usages createdAt expiresAt retractedAt))
   end
 
   it 'manager should create with expired_at attribute' do
@@ -118,7 +118,7 @@ describe 'Token create' do
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_truthy
     expect_data_keys(%w(id type attributes links))
-    expect_data_attributes_keys(%w(usages created-at expires-at retracted-at))
+    expect_data_attributes_keys(%w(usages createdAt expiresAt retractedAt))
     expect(Token.last.expires_at).to be_truthy
   end
 end

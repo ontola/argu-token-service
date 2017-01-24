@@ -1,0 +1,3 @@
+[submodule "service_module"]
+	path = service_module
+	url = git@bitbucket.org:arguweb/service_module.git

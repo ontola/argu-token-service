@@ -32,4 +32,4 @@ Style/Documentation:
   Enabled: false
 Metrics/MethodLength:
   Exclude:
-    - 'spec/test_mocks.rb'
+    - 'lib/argu/test_mocks.rb'

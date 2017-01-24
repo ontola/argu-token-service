@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Token index' do
   let(:token) { create(:token) }
@@ -39,6 +39,6 @@ describe 'Token index' do
 
     expect(response.code).to eq('200')
     expect_data_size(1)
-    expect_data_attributes_keys(%w(usages created-at expires-at retracted-at), 0)
+    expect_data_attributes_keys(%w(usages createdAt expiresAt retractedAt), 0)
   end
 end
