@@ -72,7 +72,8 @@ class TokensController < ApplicationController
       body: {
         shortname: current_user.url,
         token: resource_by_secret.secret
-      }
+      },
+      headers: {accept: 'application/json'}
     )
   end
 
