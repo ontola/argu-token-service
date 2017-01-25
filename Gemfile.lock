@@ -1,9 +1,9 @@
 GIT
   remote: git@bitbucket.org:arguweb/service_base.git
-  revision: 62a0caab1e836867d8c1712e21b9453237264b46
-  tag: v0.0.3
+  revision: 3fb4eb0906025f7d51184c6fe87a64003e0b75c5
+  tag: v0.0.4
   specs:
-    service_base (0.0.3)
+    service_base (0.0.4)
       activesupport (~> 5.0.1)
       oauth2 (~> 1.3.0)
       rails (~> 5.0.1)

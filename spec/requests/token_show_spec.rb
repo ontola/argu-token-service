@@ -53,7 +53,11 @@ describe 'Token show' do
     get "/#{token.secret}"
 
     expect(response.code).to eq('302')
-    expect(response).to redirect_to "#{Rails.application.config.host_name}/users/sign_in?r=%2F#{token.secret}"
+    expect(response).to(
+      redirect_to(
+        "#{Rails.application.config.host_name.gsub('http://', 'https://')}/users/sign_in?r=%2F#{token.secret}"
+      )
+    )
   end
 
   ####################################
@@ -67,7 +71,9 @@ describe 'Token show' do
     expect(token.reload.usages).to eq(1)
 
     expect(response.code).to eq('302')
-    expect(response).to redirect_to "#{Rails.application.config.host_name}/g/#{token.group_id}?welcome=true"
+    expect(response).to(
+      redirect_to("#{Rails.application.config.host_name.gsub('http://', 'https://')}/g/#{token.group_id}?welcome=true")
+    )
   end
 
   it 'user should 403 when failed to create membership' do
@@ -91,6 +97,8 @@ describe 'Token show' do
     expect(token.reload.usages).to eq(0)
 
     expect(response.code).to eq('302')
-    expect(response).to redirect_to "#{Rails.application.config.host_name}/g/#{token.group_id}"
+    expect(response).to(
+      redirect_to("#{Rails.application.config.host_name.gsub('http://', 'https://')}/g/#{token.group_id}")
+    )
   end
 end

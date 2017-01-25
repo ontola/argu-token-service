@@ -8,7 +8,7 @@ class TokensController < ApplicationController
     case post_membership.status
     when 201
       resource_by_secret.increment!(:usages)
-      redirect_to argu_url("/g/#{resource_by_secret.group_id}?welcome=true")
+      redirect_to argu_url("/g/#{resource_by_secret.group_id}", welcome: true)
     when 304
       redirect_to argu_url("/g/#{resource_by_secret.group_id}")
     end

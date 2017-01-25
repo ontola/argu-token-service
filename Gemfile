@@ -9,7 +9,7 @@ gem 'puma', '~> 3.6.2'
 gem 'active_model_serializers', '~> 0.10.3'
 gem 'bugsnag', '~> 5.0.1'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'service_base', git: 'git@bitbucket.org:arguweb/service_base.git', tag: 'v0.0.3'
+gem 'service_base', git: 'git@bitbucket.org:arguweb/service_base.git', tag: 'v0.0.4'
 gem 'tzinfo-data'
 
 group :development, :production do
