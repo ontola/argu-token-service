@@ -3,4 +3,4 @@
 
 require_relative 'config/environment'
 
-run Rack::URLMap.new('/tokens/bearer' => Rails.application)
+run Rack::URLMap.new('/tokens' => Rails.application)

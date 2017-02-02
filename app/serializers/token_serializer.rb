@@ -3,6 +3,6 @@ class TokenSerializer < ActiveModel::Serializer
   attributes :id, :usages, :created_at, :expires_at, :retracted_at
 
   link :url do
-    [Rails.application.config.host_name, '/tokens/bearer/', object.secret].join
+    [Rails.application.config.host_name, '/tokens/', object.secret].join
   end
 end
