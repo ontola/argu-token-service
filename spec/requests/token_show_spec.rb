@@ -54,9 +54,7 @@ describe 'Token show' do
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to(
-        "#{Rails.application.config.host_name.gsub('http://', 'https://')}/users/sign_in?r=%2F#{token.secret}"
-      )
+      redirect_to(argu_url('/users/sign_in', r: "/#{token.secret}"))
     )
   end
 
@@ -72,7 +70,7 @@ describe 'Token show' do
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to("#{Rails.application.config.host_name.gsub('http://', 'https://')}/g/#{token.group_id}?welcome=true")
+      redirect_to(argu_url("/g/#{token.group_id}", welcome: true))
     )
   end
 
@@ -98,7 +96,7 @@ describe 'Token show' do
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to("#{Rails.application.config.host_name.gsub('http://', 'https://')}/g/#{token.group_id}")
+      redirect_to(argu_url("/g/#{token.group_id}"))
     )
   end
 end
