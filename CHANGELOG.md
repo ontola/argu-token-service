@@ -1,6 +1,19 @@
 # Change Log
 
+## [v0.3.0](https://bitbucket.org/arguweb/bearer_token_service/src?at=v0.3.0) (2017-02-14)
+* [[`0c32b5b021`](https://bitbucket.org/arguweb/bearer_token_service/commits/0c32b5b021)] - \[IMP\] Update argue client_token cookie key (Arthur Dingemans) 
+* [[`c7374decc2`](https://bitbucket.org/arguweb/bearer_token_service/commits/c7374decc2)] - \[IMP\] Update service_module (Arthur Dingemans) 
+* [[`02e36a8a14`](https://bitbucket.org/arguweb/bearer_token_service/commits/02e36a8a14)] - \[FIX\] Rename database env variable (Arthur Dingemans) 
+* [[`797adbe9ce`](https://bitbucket.org/arguweb/bearer_token_service/commits/797adbe9ce)] - \[IMP\] Improve url generation in tests (Arthur Dingemans) 
+* [[`6722d45969`](https://bitbucket.org/arguweb/bearer_token_service/commits/6722d45969)] - \[IMP\] Convert to general token service (Arthur Dingemans) 
+* [[`fa2c0a5aee`](https://bitbucket.org/arguweb/bearer_token_service/commits/fa2c0a5aee)] - \[IMP\] Update submodule to force SSL (Arthur Dingemans) 
+* [[`83d1003e48`](https://bitbucket.org/arguweb/bearer_token_service/commits/83d1003e48)] - \[FIX\] Update service_base so no longer crashes because ActiveResource is required and argu_url always has https scheme (Arthur Dingemans) 
+* [[`4b8350ecfc`](https://bitbucket.org/arguweb/bearer_token_service/commits/4b8350ecfc)] - \[IMP\] Set accept header (Arthur Dingemans) 
+* [[`29eefc1020`](https://bitbucket.org/arguweb/bearer_token_service/commits/29eefc1020)] - \[IMP\] Introduce service_module and create symlinks (Arthur Dingemans) 
+* [[`dd87c6c8ad`](https://bitbucket.org/arguweb/bearer_token_service/commits/dd87c6c8ad)] - \[IMP\] Remove files to prepare for creating symlinks (Arthur Dingemans) 
+
 ## [v0.2.0](https://bitbucket.org/arguweb/bearer_token_service/src?at=v0.2.0) (2017-01-24)
+* [[`0239d087c9`](https://bitbucket.org/arguweb/bearer_token_service/commits/0239d087c9)] - \[IMP\] Add sqlite-dev to Dockerfile (Arthur Dingemans) 
 * [[`872383376e`](https://bitbucket.org/arguweb/bearer_token_service/commits/872383376e)] - \[IMP\] Mock full user response (Arthur Dingemans) 
 * [[`6c2e89448b`](https://bitbucket.org/arguweb/bearer_token_service/commits/6c2e89448b)] - \[IMP\] Implement new render_status method and test views (Arthur Dingemans) 
 * [[`24ee5efa8e`](https://bitbucket.org/arguweb/bearer_token_service/commits/24ee5efa8e)] - \[IMP] Set respond format to json_api (Arthur Dingemans) 
