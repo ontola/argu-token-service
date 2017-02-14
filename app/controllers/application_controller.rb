@@ -5,7 +5,7 @@ class ApplicationController < ServiceBase::ApiController
   private
 
   def client_token
-    request.cookie_jar.encrypted['client_token']
+    request.cookie_jar.encrypted['argu_client_token']
   end
 
   def handle_record_not_found_error
