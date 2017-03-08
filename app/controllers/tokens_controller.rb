@@ -3,11 +3,12 @@ class TokensController < ApplicationController
   prepend_before_action :validate_active, only: :show
   skip_before_action :check_if_registered, only: :verify
   before_action :authorize_action, only: %i(index create destroy)
+  before_action :verify_email, only: %i(show)
 
   def show
     case post_membership.status
     when 201
-      resource_by_secret.increment!(:usages)
+      resource_by_secret.update_usage!
       redirect_to argu_url("/g/#{resource_by_secret.group_id}", welcome: true)
     when 304
       redirect_to argu_url("/g/#{resource_by_secret.group_id}")
@@ -23,17 +24,16 @@ class TokensController < ApplicationController
   end
 
   def index
-    @tokens = Token.active.where(group_id: params[:group_id])
-
-    render json: @tokens
+    render json: index_by_token_type
   end
 
   def create
-    @token = Token.create!(permit_params)
-    response.headers['location'] = url_for(@token)
-    render json: @token, status: 201
+    @tokens = create_tokens
+    response.headers['location'] = url_for(@tokens) if @tokens.is_a?(Token)
+    render json: @tokens, status: 201 if @tokens
   rescue ActiveRecord::ActiveRecordError
-    render json_api_error(400, *@token.errors.full_messages)
+    errors = @tokens.is_a?(Array) ? @tokens.map(&:errors) : @tokens.errors
+    render json_api_error(400, *errors.full_messages)
   end
 
   def destroy
@@ -45,21 +45,47 @@ class TokensController < ApplicationController
 
   private
 
+  def send_mail_param
+    params.require(:data).require(:attributes).require(:send_mail)
+  end
+
   def authorize_action
-    group_id = case action_name
-               when 'index'
-                 params.fetch(:group_id)
-               when 'create'
-                 permit_params.fetch(:group_id)
-               when 'destroy'
-                 resource_by_secret.group_id
-               end
-    super('Group', group_id, 'update')
+    case action_name
+    when 'index'
+      super('Group', params.fetch(:group_id), 'update')
+    when 'create'
+      super('Group', permit_params.fetch(:group_id), 'update')
+    when 'destroy'
+      super('Group', resource_by_secret.group_id, 'update')
+    end
+  end
+
+  def batch_params
+    params.require(:data).require(:attributes).require(:addresses).map do |address|
+      permit_params.to_h.merge(email: address, max_usages: 1, send_mail: send_mail_param)
+    end
+  end
+
+  def create_tokens
+    if %w(bearerToken emailTokenRequest).include?(params[:data][:type])
+      Token.create!(params[:data][:type] == 'emailTokenRequest' ? batch_params : permit_params)
+    else
+      render json_api_error(422, 'Please provide a valid type')
+    end
   end
 
   def handle_unauthorized_error
     return super unless action_name == 'show'
     redirect_to argu_url('/users/sign_in', r: @_request.env['REQUEST_URI'])
+  end
+
+  def index_by_token_type
+    case params[:token_type]
+    when 'bearer'
+      Token.bearer.active.where(group_id: params[:group_id])
+    when 'email'
+      Token.email.active.where(group_id: params[:group_id])
+    end
   end
 
   def permit_params
@@ -83,5 +109,10 @@ class TokensController < ApplicationController
 
   def validate_active
     render_status(403, 'status/403_inactive.html') unless resource_by_secret.active?
+  end
+
+  def verify_email
+    return if resource_by_secret.email.nil? || resource_by_secret.email == current_user.email
+    redirect_to argu_url('/users/wrong_email', r: resource_by_secret.context_id)
   end
 end

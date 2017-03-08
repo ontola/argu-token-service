@@ -5,6 +5,8 @@ class Token < ApplicationRecord
           ' AND (max_usages IS NULL OR usages < max_usages)',
           DateTime.current)
   }
+  scope :bearer, -> { where(email: nil) }
+  scope :email, -> { where('email IS NOT NULL') }
   validates :group_id, presence: true
   has_secure_token :secret
 
@@ -14,5 +16,10 @@ class Token < ApplicationRecord
 
   def to_param
     secret
+  end
+
+  def update_usage!
+    increment(:usages)
+    update!(last_used_at: DateTime.current)
   end
 end

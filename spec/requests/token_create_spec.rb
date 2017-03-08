@@ -12,7 +12,7 @@ describe 'Token create' do
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
-          type: 'bearer_token',
+          type: 'bearerToken',
           attributes: {
             group_id: 1
           }
@@ -34,7 +34,7 @@ describe 'Token create' do
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
-          type: 'bearer_token',
+          type: 'bearerToken',
           attributes: {
             group_id: 1
           }
@@ -67,7 +67,7 @@ describe 'Token create' do
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
-          type: 'bearer_token',
+          type: 'bearerToken',
           attributes: {
             bla: 'blabla'
           }
@@ -80,13 +80,13 @@ describe 'Token create' do
     end
   end
 
-  it 'manager should create valid' do
+  it 'manager should create valid bearer token' do
     current_user_user_mock
     authorized_mock('Group', 1, 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
         data: {
-          type: 'bearer_token',
+          type: 'bearerToken',
           attributes: {
             group_id: 1
           }
@@ -96,7 +96,29 @@ describe 'Token create' do
 
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_truthy
-    expect_attributes(%w(usages createdAt expiresAt retractedAt))
+    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt))
+  end
+
+  it 'manager should create valid email token request' do
+    current_user_user_mock
+    authorized_mock('Group', 1, 'update')
+    assert_difference('Token.count', 2) do
+      post '/', params: {
+        data: {
+          type: 'emailTokenRequest',
+          attributes: {
+            group_id: 1,
+            addresses: ['email1@example.com', 'email2@example.com'],
+            send_mail: true
+          }
+        }
+      }
+    end
+
+    expect(response.code).to eq('201')
+    expect(response.headers['location']).to be_nil
+    expect_data_size(2)
+    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt), 1)
   end
 
   it 'manager should create with expired_at attribute' do
@@ -105,7 +127,7 @@ describe 'Token create' do
     assert_difference('Token.count', 1) do
       post '/', params: {
         data: {
-          type: 'bearer_token',
+          type: 'bearerToken',
           attributes: {
             group_id: 1,
             expires_at: 1.day.from_now
@@ -116,7 +138,7 @@ describe 'Token create' do
 
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_truthy
-    expect_attributes(%w(usages createdAt expiresAt retractedAt))
+    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt))
     expect(Token.last.expires_at).to be_truthy
   end
 end
