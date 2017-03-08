@@ -1,0 +1,1 @@
+../../service_module/app/helpers/json_api_helper.rb

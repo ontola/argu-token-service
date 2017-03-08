@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ApplicationController < ServiceBase::ApiController
+class ApplicationController < ApiController
   before_action :check_if_registered
 
   private

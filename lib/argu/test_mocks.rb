@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module TestMocks
-  include ServiceBase::UrlHelper
+  include UrlHelper
 
   def current_user_guest_mock
     stub_request(:get, argu_url('/spi/current_user'))

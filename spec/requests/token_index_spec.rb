@@ -39,6 +39,6 @@ describe 'Token index' do
 
     expect(response.code).to eq('200')
     expect_data_size(1)
-    expect_data_attributes_keys(%w(usages createdAt expiresAt retractedAt), 0)
+    expect_attributes(%w(usages createdAt expiresAt retractedAt), 0)
   end
 end

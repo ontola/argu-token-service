@@ -1,3 +1,4 @@
+inherit_from: service_module/.rubocop_todo.yml
 AllCops:
   TargetRubyVersion: 2.3
   Exclude:
@@ -33,3 +34,6 @@ Style/Documentation:
 Metrics/MethodLength:
   Exclude:
     - 'lib/argu/test_mocks.rb'
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'

@@ -1,0 +1,1 @@
+../../service_module/app/serializers/data_event_serializer.rb

@@ -8,9 +8,12 @@ gem 'puma', '~> 3.6.2'
 
 gem 'active_model_serializers', '~> 0.10.3'
 gem 'bugsnag', '~> 5.0.1'
+gem 'bunny'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'service_base', git: 'git@bitbucket.org:arguweb/service_base.git', tag: 'v0.0.4'
+gem 'oauth2'
+gem 'pragmatic_context'
 gem 'tzinfo-data'
+gem 'uri_template'
 
 group :development, :production do
   gem 'pg', '~> 0.19.0'
