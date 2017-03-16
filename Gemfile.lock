@@ -86,6 +86,8 @@ GEM
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     hashdiff (0.3.2)
+    health_check (2.6.0)
+      rails (>= 4.0)
     i18n (0.7.0)
     json (1.8.6)
     jsonapi (0.1.1.beta2)
@@ -126,6 +128,8 @@ GEM
       activesupport
     public_suffix (2.0.5)
     puma (3.6.2)
+    pundit (1.0.1)
+      activesupport (>= 3.0.0)
     rack (2.0.1)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -233,11 +237,13 @@ DEPENDENCIES
   dotenv-rails
   factory_girl
   factory_girl_rails
+  health_check
   listen (~> 3.1.5)
   oauth2
   pg (~> 0.19.0)
   pragmatic_context
   puma (~> 3.6.2)
+  pundit (~> 1.0.0)
   rails (~> 5.0.1)
   rspec-rails
   rubocop (~> 0.46.0)
@@ -250,4 +256,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.13.6
+   1.14.5
