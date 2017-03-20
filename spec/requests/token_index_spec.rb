@@ -35,10 +35,12 @@ describe 'Token index' do
   it 'manager should get index' do
     current_user_user_mock
     authorized_mock('Group', 1, 'update')
+    emails_mock('tokens', token.id)
+
     get "/bearer/g/#{token.group_id}"
 
     expect(response.code).to eq('200')
     expect_data_size(1)
-    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt), 0)
+    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status), 0)
   end
 end

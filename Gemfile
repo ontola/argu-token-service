@@ -7,6 +7,9 @@ gem 'rails', '~> 5.0.1'
 gem 'puma', '~> 3.6.2'
 
 gem 'active_model_serializers', '~> 0.10.3'
+gem 'activeresource',
+    git: 'https://github.com/rails/activeresource',
+    ref: 'e28f907145c34bcad1d354fa9b25fbd4264e52e9'
 gem 'bugsnag', '~> 5.0.1'
 gem 'bunny'
 gem 'dotenv-rails', require: 'dotenv/rails-now'

@@ -24,7 +24,7 @@ class TokensController < ApplicationController
   end
 
   def index
-    render json: index_by_token_type
+    render json: index_by_token_type, include: {emails: :email_events}
   end
 
   def create

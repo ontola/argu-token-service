@@ -31,4 +31,13 @@ class Token < ApplicationRecord
     increment(:usages)
     update!(last_used_at: DateTime.current)
   end
+
+  def emails
+    return [] if previous_changes['id']&.first.nil? && previous_changes['id']&.second.present?
+    @emails ||= Email.where(
+      resource_id: id,
+      resource_type: 'tokens',
+      event: 'create'
+    )
+  end
 end

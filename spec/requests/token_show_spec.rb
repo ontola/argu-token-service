@@ -89,6 +89,7 @@ describe 'Token show' do
   it 'user should redirect bearer_token to welcome page' do
     current_user_user_mock(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret)
+    emails_mock('tokens', token.id)
 
     get "/#{token.secret}"
     expect(token.reload.last_used_at).to be_truthy
@@ -103,6 +104,7 @@ describe 'Token show' do
   it 'user should redirect email_token to welcome page' do
     current_user_user_mock(1, email: 'email@example.com')
     create_membership_mock(user_id: 1, group_id: 1, secret: email_token.secret)
+    emails_mock('tokens', email_token.id)
 
     get "/#{email_token.secret}"
     expect(email_token.reload.last_used_at).to be_truthy

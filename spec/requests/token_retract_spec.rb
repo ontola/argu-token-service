@@ -51,7 +51,8 @@ describe 'Token retract' do
   it 'manager should retract valid' do
     current_user_user_mock
     authorized_mock('Group', 1, 'update')
-    token
+    emails_mock('tokens', token.id)
+
     assert_difference('Token.active.count', -1) do
       delete "/#{token.secret}"
 

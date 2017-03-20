@@ -1,3 +1,13 @@
+GIT
+  remote: https://github.com/rails/activeresource
+  revision: e28f907145c34bcad1d354fa9b25fbd4264e52e9
+  ref: e28f907145c34bcad1d354fa9b25fbd4264e52e9
+  specs:
+    activeresource (5.0.0)
+      activemodel (> 4.2, < 6)
+      activemodel-serializers-xml (~> 1.0)
+      activesupport (> 4.2, < 6)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -33,6 +43,11 @@ GEM
       globalid (>= 0.3.6)
     activemodel (5.0.1)
       activesupport (= 5.0.1)
+    activemodel-serializers-xml (1.0.1)
+      activemodel (> 5.x)
+      activerecord (> 5.x)
+      activesupport (> 5.x)
+      builder (~> 3.1)
     activerecord (5.0.1)
       activemodel (= 5.0.1)
       activesupport (= 5.0.1)
@@ -226,6 +241,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (~> 0.10.3)
+  activeresource!
   assert_difference
   better_errors
   binding_of_caller

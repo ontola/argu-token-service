@@ -72,6 +72,13 @@ module TestMocks
       ).to_return(status: opts[:response] || 201, body: '')
   end
 
+  def emails_mock(type, id, event = 'create')
+    stub_request(
+      :get,
+      argu_url('/email/emails', event: event, resource_id: id, resource_type: type)
+    ).to_return(status: 200, body: [].to_json)
+  end
+
   def authorized_mock(type, id, action)
     stub_request(
       :get,
