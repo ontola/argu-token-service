@@ -10,7 +10,7 @@ module TestMocks
       )
   end
 
-  def current_user_user_mock(id = 1, email: nil)
+  def current_user_user_mock(id = 1, email: nil, secondary_emails: [])
     stub_request(:get, argu_url('/spi/current_user'))
       .to_return(
         status: 200,
@@ -35,7 +35,8 @@ module TestMocks
               displayName: "User#{id}",
               about: '',
               url: "user#{id}",
-              email: email || "user#{id}@email.com"
+              email: email || "user#{id}@email.com",
+              secondary_emails: secondary_emails
             },
             relationships: {
               profilePhoto: {

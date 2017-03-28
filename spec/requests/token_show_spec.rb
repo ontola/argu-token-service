@@ -116,6 +116,21 @@ describe 'Token show' do
     )
   end
 
+  it 'user should redirect email_token with secundary email to welcome page' do
+    current_user_user_mock(1, secondary_emails: %w(email@example.com))
+    create_membership_mock(user_id: 1, group_id: 1, secret: email_token.secret)
+    emails_mock('tokens', email_token.id)
+
+    get "/#{email_token.secret}"
+    expect(email_token.reload.last_used_at).to be_truthy
+    expect(email_token.reload.usages).to eq(1)
+
+    expect(response.code).to eq('302')
+    expect(response).to(
+      redirect_to(argu_url("/g/#{email_token.group_id}", welcome: true))
+    )
+  end
+
   it 'user should 403 when failed to create membership' do
     current_user_user_mock(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret, response: 403)

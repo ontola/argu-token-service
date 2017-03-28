@@ -112,7 +112,12 @@ class TokensController < ApplicationController
   end
 
   def verify_email
-    return if resource_by_secret.email.nil? || resource_by_secret.email == current_user.email
-    redirect_to argu_url('/users/wrong_email', r: resource_by_secret.context_id)
+    redirect_to argu_url('/users/wrong_email', r: resource_by_secret.context_id) if wrong_email?
+  end
+
+  def wrong_email?
+    resource_by_secret.email.present? &&
+      resource_by_secret.email != current_user.email &&
+      !current_user.secondary_emails.include?(resource_by_secret.email)
   end
 end
