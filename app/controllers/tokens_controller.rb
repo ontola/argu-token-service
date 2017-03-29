@@ -3,7 +3,7 @@ class TokensController < ApplicationController
   prepend_before_action :validate_active, only: :show
   skip_before_action :check_if_registered, only: :verify
   before_action :authorize_action, only: %i(index create destroy)
-  before_action :verify_email, only: %i(show)
+  before_action :redirect_wrong_email, if: :wrong_email?, only: %i(show)
 
   def show
     case post_membership.status
@@ -111,8 +111,8 @@ class TokensController < ApplicationController
     render_status(403, 'status/403_inactive.html') unless resource_by_secret.active?
   end
 
-  def verify_email
-    redirect_to argu_url('/users/wrong_email', r: resource_by_secret.context_id) if wrong_email?
+  def redirect_wrong_email
+    redirect_to argu_url('/users/wrong_email', r: resource_by_secret.context_id, email: resource_by_secret.email)
   end
 
   def wrong_email?

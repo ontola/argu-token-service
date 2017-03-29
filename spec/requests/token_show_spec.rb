@@ -82,7 +82,7 @@ describe 'Token show' do
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to(argu_url('/users/wrong_email', r: email_token.context_id))
+      redirect_to(argu_url('/users/wrong_email', r: email_token.context_id, email: email_token.email))
     )
   end
 
