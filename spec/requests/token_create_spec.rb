@@ -97,6 +97,7 @@ describe 'Token create' do
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_truthy
     expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status))
+    expect(Token.last.secret.length).to eq(24)
   end
 
   it 'manager should create valid email token request' do
@@ -119,6 +120,7 @@ describe 'Token create' do
     expect(response.headers['location']).to be_nil
     expect_data_size(2)
     expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status), 1)
+    expect(Token.last.secret.length).to eq(171)
   end
 
   it 'manager should create with expired_at attribute' do

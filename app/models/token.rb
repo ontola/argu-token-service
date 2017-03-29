@@ -8,7 +8,7 @@ class Token < ApplicationRecord
   scope :bearer, -> { where(email: nil) }
   scope :email, -> { where('email IS NOT NULL') }
   validates :group_id, presence: true
-  has_secure_token :secret
+  before_create :generate_token
   after_commit :publish_data_event
 
   def active?
@@ -17,6 +17,10 @@ class Token < ApplicationRecord
 
   def context_id
     Rails.application.routes.url_helpers.token_url(secret, protocol: :https)
+  end
+
+  def generate_token
+    self.secret = email.present? ? SecureRandom.urlsafe_base64(128) : SecureRandom.base58(24) unless secret?
   end
 
   def publish_data_event
