@@ -36,7 +36,7 @@ module TestMocks
               about: '',
               url: "user#{id}",
               email: email || "user#{id}@email.com",
-              secondary_emails: secondary_emails
+              secondaryEmails: secondary_emails
             },
             relationships: {
               profilePhoto: {

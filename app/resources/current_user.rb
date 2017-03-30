@@ -1,0 +1,1 @@
+../../service_module/app/resources/current_user.rb
