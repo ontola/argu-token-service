@@ -31,9 +31,9 @@ class TokensController < ApplicationController
     @tokens = create_tokens
     response.headers['location'] = url_for(@tokens) if @tokens.is_a?(Token)
     render json: @tokens, status: 201 if @tokens
-  rescue ActiveRecord::ActiveRecordError
-    errors = @tokens.is_a?(Array) ? @tokens.map(&:errors) : @tokens.errors
-    render json_api_error(400, *errors.full_messages)
+  rescue ActiveRecord::ActiveRecordError => e
+    message = @tokens.present? ? @tokens.errors.full_messages : e.message
+    render json_api_error(400, message)
   end
 
   def destroy
@@ -61,9 +61,10 @@ class TokensController < ApplicationController
   end
 
   def batch_params
-    params.require(:data).require(:attributes).require(:addresses).map do |address|
-      permit_params.to_h.merge(email: address, max_usages: 1, send_mail: send_mail_param)
-    end
+    req = params.require(:data).require(:attributes).require(:addresses)
+    exist = Token.where(group_id: permit_params[:group_id], email: req, usages: 0).pluck(:email)
+
+    (req - exist).map { |email| permit_params.to_h.merge(email: email, max_usages: 1, send_mail: send_mail_param) }
   end
 
   def create_tokens

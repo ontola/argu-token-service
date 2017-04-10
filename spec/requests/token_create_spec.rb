@@ -3,6 +3,7 @@ require 'spec_helper'
 
 describe 'Token create' do
   let(:token) { create(:token) }
+  let(:email_token) { create(:token, email: 'email1@example.com') }
 
   ####################################
   # As Guest
@@ -61,7 +62,7 @@ describe 'Token create' do
     end
   end
 
-  it 'manager should not create with invalid attributes' do
+  it 'manager should not create bearer_token with invalid attributes' do
     current_user_user_mock
     unauthorized_mock('Group', '', 'update')
     assert_difference('Token.count', 0) do
@@ -100,6 +101,27 @@ describe 'Token create' do
     expect(Token.last.secret.length).to eq(24)
   end
 
+  it 'manager should create bearer_token with expired_at attribute' do
+    current_user_user_mock
+    authorized_mock('Group', 1, 'update')
+    assert_difference('Token.count', 1) do
+      post '/', params: {
+        data: {
+          type: 'bearerToken',
+          attributes: {
+            group_id: 1,
+            expires_at: 1.day.from_now
+          }
+        }
+      }
+    end
+
+    expect(response.code).to eq('201')
+    expect(response.headers['location']).to be_truthy
+    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status))
+    expect(Token.last.expires_at).to be_truthy
+  end
+
   it 'manager should create valid email token request' do
     current_user_user_mock
     authorized_mock('Group', 1, 'update')
@@ -119,28 +141,31 @@ describe 'Token create' do
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_nil
     expect_data_size(2)
-    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status), 1)
+    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status), 0)
     expect(Token.last.secret.length).to eq(171)
   end
 
-  it 'manager should create with expired_at attribute' do
+  it 'manager should create valid email token request without duplicates' do
+    email_token
     current_user_user_mock
     authorized_mock('Group', 1, 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
         data: {
-          type: 'bearerToken',
+          type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
-            expires_at: 1.day.from_now
+            addresses: ['email1@example.com', 'email2@example.com'],
+            send_mail: true
           }
         }
       }
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_truthy
-    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status))
-    expect(Token.last.expires_at).to be_truthy
+    expect(response.headers['location']).to be_nil
+    expect_data_size(1)
+    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status), 0)
+    expect(Token.last.secret.length).to eq(171)
   end
 end
