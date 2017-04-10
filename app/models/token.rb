@@ -36,6 +36,10 @@ class Token < ApplicationRecord
     update!(last_used_at: DateTime.current)
   end
 
+  def email
+    super&.downcase
+  end
+
   def emails
     return [] if previous_changes['id']&.first.nil? && previous_changes['id']&.second.present?
     @emails ||= Email.where(
