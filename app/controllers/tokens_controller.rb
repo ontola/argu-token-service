@@ -61,7 +61,7 @@ class TokensController < ApplicationController
   end
 
   def batch_params
-    req = params.require(:data).require(:attributes).require(:addresses)
+    req = params.require(:data).require(:attributes).require(:addresses).uniq
     exist = Token.where(group_id: permit_params[:group_id], email: req, usages: 0).pluck(:email)
 
     (req - exist).map { |email| permit_params.to_h.merge(email: email, max_usages: 1, send_mail: send_mail_param) }

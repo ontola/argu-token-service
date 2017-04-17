@@ -155,7 +155,7 @@ describe 'Token create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
-            addresses: ['email1@example.com', 'email2@example.com'],
+            addresses: ['email1@example.com', 'email2@example.com', 'email2@example.com'],
             send_mail: true
           }
         }
