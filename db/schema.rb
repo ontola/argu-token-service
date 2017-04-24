@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170202145628) do
+ActiveRecord::Schema.define(version: 20170417125353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20170202145628) do
     t.string   "email"
     t.boolean  "send_mail"
     t.datetime "last_used_at"
+    t.text     "message"
     t.index ["expires_at", "retracted_at", "group_id"], name: "index_tokens_on_expires_at_and_retracted_at_and_group_id", using: :btree
     t.index ["secret"], name: "index_tokens_on_secret", using: :btree
   end

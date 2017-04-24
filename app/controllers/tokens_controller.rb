@@ -63,8 +63,8 @@ class TokensController < ApplicationController
   def batch_params
     req = params.require(:data).require(:attributes).require(:addresses).uniq
     exist = Token.where(group_id: permit_params[:group_id], email: req, usages: 0).pluck(:email)
-
-    (req - exist).map { |email| permit_params.to_h.merge(email: email, max_usages: 1, send_mail: send_mail_param) }
+    params = permit_params.to_h.merge(max_usages: 1, send_mail: send_mail_param)
+    (req - exist).map { |email| params.merge(email: email) }
   end
 
   def create_tokens
@@ -90,7 +90,7 @@ class TokensController < ApplicationController
   end
 
   def permit_params
-    params.require(:data).require(:attributes).permit(%i(expires_at group_id))
+    params.require(:data).require(:attributes).permit(%i(expires_at group_id message))
   end
 
   def post_membership
