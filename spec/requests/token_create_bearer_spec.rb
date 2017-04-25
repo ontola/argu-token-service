@@ -94,7 +94,7 @@ describe 'Token bearer create' do
 
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_truthy
-    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message))
+    expect_token_attributes
     expect(Token.last.secret.length).to eq(24)
   end
 
@@ -115,7 +115,16 @@ describe 'Token bearer create' do
 
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_truthy
-    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message))
+    expect_token_attributes
     expect(Token.last.expires_at).to be_truthy
+  end
+
+  private
+
+  def expect_token_attributes(index = nil)
+    expect_attributes(
+      %w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message profileIRI),
+      index
+    )
   end
 end

@@ -45,8 +45,8 @@ class TokensController < ApplicationController
 
   private
 
-  def send_mail_param
-    params.require(:data).require(:attributes).require(:send_mail)
+  def addresses_param
+    @addresses_param ||= params.require(:data).require(:attributes).require(:addresses).uniq
   end
 
   def authorize_action
@@ -55,16 +55,16 @@ class TokensController < ApplicationController
       super('Group', params.fetch(:group_id), 'update')
     when 'create'
       super('Group', permit_params.fetch(:group_id), 'update')
+      super('CurrentActor', permit_params[:profile_iri], 'show') if permit_params[:profile_iri].present?
     when 'destroy'
       super('Group', resource_by_secret.group_id, 'update')
     end
   end
 
   def batch_params
-    req = params.require(:data).require(:attributes).require(:addresses).uniq
-    exist = Token.where(group_id: permit_params[:group_id], email: req, usages: 0).pluck(:email)
     params = permit_params.to_h.merge(max_usages: 1, send_mail: send_mail_param)
-    (req - exist).map { |email| params.merge(email: email) }
+    existing_tokens = Token.where(group_id: permit_params[:group_id], email: addresses_param, usages: 0).pluck(:email)
+    (addresses_param - existing_tokens).map { |email| params.merge(email: email) }
   end
 
   def create_tokens
@@ -90,7 +90,7 @@ class TokensController < ApplicationController
   end
 
   def permit_params
-    params.require(:data).require(:attributes).permit(%i(expires_at group_id message))
+    params.require(:data).require(:attributes).permit(%i(expires_at group_id message profile_iri))
   end
 
   def post_membership
@@ -106,6 +106,10 @@ class TokensController < ApplicationController
 
   def resource_by_secret
     @resource ||= Token.find_by!(secret: params[:secret])
+  end
+
+  def send_mail_param
+    params.require(:data).require(:attributes).require(:send_mail)
   end
 
   def validate_active

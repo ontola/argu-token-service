@@ -111,7 +111,7 @@ describe 'Token email create' do
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_nil
     expect_data_size(2)
-    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message), 0)
+    expect_token_attributes
     expect(Token.last.secret.length).to eq(171)
   end
 
@@ -134,7 +134,7 @@ describe 'Token email create' do
 
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_nil
-    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message), 0)
+    expect_token_attributes
     expect(Token.last.expires_at).to be_truthy
   end
 
@@ -157,7 +157,7 @@ describe 'Token email create' do
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_nil
     expect_data_size(2)
-    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message), 0)
+    expect_token_attributes
     expect(Token.last.send_mail).to be_falsey
   end
 
@@ -181,8 +181,56 @@ describe 'Token email create' do
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_nil
     expect_data_size(2)
-    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message), 0)
+    expect_token_attributes
     expect(Token.last.message).to eq('Hello world.')
+  end
+
+  it 'manager should create valid email token request with valid profile_iri' do
+    current_user_user_mock
+    authorized_mock('Group', 1, 'update')
+    authorized_mock('CurrentActor', 'https://argu.dev/u/1', 'show')
+    assert_difference('Token.count', 2) do
+      post '/', params: {
+        data: {
+          type: 'emailTokenRequest',
+          attributes: {
+            group_id: 1,
+            addresses: ['email1@example.com', 'email2@example.com'],
+            profile_iri: 'https://argu.dev/u/1',
+            send_mail: true
+          }
+        }
+      }
+    end
+
+    expect(response.code).to eq('201')
+    expect(response.headers['location']).to be_nil
+    expect_data_size(2)
+    expect_token_attributes
+    expect(Token.last.profile_iri).to eq('https://argu.dev/u/1')
+  end
+
+  it 'manager should not create valid email token request with invalid profile_iri' do
+    current_user_user_mock
+    authorized_mock('Group', 1, 'update')
+    unauthorized_mock('CurrentActor', 'https://argu.dev/u/1', 'show')
+    assert_difference('Token.count', 0) do
+      post '/', params: {
+        data: {
+          type: 'emailTokenRequest',
+          attributes: {
+            group_id: 1,
+            addresses: ['email1@example.com', 'email2@example.com'],
+            profile_iri: 'https://argu.dev/u/1',
+            send_mail: true
+          }
+        }
+      }
+    end
+
+    expect(response.code).to eq('403')
+    expect_error_message('You are not authorized for this action')
+    expect_error_size(1)
   end
 
   it 'manager should create valid email token request without duplicates' do
@@ -205,7 +253,16 @@ describe 'Token email create' do
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_nil
     expect_data_size(1)
-    expect_attributes(%w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message), 0)
+    expect_token_attributes
     expect(Token.last.secret.length).to eq(171)
+  end
+
+  private
+
+  def expect_token_attributes(index = 0)
+    expect_attributes(
+      %w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message profileIRI),
+      index
+    )
   end
 end
