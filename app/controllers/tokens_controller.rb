@@ -3,7 +3,7 @@ class TokensController < ApplicationController
   prepend_before_action :validate_active, only: :show
   skip_before_action :check_if_registered, only: :verify
   before_action :authorize_action, only: %i(index create destroy)
-  before_action :redirect_wrong_email, if: :wrong_email?, only: %i(show)
+  before_action :redirect_wrong_email, unless: :valid_email?, only: %i(show)
 
   def show
     case post_membership.status
@@ -96,10 +96,7 @@ class TokensController < ApplicationController
   def post_membership
     @post_membership ||= argu_token.post(
       "/g/#{resource_by_secret.group_id}/memberships",
-      body: {
-        shortname: current_user.url,
-        token: resource_by_secret.secret
-      },
+      body: {shortname: current_user.url, token: resource_by_secret.secret},
       headers: {accept: 'application/json'}
     )
   end
@@ -120,9 +117,7 @@ class TokensController < ApplicationController
     redirect_to argu_url('/users/wrong_email', r: resource_by_secret.context_id, email: resource_by_secret.email)
   end
 
-  def wrong_email?
-    resource_by_secret.email.present? &&
-      resource_by_secret.email != current_user.email &&
-      !current_user.secondary_emails.include?(resource_by_secret.email)
+  def valid_email?
+    resource_by_secret.valid_email?(current_user)
   end
 end

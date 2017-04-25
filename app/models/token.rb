@@ -36,6 +36,10 @@ class Token < ApplicationRecord
     update!(last_used_at: DateTime.current)
   end
 
+  def valid_email?(user)
+    email.nil? || email == user.email || user.secondary_emails.include?(email)
+  end
+
   def email
     super&.downcase
   end
