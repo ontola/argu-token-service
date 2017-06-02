@@ -3,6 +3,8 @@ require 'spec_helper'
 
 describe 'Token email create' do
   let(:token) { create(:token, email: 'email1@example.com') }
+  let(:retracted_token) { create(:retracted_token, email: 'retracted@example.com') }
+  let(:expired_token) { create(:expired_token, email: 'expired@example.com') }
 
   ####################################
   # As Guest
@@ -253,6 +255,31 @@ describe 'Token email create' do
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_nil
     expect_data_size(1)
+    expect_token_attributes
+    expect(Token.last.secret.length).to eq(171)
+  end
+
+  it 'manager should duplicate retracted and expired tokens' do
+    retracted_token
+    expired_token
+    current_user_user_mock
+    authorized_mock('Group', 1, 'update')
+    assert_difference('Token.count', 2) do
+      post '/', params: {
+        data: {
+          type: 'emailTokenRequest',
+          attributes: {
+            group_id: 1,
+            addresses: ['retracted@example.com', 'expired@example.com'],
+            send_mail: true
+          }
+        }
+      }
+    end
+
+    expect(response.code).to eq('201')
+    expect(response.headers['location']).to be_nil
+    expect_data_size(2)
     expect_token_attributes
     expect(Token.last.secret.length).to eq(171)
   end
