@@ -14,80 +14,33 @@ describe 'Token show' do
   ####################################
   # As Guest
   ####################################
-  it 'guest should not show a non-existent token' do
+  it 'guest should redirect non-existent to login page' do
     current_user_guest_mock
-    get '/invalid_token', as: :html
-
-    expect(response.body).to include('404')
-    expect(response.code).to eq('404')
-    expect(response.body).not_to include('MissingFile')
-  end
-
-  it 'guest should not show a retracted token' do
-    current_user_guest_mock
-    get "/#{retracted_token.secret}"
-
-    expect(response.body).to include('403')
-    expect(response.body).to include('The requested token has expired or has been retracted')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-  end
-
-  it 'guest should not show an expired token' do
-    current_user_guest_mock
-    get "/#{expired_token.secret}"
-
-    expect(response.body).to include('403')
-    expect(response.body).to include('The requested token has expired or has been retracted')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-  end
-
-  it 'guest should not show a used token' do
-    current_user_guest_mock
-    get "/#{used_token.secret}"
-
-    expect(response.body).to include('403')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-  end
-
-  it 'guest should not show a retracted email token' do
-    current_user_guest_mock
-    get "/#{retracted_email_token.secret}"
-
-    expect(response.body).to include('403')
-    expect(response.body).to include('The requested token has expired or has been retracted')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-  end
-
-  it 'guest should not show an expired email token' do
-    current_user_guest_mock
-    get "/#{expired_email_token.secret}"
-
-    expect(response.body).to include('403')
-    expect(response.body).to include('The requested token has expired or has been retracted')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-  end
-
-  it 'guest should not show a used email token' do
-    current_user_guest_mock
-    get "/#{used_email_token.secret}"
-
-    expect(response.body).to include('403')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-  end
-
-  it 'guest should redirect bearer_token to login page' do
-    current_user_guest_mock
-    get "/#{token.secret}"
+    get '/invalid_token'
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to(argu_url('/users/sign_in', r: "/#{token.secret}"))
+      redirect_to(argu_url('/users/sign_in', r: '/invalid_token'))
+    )
+  end
+
+  it 'guest should redirect retracted to login page' do
+    current_user_guest_mock
+    get "/#{retracted_token.secret}"
+
+    expect(response.code).to eq('302')
+    expect(response).to(
+      redirect_to(argu_url('/users/sign_in', r: "/#{retracted_token.secret}"))
+    )
+  end
+
+  it 'guest should redirect retracted email token to login page' do
+    current_user_guest_mock
+    get "/#{retracted_email_token.secret}"
+
+    expect(response.code).to eq('302')
+    expect(response).to(
+      redirect_to(argu_url('/users/sign_in', r: "/#{retracted_email_token.secret}"))
     )
   end
 

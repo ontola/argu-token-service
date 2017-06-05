@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class TokensController < ApplicationController
-  prepend_before_action :validate_active, only: :show
   skip_before_action :check_if_registered, only: :verify
+  before_action :validate_active, only: :show
   before_action :authorize_action, only: %i(index create destroy)
   before_action :redirect_wrong_email, unless: :valid_email?, only: %i(show)
 
