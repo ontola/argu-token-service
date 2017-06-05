@@ -3,10 +3,13 @@ require 'spec_helper'
 
 describe 'Token show' do
   let(:token) { create(:token) }
-  let(:email_token) { create(:token, email: 'email@example.com') }
   let(:retracted_token) { create(:retracted_token) }
   let(:expired_token) { create(:expired_token) }
   let(:used_token) { create(:used_token) }
+  let(:email_token) { create(:token, email: 'email@example.com') }
+  let(:retracted_email_token) { create(:retracted_token, email: 'email@example.com') }
+  let(:expired_email_token) { create(:expired_token, email: 'email@example.com') }
+  let(:used_email_token) { create(:used_token, email: 'email@example.com') }
 
   ####################################
   # As Guest
@@ -49,6 +52,35 @@ describe 'Token show' do
     expect(response.body).not_to include('MissingFile')
   end
 
+  it 'guest should not show a retracted email token' do
+    current_user_guest_mock
+    get "/#{retracted_email_token.secret}"
+
+    expect(response.body).to include('403')
+    expect(response.body).to include('The requested token has expired or has been retracted')
+    expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
+  end
+
+  it 'guest should not show an expired email token' do
+    current_user_guest_mock
+    get "/#{expired_email_token.secret}"
+
+    expect(response.body).to include('403')
+    expect(response.body).to include('The requested token has expired or has been retracted')
+    expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
+  end
+
+  it 'guest should not show a used email token' do
+    current_user_guest_mock
+    get "/#{used_email_token.secret}"
+
+    expect(response.body).to include('403')
+    expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
+  end
+
   it 'guest should redirect bearer_token to login page' do
     current_user_guest_mock
     get "/#{token.secret}"
@@ -72,6 +104,76 @@ describe 'Token show' do
   ####################################
   # As User
   ####################################
+  it 'user should not show a non-existent token' do
+    current_user_user_mock(1)
+    get '/invalid_token', as: :html
+
+    expect(response.body).to include('404')
+    expect(response.code).to eq('404')
+    expect(response.body).not_to include('MissingFile')
+  end
+
+  it 'user should not show a retracted token' do
+    current_user_user_mock(1)
+    get "/#{retracted_token.secret}"
+
+    expect(response.body).to include('403')
+    expect(response.body).to include('The requested token has expired or has been retracted')
+    expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
+  end
+
+  it 'user should not show an expired token' do
+    current_user_user_mock(1)
+    get "/#{expired_token.secret}"
+
+    expect(response.body).to include('403')
+    expect(response.body).to include('The requested token has expired or has been retracted')
+    expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
+  end
+
+  it 'user should not show a used token' do
+    current_user_user_mock(1)
+    get "/#{used_token.secret}"
+
+    expect(response.body).to include('403')
+    expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
+  end
+
+  it 'user should not show a retracted email token' do
+    current_user_user_mock(1, email: 'email@example.com')
+    unauthorized_mock('Group', 1, 'is_member')
+    get "/#{retracted_email_token.secret}"
+
+    expect(response.body).to include('403')
+    expect(response.body).to include('The requested token has expired or has been retracted')
+    expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
+  end
+
+  it 'user should not show an expired email token' do
+    current_user_user_mock(1, email: 'email@example.com')
+    unauthorized_mock('Group', 1, 'is_member')
+    get "/#{expired_email_token.secret}"
+
+    expect(response.body).to include('403')
+    expect(response.body).to include('The requested token has expired or has been retracted')
+    expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
+  end
+
+  it 'user should not show a used email token' do
+    current_user_user_mock(1, email: 'email@example.com')
+    unauthorized_mock('Group', 1, 'is_member')
+    get "/#{used_email_token.secret}"
+
+    expect(response.body).to include('403')
+    expect(response.code).to eq('403')
+    expect(response.body).not_to include('MissingFile')
+  end
+
   it 'user should redirect email_token with wrong email' do
     current_user_user_mock(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: email_token.secret)
@@ -144,6 +246,36 @@ describe 'Token show' do
   ####################################
   # As Member
   ####################################
+  it 'member should show a retracted email token' do
+    current_user_user_mock(1, email: 'email@example.com')
+    authorized_mock('Group', 1, 'is_member')
+    get "/#{retracted_email_token.secret}"
+
+    expect(response).to(
+      redirect_to(argu_url("/g/#{retracted_email_token.group_id}"))
+    )
+  end
+
+  it 'member should show an expired email token' do
+    current_user_user_mock(1, email: 'email@example.com')
+    authorized_mock('Group', 1, 'is_member')
+    get "/#{expired_email_token.secret}"
+
+    expect(response).to(
+      redirect_to(argu_url("/g/#{expired_email_token.group_id}"))
+    )
+  end
+
+  it 'member should show a used email token' do
+    current_user_user_mock(1, email: 'email@example.com')
+    authorized_mock('Group', 1, 'is_member')
+    get "/#{used_email_token.secret}"
+
+    expect(response).to(
+      redirect_to(argu_url("/g/#{used_email_token.group_id}"))
+    )
+  end
+
   it 'member should redirect to page' do
     current_user_user_mock(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret, response: 304)

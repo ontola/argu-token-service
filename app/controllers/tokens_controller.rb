@@ -49,7 +49,8 @@ class TokensController < ApplicationController
     @addresses_param ||= params.require(:data).require(:attributes).require(:addresses).uniq
   end
 
-  def authorize_action
+  def authorize_action(resource_type = nil, resource_id = nil, action = nil)
+    return super if [resource_type, resource_id, action].compact.present?
     case action_name
     when 'index'
       super('Group', params.fetch(:group_id), 'update')
@@ -73,6 +74,13 @@ class TokensController < ApplicationController
     else
       render json_api_error(422, 'Please provide a valid type')
     end
+  end
+
+  def current_user_is_group_member?
+    return unless current_user.email == resource_by_secret.email
+    authorize_action('Group', resource_by_secret.group_id, 'is_member')
+  rescue OAuth2::Error => e
+    [401, 403].include?(e.response.status) ? false : handle_oauth_error(e)
   end
 
   def handle_unauthorized_error
@@ -110,7 +118,12 @@ class TokensController < ApplicationController
   end
 
   def validate_active
-    render_status(403, 'status/403_inactive.html') unless resource_by_secret.active?
+    return if resource_by_secret.active?
+    if current_user_is_group_member?
+      redirect_to argu_url("/g/#{resource_by_secret.group_id}")
+    else
+      render_status(403, 'status/403_inactive.html')
+    end
   end
 
   def redirect_wrong_email
