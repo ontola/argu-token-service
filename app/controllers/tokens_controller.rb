@@ -19,10 +19,6 @@ class TokensController < ApplicationController
     head 200
   end
 
-  def index
-    render json: index_by_token_type, include: {emails: :email_events}
-  end
-
   def create
     @tokens = create_tokens
     response.headers['location'] = url_for(@tokens) if @tokens.is_a?(Token)
@@ -74,28 +70,12 @@ class TokensController < ApplicationController
   end
 
   def group_id
-    @group_id ||= case action_name
-                  when 'index'
-                    params.fetch(:group_id)
-                  when 'create'
-                    permit_params.fetch(:group_id)
-                  else
-                    resource_by_secret.group_id
-                  end
+    @group_id ||= action_name == 'create' ? permit_params.fetch(:group_id) : resource_by_secret.group_id
   end
 
   def handle_unauthorized_error
     return super unless action_name == 'show'
     redirect_to argu_url('/users/sign_in', r: @_request.env['REQUEST_URI'])
-  end
-
-  def index_by_token_type
-    case params[:token_type]
-    when 'bearer'
-      Token.bearer.active.where(group_id: group_id)
-    when 'email'
-      Token.email.active.where(group_id: group_id)
-    end
   end
 
   def permit_params
