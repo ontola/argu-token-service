@@ -9,9 +9,9 @@ class TokensController < ApplicationController
     case post_membership.status
     when 201
       resource_by_secret.update_usage!
-      redirect_to argu_url("/g/#{resource_by_secret.group_id}", welcome: true)
+      redirect_to argu_url("/g/#{group_id}", welcome: true)
     when 304
-      redirect_to argu_url("/g/#{resource_by_secret.group_id}")
+      redirect_to argu_url("/g/#{group_id}")
     end
   end
 
@@ -51,20 +51,14 @@ class TokensController < ApplicationController
 
   def authorize_action(resource_type = nil, resource_id = nil, action = nil)
     return super if [resource_type, resource_id, action].compact.present?
-    case action_name
-    when 'index'
-      super('Group', params.fetch(:group_id), 'update')
-    when 'create'
-      super('Group', permit_params.fetch(:group_id), 'update')
-      super('CurrentActor', permit_params[:profile_iri], 'show') if permit_params[:profile_iri].present?
-    when 'destroy'
-      super('Group', resource_by_secret.group_id, 'update')
-    end
+    super('Group', group_id, 'update')
+    return unless action_name == 'create' && permit_params[:profile_iri].present?
+    super('CurrentActor', permit_params[:profile_iri], 'show')
   end
 
   def batch_params
     params = permit_params.to_h.merge(max_usages: 1, send_mail: send_mail_param)
-    existing_tokens = Token.active.where(group_id: permit_params[:group_id], email: addresses_param, usages: 0)
+    existing_tokens = Token.active.where(group_id: group_id, email: addresses_param, usages: 0)
     (addresses_param - existing_tokens.pluck(:email)).map { |email| params.merge(email: email) }
   end
 
@@ -78,9 +72,20 @@ class TokensController < ApplicationController
 
   def current_user_is_group_member?
     return unless current_user.email == resource_by_secret.email
-    authorize_action('Group', resource_by_secret.group_id, 'is_member')
+    authorize_action('Group', group_id, 'is_member')
   rescue OAuth2::Error => e
     [401, 403].include?(e.response.status) ? false : handle_oauth_error(e)
+  end
+
+  def group_id
+    @group_id ||= case action_name
+                  when 'index'
+                    params.fetch(:group_id)
+                  when 'create'
+                    permit_params.fetch(:group_id)
+                  else
+                    resource_by_secret.group_id
+                  end
   end
 
   def handle_unauthorized_error
@@ -91,9 +96,9 @@ class TokensController < ApplicationController
   def index_by_token_type
     case params[:token_type]
     when 'bearer'
-      Token.bearer.active.where(group_id: params[:group_id])
+      Token.bearer.active.where(group_id: group_id)
     when 'email'
-      Token.email.active.where(group_id: params[:group_id])
+      Token.email.active.where(group_id: group_id)
     end
   end
 
@@ -103,7 +108,7 @@ class TokensController < ApplicationController
 
   def post_membership
     @post_membership ||= argu_token.post(
-      "/g/#{resource_by_secret.group_id}/memberships",
+      "/g/#{group_id}/memberships",
       body: {shortname: current_user.url, token: resource_by_secret.secret},
       headers: {accept: 'application/json'}
     )
@@ -120,7 +125,7 @@ class TokensController < ApplicationController
   def validate_active
     return if resource_by_secret.active?
     if current_user_is_group_member?
-      redirect_to argu_url("/g/#{resource_by_secret.group_id}")
+      redirect_to argu_url("/g/#{group_id}")
     else
       render_status(403, 'status/403_inactive.html')
     end
