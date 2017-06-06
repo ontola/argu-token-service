@@ -27,6 +27,14 @@ class Token < ApplicationRecord
     DataEvent.publish(self)
   end
 
+  def post_membership(argu_token, user)
+    @post_membership ||= argu_token.post(
+      "/g/#{group_id}/memberships",
+      body: {shortname: user.url, token: secret},
+      headers: {accept: 'application/json'}
+    )
+  end
+
   def to_param
     secret
   end

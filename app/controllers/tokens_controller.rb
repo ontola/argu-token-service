@@ -6,13 +6,9 @@ class TokensController < ApplicationController
   before_action :redirect_wrong_email, unless: :valid_email?, only: %i(show)
 
   def show
-    case post_membership.status
-    when 201
-      resource_by_secret.update_usage!
-      redirect_to argu_url("/g/#{group_id}", welcome: true)
-    when 304
-      redirect_to argu_url("/g/#{group_id}")
-    end
+    membership_created = resource_by_secret.post_membership(argu_token, current_user).status == 201
+    resource_by_secret.update_usage! if membership_created
+    redirect_to argu_url("/g/#{group_id}", {welcome: membership_created}.delete_if { |_k, v| !v })
   end
 
   # Used by the argu_service to verify whether the POST made in #post_membership is valid
@@ -104,14 +100,6 @@ class TokensController < ApplicationController
 
   def permit_params
     params.require(:data).require(:attributes).permit(%i(expires_at group_id message profile_iri))
-  end
-
-  def post_membership
-    @post_membership ||= argu_token.post(
-      "/g/#{group_id}/memberships",
-      body: {shortname: current_user.url, token: resource_by_secret.secret},
-      headers: {accept: 'application/json'}
-    )
   end
 
   def resource_by_secret
