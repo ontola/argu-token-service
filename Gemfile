@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.1'
 # Use Puma as the app server
-gem 'puma', '~> 3.6.2'
+gem 'puma', '~> 3.9.1'
 
 gem 'active_model_serializers', '~> 0.10.3'
 gem 'activeresource',

@@ -142,7 +142,7 @@ GEM
       activemodel
       activesupport
     public_suffix (2.0.5)
-    puma (3.6.2)
+    puma (3.9.1)
     pundit (1.0.1)
       activesupport (>= 3.0.0)
     rack (2.0.1)
@@ -258,7 +258,7 @@ DEPENDENCIES
   oauth2
   pg (~> 0.19.0)
   pragmatic_context
-  puma (~> 3.6.2)
+  puma (~> 3.9.1)
   pundit (~> 1.0.0)
   rails (~> 5.0.1)
   rspec-rails
