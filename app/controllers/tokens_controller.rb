@@ -44,8 +44,8 @@ class TokensController < ApplicationController
   def authorize_action(resource_type = nil, resource_id = nil, action = nil)
     return super if [resource_type, resource_id, action].compact.present?
     super('Group', group_id, 'update')
-    return unless action_name == 'create' && permit_params[:profile_iri].present?
-    super('CurrentActor', permit_params[:profile_iri], 'show')
+    return unless action_name == 'create' && permit_params[:actor_iri].present?
+    super('CurrentActor', permit_params[:actor_iri], 'show')
   end
 
   def batch_params
@@ -79,7 +79,7 @@ class TokensController < ApplicationController
   end
 
   def permit_params
-    params.require(:data).require(:attributes).permit(%i(expires_at group_id message profile_iri))
+    params.require(:data).require(:attributes).permit(%i(expires_at group_id message actor_iri))
   end
 
   def resource_by_secret

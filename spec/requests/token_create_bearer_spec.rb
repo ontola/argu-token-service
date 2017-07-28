@@ -123,7 +123,7 @@ describe 'Token bearer create' do
 
   def expect_token_attributes(index = nil)
     expect_attributes(
-      %w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message profileIRI),
+      %w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message actorIRI),
       index
     )
   end

@@ -42,7 +42,7 @@ describe 'Token index' do
     expect(response.code).to eq('200')
     expect_data_size(1)
     expect_attributes(
-      %w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message profileIRI),
+      %w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message actorIRI),
       0
     )
   end

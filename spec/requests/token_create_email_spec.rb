@@ -187,7 +187,7 @@ describe 'Token email create' do
     expect(Token.last.message).to eq('Hello world.')
   end
 
-  it 'manager should create valid email token request with valid profile_iri' do
+  it 'manager should create valid email token request with valid actor_iri' do
     current_user_user_mock
     authorized_mock('Group', 1, 'update')
     authorized_mock('CurrentActor', 'https://argu.dev/u/1', 'show')
@@ -198,7 +198,7 @@ describe 'Token email create' do
           attributes: {
             group_id: 1,
             addresses: ['email1@example.com', 'email2@example.com'],
-            profile_iri: 'https://argu.dev/u/1',
+            actor_iri: 'https://argu.dev/u/1',
             send_mail: true
           }
         }
@@ -209,10 +209,10 @@ describe 'Token email create' do
     expect(response.headers['location']).to be_nil
     expect_data_size(2)
     expect_token_attributes
-    expect(Token.last.profile_iri).to eq('https://argu.dev/u/1')
+    expect(Token.last.actor_iri).to eq('https://argu.dev/u/1')
   end
 
-  it 'manager should not create valid email token request with invalid profile_iri' do
+  it 'manager should not create valid email token request with invalid actor_iri' do
     current_user_user_mock
     authorized_mock('Group', 1, 'update')
     unauthorized_mock('CurrentActor', 'https://argu.dev/u/1', 'show')
@@ -223,7 +223,7 @@ describe 'Token email create' do
           attributes: {
             group_id: 1,
             addresses: ['email1@example.com', 'email2@example.com'],
-            profile_iri: 'https://argu.dev/u/1',
+            actor_iri: 'https://argu.dev/u/1',
             send_mail: true
           }
         }
@@ -288,7 +288,7 @@ describe 'Token email create' do
 
   def expect_token_attributes(index = 0)
     expect_attributes(
-      %w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message profileIRI),
+      %w(email sendMail groupId usages createdAt expiresAt retractedAt opened status message actorIRI),
       index
     )
   end
