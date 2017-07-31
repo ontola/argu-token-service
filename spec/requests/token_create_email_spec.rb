@@ -117,6 +117,33 @@ describe 'Token email create' do
     expect(Token.last.secret.length).to eq(171)
   end
 
+  it 'manager should create valid email token request with shortnames without duplicates' do
+    current_user_user_mock
+    user_mock('user2', email: 'user2@example.com')
+    user_mock('user3', email: 'user3@example.com')
+    authorized_mock('Group', 1, 'update')
+    assert_difference('Token.count', 3) do
+      post '/', params: {
+        data: {
+          type: 'emailTokenRequest',
+          attributes: {
+            group_id: 1,
+            addresses: ['user1@example.com', 'user2', 'user3', 'user3@example.com'],
+            send_mail: true
+          }
+        }
+      }
+    end
+
+    expect(response.code).to eq('201')
+    expect(response.headers['location']).to be_nil
+    expect_data_size(3)
+    expect_token_attributes
+    expect(Token.last.secret.length).to eq(171)
+    expect(Token.last.invitee).to eq('user3')
+    expect(Token.last.email).to eq('user3@example.com')
+  end
+
   it 'manager should create email token request with expired_at attribute' do
     current_user_user_mock
     authorized_mock('Group', 1, 'update')

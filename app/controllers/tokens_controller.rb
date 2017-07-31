@@ -37,8 +37,15 @@ class TokensController < ApplicationController
 
   private
 
+  def invitees
+    @invitees ||=
+      addresses_param
+        .map { |invitee| {invitee: invitee, email: invitee.include?('@') ? invitee : User.find(invitee).email} }
+        .uniq { |invitee| invitee[:email] }
+  end
+
   def addresses_param
-    @addresses_param ||= params.require(:data).require(:attributes).require(:addresses).uniq
+    params.require(:data).require(:attributes).require(:addresses)
   end
 
   def authorize_action(resource_type = nil, resource_id = nil, action = nil)
@@ -50,8 +57,9 @@ class TokensController < ApplicationController
 
   def batch_params
     params = permit_params.to_h.merge(max_usages: 1, send_mail: send_mail_param)
-    existing_tokens = Token.active.where(group_id: group_id, email: addresses_param, usages: 0)
-    (addresses_param - existing_tokens.pluck(:email)).map { |email| params.merge(email: email, invitee: email) }
+    invitees
+      .select { |invitee| !existing_tokens.include?(invitee[:email]) }
+      .map { |invitee| params.merge(invitee: invitee[:invitee], email: invitee[:email]) }
   end
 
   def create_tokens
@@ -67,6 +75,13 @@ class TokensController < ApplicationController
     authorize_action('Group', group_id, 'is_member')
   rescue OAuth2::Error => e
     [401, 403].include?(e.response.status) ? false : handle_oauth_error(e)
+  end
+
+  def existing_tokens
+    Token
+      .active
+      .where(group_id: group_id, usages: 0, email: invitees.map { |i| i[:email] })
+      .pluck(:email)
   end
 
   def group_id

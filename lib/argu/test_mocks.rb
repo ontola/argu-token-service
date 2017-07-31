@@ -11,7 +11,12 @@ module TestMocks
   end
 
   def current_user_user_mock(id = 1, email: nil, secondary_emails: [])
-    stub_request(:get, argu_url('/spi/current_user'))
+    user_mock(id, email: email, secondary_emails: secondary_emails, url: argu_url('/spi/current_user'))
+  end
+
+  def user_mock(id = 1, email: nil, secondary_emails: [], url: nil)
+    url ||= argu_url("/u/#{id}")
+    stub_request(:get, url)
       .to_return(
         status: 200,
         headers: {'Content-Type' => 'application/json'},
@@ -41,7 +46,7 @@ module TestMocks
             relationships: {
               profilePhoto: {
                 data: {
-                  id: '2407',
+                  id: '1',
                   type: 'photos'
                 },
                 links: {
@@ -49,14 +54,14 @@ module TestMocks
                     meta: {'@type': 'http://schema.org/image'}
                   },
                   related: {
-                    href: 'https://argu.local/photos/2407',
+                    href: 'https://argu.local/photos/1',
                     meta: {'@type': 'http://schema.org/ImageObject'}
                   }
                 }
               }
             },
             links: {
-              self: 'https://argu.local/u/95'
+              self: "https://argu.local/u/#{id}"
             }
           }
         }.to_json

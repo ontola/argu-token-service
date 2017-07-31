@@ -31,6 +31,7 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'rspec-rails'
   gem 'rubocop', '~> 0.46.0'
+  gem 'rubocop-rspec'
 end
 
 group :development do
