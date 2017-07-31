@@ -51,7 +51,7 @@ class TokensController < ApplicationController
   def batch_params
     params = permit_params.to_h.merge(max_usages: 1, send_mail: send_mail_param)
     existing_tokens = Token.active.where(group_id: group_id, email: addresses_param, usages: 0)
-    (addresses_param - existing_tokens.pluck(:email)).map { |email| params.merge(email: email) }
+    (addresses_param - existing_tokens.pluck(:email)).map { |email| params.merge(email: email, invitee: email) }
   end
 
   def create_tokens

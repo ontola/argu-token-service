@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20170728162013) do
     t.datetime "last_used_at"
     t.text     "message"
     t.string   "actor_iri"
+    t.string   "invitee"
     t.index ["expires_at", "retracted_at", "group_id"], name: "index_tokens_on_expires_at_and_retracted_at_and_group_id", using: :btree
     t.index ["secret"], name: "index_tokens_on_secret", using: :btree
   end
