@@ -42,8 +42,6 @@ class TokensController < ApplicationController
   def destroy
     resource_by_secret.update(retracted_at: DateTime.current)
     render status: 200
-  rescue ActiveRecord::RecordNotFound
-    render json_api_error(404, 'Please provide a valid token')
   end
 
   private
