@@ -32,6 +32,14 @@ module Service
     config.api_only = true
     config.host_name = ENV['HOSTNAME']
     config.oauth_url = ENV['OAUTH_URL']
+
+    config.middleware.use ActionDispatch::Flash
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore,
+                          key: '_Argu_sesion',
+                          domain: :all,
+                          tld_length: Rails.env.staging? ? 3 : 2
+
     Rails.application.routes.default_url_options[:host] = "#{config.host_name}/tokens"
     ActiveModelSerializers.config.key_transform = :camel_lower
   end

@@ -166,6 +166,29 @@ describe 'Token email create' do
     expect(Token.last.expires_at).to be_truthy
   end
 
+  it 'manager should create email token request with redirect_url' do
+    current_user_user_mock
+    authorized_mock('Group', 1, 'update')
+    assert_difference('Token.count', 2) do
+      post '/', params: {
+        data: {
+          type: 'emailTokenRequest',
+          attributes: {
+            group_id: 1,
+            addresses: ['email1@example.com', 'email2@example.com'],
+            redirect_url: 'https://example.com',
+            send_mail: true
+          }
+        }
+      }
+    end
+
+    expect(response.code).to eq('201')
+    expect(response.headers['location']).to be_nil
+    expect_token_attributes
+    expect(Token.last.redirect_url).to eq('https://example.com')
+  end
+
   it 'manager should create valid email token request with send_mail false' do
     current_user_user_mock
     authorized_mock('Group', 1, 'update')

@@ -75,7 +75,36 @@ module TestMocks
           shortname: "user#{opts[:user_id]}",
           token: opts[:secret]
         }
-      ).to_return(status: opts[:response] || 201, body: '')
+      )
+      .to_return(
+        status: opts[:response] || 201,
+        headers: {location: argu_url('/group_memberships/1')},
+        body: {
+          data: {
+            id: 1,
+            type: 'group_memberships',
+            attributes: {
+            },
+            relationships: {
+              group: {
+                data: {
+                  id: 1,
+                  type: 'groups'
+                }
+              }
+            }
+          },
+          included: [
+            {
+              id: 1,
+              type: 'groups',
+              attributes: {
+                name: 'group_name'
+              }
+            }
+          ]
+        }.to_json
+      )
   end
 
   def emails_mock(type, id, event = 'create')

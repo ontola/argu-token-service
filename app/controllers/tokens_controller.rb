@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 require 'token_creator'
+require 'token_executor'
 
 class TokensController < ApplicationController
+  include ActionController::Cookies, ActionController::Flash, ActionController::Helpers
   rescue_from ActionController::UnpermittedParameters, with: :handle_unpermitted_parameters_error
 
   skip_before_action :check_if_registered, only: :verify
@@ -10,9 +12,8 @@ class TokensController < ApplicationController
   before_action :redirect_wrong_email, unless: :valid_email?, only: %i(show)
 
   def show
-    membership_created = resource_by_secret.post_membership(argu_token, current_user).status == 201
-    resource_by_secret.update_usage! if membership_created
-    redirect_to argu_url("/g/#{group_id}", {welcome: membership_created}.delete_if { |_k, v| !v })
+    token_executor.execute!
+    redirect_to token_executor.redirect_url, notice: token_executor.notice(cookies[:locale])
   end
 
   # Used by the argu_service to verify whether the POST made in #post_membership is valid
@@ -63,7 +64,7 @@ class TokensController < ApplicationController
 
   def handle_unauthorized_error
     return super unless action_name == 'show'
-    redirect_to argu_url('/users/sign_in', r: @_request.env['REQUEST_URI'])
+    redirect_to argu_url('/users/sign_in', r: @_request.env['REQUEST_URI']), notice: I18n.t('please_login')
   end
 
   def handle_unpermitted_parameters_error(e)
@@ -81,10 +82,14 @@ class TokensController < ApplicationController
     @token_creator ||= TokenCreator.new(params: params)
   end
 
+  def token_executor
+    @token_executor ||= TokenExecutor.new(token: resource_by_secret, user: current_user, argu_token: argu_token)
+  end
+
   def validate_active
     return if resource_by_secret.active?
     if current_user_is_group_member?
-      redirect_to argu_url("/g/#{group_id}")
+      redirect_to resource_by_secret.redirect_url || argu_url
     else
       render_status(403, 'status/403_inactive.html')
     end

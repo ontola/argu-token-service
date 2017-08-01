@@ -3,11 +3,16 @@ require 'spec_helper'
 
 describe 'Token show' do
   let(:token) { create(:token) }
+  let(:token_with_r) { create(:token, redirect_url: 'https://example.com') }
   let(:retracted_token) { create(:retracted_token) }
   let(:expired_token) { create(:expired_token) }
   let(:used_token) { create(:used_token) }
   let(:email_token) { create(:token, email: 'email@example.com') }
+  let(:email_token_with_r) { create(:token, email: 'email@example.com', redirect_url: 'https://example.com') }
   let(:retracted_email_token) { create(:retracted_token, email: 'email@example.com') }
+  let(:retracted_email_token_with_r) do
+    create(:retracted_token, email: 'email@example.com', redirect_url: 'https://example.com')
+  end
   let(:expired_email_token) { create(:expired_token, email: 'email@example.com') }
   let(:used_email_token) { create(:used_token, email: 'email@example.com') }
 
@@ -22,6 +27,7 @@ describe 'Token show' do
     expect(response).to(
       redirect_to(argu_url('/users/sign_in', r: '/invalid_token'))
     )
+    expect(flash[:notice]).to eq('Please login to accept this invitation')
   end
 
   it 'guest should redirect retracted to login page' do
@@ -32,6 +38,7 @@ describe 'Token show' do
     expect(response).to(
       redirect_to(argu_url('/users/sign_in', r: "/#{retracted_token.secret}"))
     )
+    expect(flash[:notice]).to eq('Please login to accept this invitation')
   end
 
   it 'guest should redirect retracted email token to login page' do
@@ -42,6 +49,7 @@ describe 'Token show' do
     expect(response).to(
       redirect_to(argu_url('/users/sign_in', r: "/#{retracted_email_token.secret}"))
     )
+    expect(flash[:notice]).to eq('Please login to accept this invitation')
   end
 
   it 'guest should redirect email_token to login page' do
@@ -52,6 +60,7 @@ describe 'Token show' do
     expect(response).to(
       redirect_to(argu_url('/users/sign_in', r: "/#{email_token.secret}"))
     )
+    expect(flash[:notice]).to eq('Please login to accept this invitation')
   end
 
   ####################################
@@ -64,6 +73,7 @@ describe 'Token show' do
     expect(response.body).to include('404')
     expect(response.code).to eq('404')
     expect(response.body).not_to include('MissingFile')
+    expect(flash[:notice]).to be_nil
   end
 
   it 'user should not show a retracted token' do
@@ -74,6 +84,7 @@ describe 'Token show' do
     expect(response.body).to include('The requested token has expired or has been retracted')
     expect(response.code).to eq('403')
     expect(response.body).not_to include('MissingFile')
+    expect(flash[:notice]).to be_nil
   end
 
   it 'user should not show an expired token' do
@@ -84,6 +95,7 @@ describe 'Token show' do
     expect(response.body).to include('The requested token has expired or has been retracted')
     expect(response.code).to eq('403')
     expect(response.body).not_to include('MissingFile')
+    expect(flash[:notice]).to be_nil
   end
 
   it 'user should not show a used token' do
@@ -93,6 +105,7 @@ describe 'Token show' do
     expect(response.body).to include('403')
     expect(response.code).to eq('403')
     expect(response.body).not_to include('MissingFile')
+    expect(flash[:notice]).to be_nil
   end
 
   it 'user should not show a retracted email token' do
@@ -104,6 +117,7 @@ describe 'Token show' do
     expect(response.body).to include('The requested token has expired or has been retracted')
     expect(response.code).to eq('403')
     expect(response.body).not_to include('MissingFile')
+    expect(flash[:notice]).to be_nil
   end
 
   it 'user should not show an expired email token' do
@@ -115,6 +129,7 @@ describe 'Token show' do
     expect(response.body).to include('The requested token has expired or has been retracted')
     expect(response.code).to eq('403')
     expect(response.body).not_to include('MissingFile')
+    expect(flash[:notice]).to be_nil
   end
 
   it 'user should not show a used email token' do
@@ -125,6 +140,7 @@ describe 'Token show' do
     expect(response.body).to include('403')
     expect(response.code).to eq('403')
     expect(response.body).not_to include('MissingFile')
+    expect(flash[:notice]).to be_nil
   end
 
   it 'user should redirect email_token with wrong email' do
@@ -139,6 +155,7 @@ describe 'Token show' do
     expect(response).to(
       redirect_to(argu_url('/users/wrong_email', r: email_token.context_id, email: email_token.email))
     )
+    expect(flash[:notice]).to be_nil
   end
 
   it 'user should redirect bearer_token to welcome page' do
@@ -151,9 +168,22 @@ describe 'Token show' do
     expect(token.reload.usages).to eq(1)
 
     expect(response.code).to eq('302')
-    expect(response).to(
-      redirect_to(argu_url("/g/#{token.group_id}", welcome: true))
-    )
+    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
+    expect(response).to redirect_to(argu_url('/group_memberships/1'))
+  end
+
+  it 'user should redirect bearer_token to welcome page with r' do
+    current_user_user_mock(1)
+    create_membership_mock(user_id: 1, group_id: 1, secret: token_with_r.secret)
+    emails_mock('tokens', token_with_r.id)
+
+    get "/#{token_with_r.secret}"
+    expect(token_with_r.reload.last_used_at).to be_truthy
+    expect(token_with_r.reload.usages).to eq(1)
+
+    expect(response.code).to eq('302')
+    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
+    expect(response).to redirect_to('https://example.com')
   end
 
   it 'user should redirect email_token to welcome page' do
@@ -166,9 +196,22 @@ describe 'Token show' do
     expect(email_token.reload.usages).to eq(1)
 
     expect(response.code).to eq('302')
-    expect(response).to(
-      redirect_to(argu_url("/g/#{email_token.group_id}", welcome: true))
-    )
+    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
+    expect(response).to redirect_to(argu_url('/group_memberships/1'))
+  end
+
+  it 'user should redirect email_token to welcome page with r' do
+    current_user_user_mock(1, email: 'email@example.com')
+    create_membership_mock(user_id: 1, group_id: 1, secret: email_token_with_r.secret)
+    emails_mock('tokens', email_token_with_r.id)
+
+    get "/#{email_token_with_r.secret}"
+    expect(email_token_with_r.reload.last_used_at).to be_truthy
+    expect(email_token_with_r.reload.usages).to eq(1)
+
+    expect(response.code).to eq('302')
+    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
+    expect(response).to redirect_to('https://example.com')
   end
 
   it 'user should redirect email_token with secundary email to welcome page' do
@@ -181,9 +224,8 @@ describe 'Token show' do
     expect(email_token.reload.usages).to eq(1)
 
     expect(response.code).to eq('302')
-    expect(response).to(
-      redirect_to(argu_url("/g/#{email_token.group_id}", welcome: true))
-    )
+    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
+    expect(response).to redirect_to(argu_url('/group_memberships/1'))
   end
 
   it 'user should 403 when failed to create membership' do
@@ -204,9 +246,17 @@ describe 'Token show' do
     authorized_mock('Group', 1, 'is_member')
     get "/#{retracted_email_token.secret}"
 
-    expect(response).to(
-      redirect_to(argu_url("/g/#{retracted_email_token.group_id}"))
-    )
+    expect(response).to redirect_to(argu_url)
+    expect(flash[:notice]).to be_nil
+  end
+
+  it 'member should show a retracted email token with r' do
+    current_user_user_mock(1, email: 'email@example.com')
+    authorized_mock('Group', 1, 'is_member')
+    get "/#{retracted_email_token_with_r.secret}"
+
+    expect(response).to redirect_to('https://example.com')
+    expect(flash[:notice]).to be_nil
   end
 
   it 'member should show an expired email token' do
@@ -214,9 +264,8 @@ describe 'Token show' do
     authorized_mock('Group', 1, 'is_member')
     get "/#{expired_email_token.secret}"
 
-    expect(response).to(
-      redirect_to(argu_url("/g/#{expired_email_token.group_id}"))
-    )
+    expect(response).to redirect_to(argu_url)
+    expect(flash[:notice]).to be_nil
   end
 
   it 'member should show a used email token' do
@@ -224,12 +273,11 @@ describe 'Token show' do
     authorized_mock('Group', 1, 'is_member')
     get "/#{used_email_token.secret}"
 
-    expect(response).to(
-      redirect_to(argu_url("/g/#{used_email_token.group_id}"))
-    )
+    expect(response).to redirect_to(argu_url)
+    expect(flash[:notice]).to be_nil
   end
 
-  it 'member should redirect to page' do
+  it 'member should redirect to group_membership' do
     current_user_user_mock(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret, response: 304)
 
@@ -238,8 +286,7 @@ describe 'Token show' do
     expect(token.reload.usages).to eq(0)
 
     expect(response.code).to eq('302')
-    expect(response).to(
-      redirect_to(argu_url("/g/#{token.group_id}"))
-    )
+    expect(response).to redirect_to(argu_url('/group_memberships/1'))
+    expect(flash[:notice]).to be_nil
   end
 end

@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20170801093634) do
     t.text     "message"
     t.string   "actor_iri"
     t.string   "invitee"
+    t.string   "redirect_url"
     t.index ["expires_at", "retracted_at", "group_id"], name: "index_tokens_on_expires_at_and_retracted_at_and_group_id", using: :btree
     t.index ["secret"], name: "index_tokens_on_secret", using: :btree
   end

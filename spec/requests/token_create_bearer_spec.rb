@@ -138,6 +138,27 @@ describe 'Token bearer create' do
     expect(Token.last.expires_at).to be_truthy
   end
 
+  it 'manager should create bearer token with redirect_url' do
+    current_user_user_mock
+    authorized_mock('Group', 1, 'update')
+    assert_difference('Token.count', 1) do
+      post '/', params: {
+        data: {
+          type: 'bearerToken',
+          attributes: {
+            group_id: 1,
+            redirect_url: 'https://example.com'
+          }
+        }
+      }
+    end
+
+    expect(response.code).to eq('201')
+    expect(response.headers['location']).to be_truthy
+    expect_token_attributes
+    expect(Token.last.redirect_url).to eq('https://example.com')
+  end
+
   private
 
   def expect_token_attributes(index = nil)
