@@ -8,12 +8,20 @@ class TokensController < ApplicationController
 
   skip_before_action :check_if_registered, only: :verify
   before_action :validate_active, only: :show
-  before_action :authorize_action, only: %i(index create destroy)
+  before_action :authorize_action, except: %i(show verify)
   before_action :redirect_wrong_email, unless: :valid_email?, only: %i(show)
 
   def show
     token_executor.execute!
     redirect_to token_executor.redirect_url, notice: token_executor.notice(cookies[:locale])
+  end
+
+  def update
+    if resource_by_secret.update(permit_params)
+      render json: resource_by_secret
+    else
+      render json_api_error(400, resource_by_secret.errors)
+    end
   end
 
   # Used by the argu_service to verify whether the POST made in #post_membership is valid
@@ -69,6 +77,10 @@ class TokensController < ApplicationController
 
   def handle_unpermitted_parameters_error(e)
     render json_api_error(422, e.message)
+  end
+
+  def permit_params
+    params.require(:data).require(:attributes).permit(%i(redirect_url))
   end
 
   def resource_by_secret
