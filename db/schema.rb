@@ -10,22 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170728162013) do
+ActiveRecord::Schema.define(version: 20170801093634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "tokens", force: :cascade do |t|
-    t.string   "secret",                   null: false
-    t.integer  "group_id",                 null: false
-    t.integer  "usages",       default: 0, null: false
+    t.string   "secret",                       null: false
+    t.integer  "group_id",                     null: false
+    t.integer  "usages",       default: 0,     null: false
     t.integer  "max_usages"
     t.datetime "expires_at"
     t.datetime "retracted_at"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.string   "email"
-    t.boolean  "send_mail"
+    t.boolean  "send_mail",    default: false, null: false
     t.datetime "last_used_at"
     t.text     "message"
     t.string   "actor_iri"

@@ -1,5 +1,9 @@
 # frozen_string_literal: true
+require 'token_creator'
+
 class TokensController < ApplicationController
+  rescue_from ActionController::UnpermittedParameters, with: :handle_unpermitted_parameters_error
+
   skip_before_action :check_if_registered, only: :verify
   before_action :validate_active, only: :show
   before_action :authorize_action, only: %i(index create destroy)
@@ -20,12 +24,10 @@ class TokensController < ApplicationController
   end
 
   def create
-    @tokens = create_tokens
-    response.headers['location'] = url_for(@tokens) if @tokens.is_a?(Token)
-    render json: @tokens, status: 201 if @tokens
+    response.headers['location'] = token_creator.location
+    render json: token_creator.tokens, status: 201 if token_creator.create!
   rescue ActiveRecord::ActiveRecordError => e
-    message = @tokens.present? ? @tokens.errors.full_messages : e.message
-    render json_api_error(400, message)
+    render json_api_error(400, token_creator.errors || e.message)
   end
 
   def destroy
@@ -37,37 +39,15 @@ class TokensController < ApplicationController
 
   private
 
-  def invitees
-    @invitees ||=
-      addresses_param
-        .map { |invitee| {invitee: invitee, email: invitee.include?('@') ? invitee : User.find(invitee).email} }
-        .uniq { |invitee| invitee[:email] }
-  end
-
-  def addresses_param
-    params.require(:data).require(:attributes).require(:addresses)
+  def actor_iri
+    params.require(:data).require(:attributes).permit(:actor_iri)[:actor_iri]
   end
 
   def authorize_action(resource_type = nil, resource_id = nil, action = nil)
     return super if [resource_type, resource_id, action].compact.present?
     super('Group', group_id, 'update')
-    return unless action_name == 'create' && permit_params[:actor_iri].present?
-    super('CurrentActor', permit_params[:actor_iri], 'show')
-  end
-
-  def batch_params
-    params = permit_params.to_h.merge(max_usages: 1, send_mail: send_mail_param)
-    invitees
-      .select { |invitee| !existing_tokens.include?(invitee[:email]) }
-      .map { |invitee| params.merge(invitee: invitee[:invitee], email: invitee[:email]) }
-  end
-
-  def create_tokens
-    if %w(bearerToken emailTokenRequest).include?(params[:data][:type])
-      Token.create!(params[:data][:type] == 'emailTokenRequest' ? batch_params : permit_params)
-    else
-      render json_api_error(422, 'Please provide a valid type')
-    end
+    return unless action_name == 'create' && actor_iri.present?
+    super('CurrentActor', actor_iri, 'show')
   end
 
   def current_user_is_group_member?
@@ -77,15 +57,8 @@ class TokensController < ApplicationController
     [401, 403].include?(e.response.status) ? false : handle_oauth_error(e)
   end
 
-  def existing_tokens
-    Token
-      .active
-      .where(group_id: group_id, usages: 0, email: invitees.map { |i| i[:email] })
-      .pluck(:email)
-  end
-
   def group_id
-    @group_id ||= action_name == 'create' ? permit_params.fetch(:group_id) : resource_by_secret.group_id
+    @group_id ||= action_name == 'create' ? token_creator.group_id : resource_by_secret.group_id
   end
 
   def handle_unauthorized_error
@@ -93,16 +66,19 @@ class TokensController < ApplicationController
     redirect_to argu_url('/users/sign_in', r: @_request.env['REQUEST_URI'])
   end
 
-  def permit_params
-    params.require(:data).require(:attributes).permit(%i(expires_at group_id message actor_iri))
+  def handle_unpermitted_parameters_error(e)
+    render json_api_error(422, e.message)
   end
 
   def resource_by_secret
     @resource ||= Token.find_by!(secret: params[:secret])
   end
 
-  def send_mail_param
-    params.require(:data).require(:attributes).require(:send_mail)
+  def token_creator
+    unless %w(bearerToken emailTokenRequest).include?(params.require(:data)[:type])
+      raise ActionController::UnpermittedParameters.new(%w(type))
+    end
+    @token_creator ||= TokenCreator.new(params: params)
   end
 
   def validate_active

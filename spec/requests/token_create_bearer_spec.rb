@@ -48,6 +48,25 @@ describe 'Token bearer create' do
   ####################################
   # As Manager
   ####################################
+  it 'manager should not create token with wrong type' do
+    current_user_user_mock
+    unauthorized_mock('Group', '', 'update')
+    assert_difference('Token.count', 0) do
+      post '/', params: {
+        data: {
+          type: 'wrongType',
+          attributes: {
+            group_id: 1
+          }
+        }
+      }
+
+      expect(response.code).to eq('422')
+      expect_error_message('found unpermitted parameter: type')
+      expect_error_size(1)
+    end
+  end
+
   it 'manager should not create without attributes' do
     current_user_user_mock
     assert_difference('Token.count', 0) do

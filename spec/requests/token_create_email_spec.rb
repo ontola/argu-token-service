@@ -77,7 +77,7 @@ describe 'Token email create' do
   it 'manager should create valid email token request with missing send_mail' do
     current_user_user_mock
     authorized_mock('Group', 1, 'update')
-    assert_difference('Token.count', 0) do
+    assert_difference('Token.count', 2) do
       post '/', params: {
         data: {
           type: 'emailTokenRequest',
@@ -89,9 +89,8 @@ describe 'Token email create' do
       }
     end
 
-    expect(response.code).to eq('400')
-    expect_error_message('param is missing or the value is empty: send_mail')
-    expect_error_size(1)
+    expect(response.code).to eq('201')
+    expect(Token.last.send_mail).to be_falsey
   end
 
   it 'manager should create valid email token request' do
