@@ -333,6 +333,31 @@ describe 'Token email create' do
     expect(Token.last.secret.length).to eq(171)
   end
 
+  it 'manager should duplicate with different redirect_url' do
+    token
+    current_user_user_mock
+    authorized_mock('Group', 1, 'update')
+    assert_difference('Token.count', 1) do
+      post '/', params: {
+        data: {
+          type: 'emailTokenRequest',
+          attributes: {
+            group_id: 1,
+            addresses: [token.email],
+            redirect_url: 'https://example.com',
+            send_mail: true
+          }
+        }
+      }
+    end
+
+    expect(response.code).to eq('201')
+    expect(response.headers['location']).to be_nil
+    expect_data_size(1)
+    expect_token_attributes
+    expect(Token.last.secret.length).to eq(171)
+  end
+
   private
 
   def expect_token_attributes(index = 0)

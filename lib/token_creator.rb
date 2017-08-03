@@ -44,7 +44,7 @@ class TokenCreator
     @existing_tokens ||=
       Token
         .active
-        .where(group_id: group_id, usages: 0, email: invitees.map { |i| i[:email] })
+        .where(group_id: group_id, usages: 0, redirect_url: redirect_url_param, email: invitees.map { |i| i[:email] })
         .pluck(:email)
   end
 
@@ -58,6 +58,10 @@ class TokenCreator
       addresses_param
         .map { |invitee| {invitee: invitee, email: invitee.include?('@') ? invitee : User.find(invitee).email} }
         .uniq { |invitee| invitee[:email] }
+  end
+
+  def redirect_url_param
+    attribute_params.permit(:redirect_url)[:redirect_url]
   end
 
   def single_params
