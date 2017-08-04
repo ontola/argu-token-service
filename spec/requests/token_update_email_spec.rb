@@ -29,7 +29,7 @@ describe 'Token email update' do
   ####################################
   it 'user should not put update email token' do
     current_user_user_mock
-    unauthorized_mock('Group', 1, 'update')
+    unauthorized_mock(type: 'Group', id: 1, action: 'update')
     put token_path(token), params: {
       data: {
         id: token.context_id,
@@ -51,7 +51,7 @@ describe 'Token email update' do
   it 'manager should put update email token' do
     current_user_user_mock
     emails_mock('tokens', token.id)
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     put token_path(token), params: {
       data: {
         id: token.context_id,

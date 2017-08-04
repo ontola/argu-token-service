@@ -21,7 +21,7 @@ describe 'Token index' do
   ####################################
   it 'user should not get index' do
     current_user_user_mock
-    unauthorized_mock('Group', 1, 'update')
+    unauthorized_mock(type: 'Group', id: 1, action: 'update')
     get "/bearer/g/#{token.group_id}"
 
     expect(response.code).to eq('403')
@@ -34,7 +34,7 @@ describe 'Token index' do
   ####################################
   it 'manager should get index' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     emails_mock('tokens', token.id)
 
     get "/bearer/g/#{token.group_id}"

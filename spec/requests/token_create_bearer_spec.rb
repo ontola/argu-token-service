@@ -28,7 +28,7 @@ describe 'Token bearer create' do
   ####################################
   it 'user should not create valid bearer token' do
     current_user_user_mock
-    unauthorized_mock('Group', 1, 'update')
+    unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
@@ -50,7 +50,7 @@ describe 'Token bearer create' do
   ####################################
   it 'manager should not create token with wrong type' do
     current_user_user_mock
-    unauthorized_mock('Group', '', 'update')
+    unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
@@ -80,7 +80,7 @@ describe 'Token bearer create' do
 
   it 'manager should not create bearer token with invalid attributes' do
     current_user_user_mock
-    unauthorized_mock('Group', '', 'update')
+    unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
@@ -99,7 +99,7 @@ describe 'Token bearer create' do
 
   it 'manager should create valid bearer token' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
         data: {
@@ -119,7 +119,7 @@ describe 'Token bearer create' do
 
   it 'manager should create bearer token with expired_at attribute' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
         data: {
@@ -140,7 +140,7 @@ describe 'Token bearer create' do
 
   it 'manager should create bearer token with redirect_url' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
         data: {

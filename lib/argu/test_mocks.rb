@@ -114,20 +114,24 @@ module TestMocks
     ).to_return(status: 200, body: [].to_json)
   end
 
-  def authorized_mock(type, id, action)
-    stub_request(
-      :get,
-      argu_url('/spi/authorize', authorize_action: action, resource_id: id, resource_type: type)
-    ).to_return(status: 200)
+  def authorized_mock(type: nil, id: nil, iri: nil, action: nil)
+    params = {
+      authorize_action: action,
+      resource_id: id,
+      resource_iri: iri,
+      resource_type: type
+    }.delete_if { |_k, v| v.nil? }
+    stub_request(:get, argu_url('/spi/authorize', params)).to_return(status: 200)
   end
 
-  def unauthorized_mock(type, id, action)
-    url = if id.present?
-            argu_url('/spi/authorize', authorize_action: action, resource_id: id, resource_type: type)
-          else
-            argu_url('/spi/authorize', authorize_action: action, resource_type: type)
-          end
-    stub_request(:get, url).to_return(status: 403)
+  def unauthorized_mock(type: nil, id: nil, iri: nil, action: nil)
+    params = {
+      authorize_action: action,
+      resource_id: id,
+      resource_iri: iri,
+      resource_type: type
+    }.delete_if { |_k, v| v.nil? }
+    stub_request(:get, argu_url('/spi/authorize', params)).to_return(status: 403)
   end
 
   private

@@ -115,7 +115,7 @@ describe 'Token show' do
 
   it 'user should not show a retracted email token' do
     current_user_user_mock(1, email: 'email@example.com')
-    unauthorized_mock('Group', 1, 'is_member')
+    unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{retracted_email_token.secret}"
 
     expect(response).to(
@@ -125,7 +125,7 @@ describe 'Token show' do
 
   it 'user should not show an expired email token' do
     current_user_user_mock(1, email: 'email@example.com')
-    unauthorized_mock('Group', 1, 'is_member')
+    unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{expired_email_token.secret}"
 
     expect(response).to(
@@ -135,7 +135,7 @@ describe 'Token show' do
 
   it 'user should not show a used email token' do
     current_user_user_mock(1, email: 'email@example.com')
-    unauthorized_mock('Group', 1, 'is_member')
+    unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{used_email_token.secret}"
 
     expect(response).to(
@@ -243,7 +243,7 @@ describe 'Token show' do
   ####################################
   it 'member should show a retracted email token' do
     current_user_user_mock(1, email: 'email@example.com')
-    authorized_mock('Group', 1, 'is_member')
+    authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{retracted_email_token.secret}"
 
     expect(response).to redirect_to(argu_url)
@@ -252,7 +252,7 @@ describe 'Token show' do
 
   it 'member should show a retracted email token with r' do
     current_user_user_mock(1, email: 'email@example.com')
-    authorized_mock('Group', 1, 'is_member')
+    authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{retracted_email_token_with_r.secret}"
 
     expect(response).to redirect_to('https://example.com')
@@ -261,7 +261,7 @@ describe 'Token show' do
 
   it 'member should show an expired email token' do
     current_user_user_mock(1, email: 'email@example.com')
-    authorized_mock('Group', 1, 'is_member')
+    authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{expired_email_token.secret}"
 
     expect(response).to redirect_to(argu_url)
@@ -270,7 +270,7 @@ describe 'Token show' do
 
   it 'member should show a used email token' do
     current_user_user_mock(1, email: 'email@example.com')
-    authorized_mock('Group', 1, 'is_member')
+    authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{used_email_token.secret}"
 
     expect(response).to redirect_to(argu_url)

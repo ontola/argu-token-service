@@ -24,7 +24,7 @@ describe 'Token retract' do
   ####################################
   it 'user should not retract valid' do
     current_user_user_mock
-    unauthorized_mock('Group', 1, 'update')
+    unauthorized_mock(type: 'Group', id: 1, action: 'update')
     token
     assert_difference('Token.count', 0) do
       delete "/#{token.secret}"
@@ -50,7 +50,7 @@ describe 'Token retract' do
 
   it 'manager should retract valid' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     emails_mock('tokens', token.id)
 
     assert_difference('Token.active.count', -1) do

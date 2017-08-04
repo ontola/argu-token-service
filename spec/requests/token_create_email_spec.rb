@@ -33,7 +33,7 @@ describe 'Token email create' do
   ####################################
   it 'user should not create valid email token' do
     current_user_user_mock
-    unauthorized_mock('Group', 1, 'update')
+    unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
@@ -56,7 +56,7 @@ describe 'Token email create' do
   ####################################
   it 'manager should not create email token request with invalid attributes' do
     current_user_user_mock
-    unauthorized_mock('Group', '', 'update')
+    unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
@@ -76,7 +76,7 @@ describe 'Token email create' do
 
   it 'manager should create valid email token request with missing send_mail' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
         data: {
@@ -95,7 +95,7 @@ describe 'Token email create' do
 
   it 'manager should create valid email token request' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
         data: {
@@ -120,7 +120,7 @@ describe 'Token email create' do
     current_user_user_mock
     user_mock('user2', email: 'user2@example.com')
     user_mock('user3', email: 'user3@example.com')
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 3) do
       post '/', params: {
         data: {
@@ -145,7 +145,7 @@ describe 'Token email create' do
 
   it 'manager should create email token request with expired_at attribute' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
         data: {
@@ -168,7 +168,7 @@ describe 'Token email create' do
 
   it 'manager should create email token request with redirect_url' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
         data: {
@@ -191,7 +191,7 @@ describe 'Token email create' do
 
   it 'manager should create valid email token request with send_mail false' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
         data: {
@@ -214,7 +214,7 @@ describe 'Token email create' do
 
   it 'manager should create valid email token request with message' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
         data: {
@@ -238,8 +238,8 @@ describe 'Token email create' do
 
   it 'manager should create valid email token request with valid actor_iri' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
-    authorized_mock('CurrentActor', 'https://argu.dev/u/1', 'show')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
+    authorized_mock(type: 'CurrentActor', id: 'https://argu.dev/u/1', action: 'show')
     assert_difference('Token.count', 2) do
       post '/', params: {
         data: {
@@ -263,8 +263,8 @@ describe 'Token email create' do
 
   it 'manager should not create valid email token request with invalid actor_iri' do
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
-    unauthorized_mock('CurrentActor', 'https://argu.dev/u/1', 'show')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
+    unauthorized_mock(type: 'CurrentActor', id: 'https://argu.dev/u/1', action: 'show')
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
@@ -287,7 +287,7 @@ describe 'Token email create' do
   it 'manager should create valid email token request without duplicates' do
     token
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
         data: {
@@ -312,7 +312,7 @@ describe 'Token email create' do
     retracted_token
     expired_token
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
         data: {
@@ -336,7 +336,7 @@ describe 'Token email create' do
   it 'manager should duplicate with different redirect_url' do
     token
     current_user_user_mock
-    authorized_mock('Group', 1, 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
         data: {
