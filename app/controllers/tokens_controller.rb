@@ -57,6 +57,12 @@ class TokensController < ApplicationController
     super('CurrentActor', actor_iri, 'show')
   end
 
+  def authorize_redirect_resource
+    token_executor(nil).authorize_redirect_resource
+  rescue ActiveRecord::RecordNotFound
+    false
+  end
+
   def current_user_is_group_member?
     return unless current_user.email == resource_by_secret.email
     authorize_action('Group', group_id, 'is_member')
@@ -70,7 +76,12 @@ class TokensController < ApplicationController
 
   def handle_unauthorized_error
     return super unless action_name == 'show'
-    redirect_to argu_url('/users/sign_in', r: @_request.env['REQUEST_URI']), notice: I18n.t('please_login')
+    if authorize_redirect_resource
+      cookies[:token] = resource_by_secret.context_id
+      redirect_to resource_by_secret.redirect_url
+    else
+      redirect_to argu_url('/users/sign_in', r: @_request.env['REQUEST_URI']), notice: I18n.t('please_login')
+    end
   end
 
   def handle_unpermitted_parameters_error(e)
@@ -92,8 +103,8 @@ class TokensController < ApplicationController
     @token_creator ||= TokenCreator.new(params: params)
   end
 
-  def token_executor
-    @token_executor ||= TokenExecutor.new(token: resource_by_secret, user: current_user, argu_token: argu_token)
+  def token_executor(user = current_user)
+    @token_executor ||= TokenExecutor.new(token: resource_by_secret, user: user, argu_token: argu_token)
   end
 
   def validate_active

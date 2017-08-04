@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class TokenExecutor
-  include UrlHelper, JsonApiHelper
+  include UrlHelper, JsonApiHelper, UriTemplateHelper
   attr_accessor :token, :user, :argu_token
 
   def initialize(token: nil, user: nil, argu_token: nil)
@@ -19,7 +19,18 @@ class TokenExecutor
   end
 
   def redirect_url
-    token.redirect_url || @membership_request&.headers[:location] || argu_url
+    token.redirect_url || @membership_request&.headers.try(:[], :location) || argu_url
+  end
+
+  def authorize_redirect_resource
+    return unless token.redirect_url.present?
+    authorize_url = uri_template(:spi_authorize).expand(
+      resource_iri: token.redirect_url,
+      authorize_action: :show
+    )
+    argu_token.get(authorize_url).status == 200
+  rescue OAuth2::Error
+    false
   end
 
   private
