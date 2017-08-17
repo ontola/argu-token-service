@@ -19,7 +19,7 @@ class Token < ApplicationRecord
   end
 
   def generate_token
-    self.secret = email.present? ? SecureRandom.urlsafe_base64(128) : SecureRandom.base58(24) unless secret?
+    self.secret = email.present? ? SecureRandom.urlsafe_base64(128) : human_readable_token unless secret?
   end
 
   def publish_data_event
@@ -58,5 +58,12 @@ class Token < ApplicationRecord
       resource_type: 'tokens',
       event: 'create'
     )
+  end
+
+  private
+
+  def human_readable_token
+    token = SecureRandom.urlsafe_base64(128).upcase.scan(/[0123456789ACDEFGHJKLMNPQRTUVWXYZ]+/).join
+    token.length >= 16 ? token[0...16] : human_readable_token
   end
 end

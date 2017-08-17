@@ -114,7 +114,7 @@ describe 'Token bearer create' do
     expect(response.code).to eq('201')
     expect(response.headers['location']).to be_truthy
     expect_token_attributes
-    expect(Token.last.secret.length).to eq(24)
+    expect(Token.last.secret.length).to eq(16)
   end
 
   it 'manager should create bearer token with expired_at attribute' do
