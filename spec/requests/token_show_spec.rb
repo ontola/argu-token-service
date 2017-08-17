@@ -63,6 +63,17 @@ describe 'Token show' do
     expect(flash[:notice]).to eq('Please login to accept this invitation')
   end
 
+  it 'guest should redirect email_token to login page with token in query param' do
+    current_user_guest_mock
+    get "?token=#{email_token.secret}"
+
+    expect(response.code).to eq('302')
+    expect(response).to(
+      redirect_to(argu_url('/users/sign_in', r: "?token=#{email_token.secret}"))
+    )
+    expect(flash[:notice]).to eq('Please login to accept this invitation')
+  end
+
   ####################################
   # As User
   ####################################
@@ -70,42 +81,36 @@ describe 'Token show' do
     current_user_user_mock(1)
     get '/invalid_token', as: :html
 
-    expect(response.body).to include('404')
-    expect(response.code).to eq('404')
-    expect(response.body).not_to include('MissingFile')
-    expect(flash[:notice]).to be_nil
+    expect(response).to(
+      redirect_to(argu_url('/token', error: :not_found, token: :invalid_token))
+    )
   end
 
   it 'user should not show a retracted token' do
     current_user_user_mock(1)
     get "/#{retracted_token.secret}"
 
-    expect(response.body).to include('403')
-    expect(response.body).to include('The requested token has expired or has been retracted')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-    expect(flash[:notice]).to be_nil
+    expect(response).to(
+      redirect_to(argu_url('/token', error: :inactive, token: retracted_token.secret))
+    )
   end
 
   it 'user should not show an expired token' do
     current_user_user_mock(1)
     get "/#{expired_token.secret}"
 
-    expect(response.body).to include('403')
-    expect(response.body).to include('The requested token has expired or has been retracted')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-    expect(flash[:notice]).to be_nil
+    expect(response).to(
+      redirect_to(argu_url('/token', error: :inactive, token: expired_token.secret))
+    )
   end
 
   it 'user should not show a used token' do
     current_user_user_mock(1)
     get "/#{used_token.secret}"
 
-    expect(response.body).to include('403')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-    expect(flash[:notice]).to be_nil
+    expect(response).to(
+      redirect_to(argu_url('/token', error: :inactive, token: used_token.secret))
+    )
   end
 
   it 'user should not show a retracted email token' do
@@ -113,11 +118,9 @@ describe 'Token show' do
     unauthorized_mock('Group', 1, 'is_member')
     get "/#{retracted_email_token.secret}"
 
-    expect(response.body).to include('403')
-    expect(response.body).to include('The requested token has expired or has been retracted')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-    expect(flash[:notice]).to be_nil
+    expect(response).to(
+      redirect_to(argu_url('/token', error: :inactive, token: retracted_email_token.secret))
+    )
   end
 
   it 'user should not show an expired email token' do
@@ -125,11 +128,9 @@ describe 'Token show' do
     unauthorized_mock('Group', 1, 'is_member')
     get "/#{expired_email_token.secret}"
 
-    expect(response.body).to include('403')
-    expect(response.body).to include('The requested token has expired or has been retracted')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-    expect(flash[:notice]).to be_nil
+    expect(response).to(
+      redirect_to(argu_url('/token', error: :inactive, token: expired_email_token.secret))
+    )
   end
 
   it 'user should not show a used email token' do
@@ -137,10 +138,9 @@ describe 'Token show' do
     unauthorized_mock('Group', 1, 'is_member')
     get "/#{used_email_token.secret}"
 
-    expect(response.body).to include('403')
-    expect(response.code).to eq('403')
-    expect(response.body).not_to include('MissingFile')
-    expect(flash[:notice]).to be_nil
+    expect(response).to(
+      redirect_to(argu_url('/token', error: :inactive, token: used_email_token.secret))
+    )
   end
 
   it 'user should redirect email_token with wrong email' do

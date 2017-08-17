@@ -101,7 +101,7 @@ class TokensController < ApplicationController
     if current_user_is_group_member?
       redirect_to resource_by_secret.redirect_url || argu_url
     else
-      render_status(403, 'status/403_inactive.html')
+      redirect_to argu_url('/token', token: params[:secret], error: 'inactive')
     end
   end
 
