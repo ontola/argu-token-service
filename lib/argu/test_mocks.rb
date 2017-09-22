@@ -10,12 +10,14 @@ module TestMocks
       )
   end
 
-  def current_user_user_mock(id = 1, email: nil, secondary_emails: [])
-    user_mock(id, email: email, secondary_emails: secondary_emails, url: argu_url('/spi/current_user'))
+  def current_user_user_mock(id = 1, email: nil, confirmed: true, secondary_emails: [])
+    url = argu_url('/spi/current_user')
+    user_mock(id, email: email, confirmed: confirmed, secondary_emails: secondary_emails, url: url)
   end
 
-  def user_mock(id = 1, email: nil, secondary_emails: [], url: nil)
+  def user_mock(id = 1, email: nil, confirmed: true, secondary_emails: [], url: nil)
     url ||= argu_url("/u/#{id}")
+    email ||= "user#{id}@email.com"
     stub_request(:get, url)
       .to_return(
         status: 200,
@@ -40,8 +42,7 @@ module TestMocks
               displayName: "User#{id}",
               about: '',
               url: "user#{id}",
-              email: email || "user#{id}@email.com",
-              secondaryEmails: secondary_emails
+              email: email
             },
             relationships: {
               profilePhoto: {
@@ -54,16 +55,36 @@ module TestMocks
                     meta: {'@type': 'http://schema.org/image'}
                   },
                   related: {
-                    href: 'https://argu.local/photos/1',
+                    href: 'https://argu.dev/photos/1',
                     meta: {'@type': 'http://schema.org/ImageObject'}
                   }
                 }
-              }
+              },
+              emails: {
+                data: (secondary_emails.count + 1)
+                        .times
+                        .map { |i| {id: "https://argu.dev/u/#{id}/email/#{i}", type: 'emails'} }
+              },
             },
             links: {
-              self: "https://argu.local/u/#{id}"
+              self: "https://argu.dev/u/#{id}"
             }
-          }
+          },
+          included: [email: email, confirmed: confirmed]
+                      .concat(secondary_emails)
+                      .each_with_index
+                      .map do |email, i|
+            {
+              id: "https://argu.dev/u/#{id}/email/#{i}",
+              type: 'emails',
+              attributes: {
+                '@type' => 'argu:Email',
+                email: email[:email],
+                primary: i == 0,
+                confirmedAt: email[:confirmed] ? DateTime.current : nil
+              }
+            }
+          end
         }.to_json
       )
   end

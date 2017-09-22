@@ -44,7 +44,7 @@ class Token < ApplicationRecord
   end
 
   def valid_email?(user)
-    email.nil? || email == user.email || user.secondary_emails.include?(email)
+    email.nil? || user.emails.map { |e| e.attributes['email'] }.include?(email)
   end
 
   def email

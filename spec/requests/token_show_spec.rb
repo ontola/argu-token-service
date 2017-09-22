@@ -303,8 +303,8 @@ describe 'Token show' do
     expect(response.cookies['token']).to be_nil
   end
 
-  it 'user should redirect email_token with secundary email to welcome page' do
-    current_user_user_mock(1, secondary_emails: %w(email@example.com))
+  it 'user should redirect email_token with secondary email to welcome page' do
+    current_user_user_mock(1, secondary_emails: [email: 'email@example.com', confirmed: true])
     create_membership_mock(user_id: 1, group_id: 1, secret: email_token.secret)
     emails_mock('tokens', email_token.id)
 
