@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class TokenExecutor
-  include UrlHelper, JsonApiHelper, UriTemplateHelper
+  include UriTemplateHelper
+  include JsonApiHelper
+  include UrlHelper
   attr_accessor :token, :user, :argu_token
 
   def initialize(token: nil, user: nil, argu_token: nil)
@@ -25,7 +27,7 @@ class TokenExecutor
   end
 
   def authorize_redirect_resource
-    return unless token.redirect_url.present?
+    return if token.redirect_url.blank?
     authorize_url = uri_template(:spi_authorize).expand(
       resource_iri: token.redirect_url,
       authorize_action: :show

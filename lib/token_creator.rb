@@ -37,7 +37,7 @@ class TokenCreator
   def batch_params
     params = attribute_params.permit(%i[actor_iri expires_at group_id message redirect_url send_mail])
     invitees
-      .select { |invitee| !existing_tokens.include?(invitee[:email]) }
+      .reject { |invitee| existing_tokens.include?(invitee[:email]) }
       .map { |invitee| params.merge(invitee: invitee[:invitee], email: invitee[:email]) }
   end
 

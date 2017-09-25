@@ -4,7 +4,9 @@ require 'token_creator'
 require 'token_executor'
 
 class TokensController < ApplicationController
-  include ActionController::Cookies, ActionController::Flash, ActionController::Helpers
+  include ActionController::Helpers
+  include ActionController::Flash
+  include ActionController::Cookies
   rescue_from ActionController::UnpermittedParameters, with: :handle_unpermitted_parameters_error
 
   skip_before_action :check_if_registered, only: :verify

@@ -62,10 +62,10 @@ module TestMocks
                 }
               },
               emails: {
-                data: (secondary_emails.count + 1)
-                        .times
-                        .map { |i| {id: "https://argu.dev/u/#{id}/email/#{i}", type: 'emails'} }
-              },
+                data: Array.new((secondary_emails.count + 1)) do |i|
+                  {id: "https://argu.dev/u/#{id}/email/#{i}", type: 'emails'}
+                end
+              }
             },
             links: {
               self: "https://argu.dev/u/#{id}"
@@ -74,18 +74,18 @@ module TestMocks
           included: [email: email, confirmed: confirmed]
                       .concat(secondary_emails)
                       .each_with_index
-                      .map do |email, i|
-            {
-              id: "https://argu.dev/u/#{id}/email/#{i}",
-              type: 'emails',
-              attributes: {
-                '@type' => 'argu:Email',
-                email: email[:email],
-                primary: i == 0,
-                confirmedAt: email[:confirmed] ? DateTime.current : nil
-              }
-            }
-          end
+                      .map do |e, i|
+                      {
+                        id: "https://argu.dev/u/#{id}/email/#{i}",
+                        type: 'emails',
+                        attributes: {
+                          '@type' => 'argu:Email',
+                          email: e[:email],
+                          primary: i.zero?,
+                          confirmedAt: e[:confirmed] ? DateTime.current : nil
+                        }
+                      }
+                    end
         }.to_json
       )
   end
@@ -138,7 +138,7 @@ module TestMocks
 
   def confirm_email_mock(email)
     stub_request(:put, argu_url('/users/confirmation'))
-      .with(body: {email: email}, headers: {'Accept'=>'application/json'})
+      .with(body: {email: email}, headers: {'Accept' => 'application/json'})
       .to_return(status: 200)
   end
 
