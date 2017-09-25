@@ -9,8 +9,8 @@ class TokensController < ApplicationController
 
   skip_before_action :check_if_registered, only: :verify
   before_action :validate_active, only: :show
-  before_action :authorize_action, except: %i(show verify)
-  before_action :redirect_wrong_email, unless: :valid_email?, only: %i(show)
+  before_action :authorize_action, except: %i[show verify]
+  before_action :redirect_wrong_email, unless: :valid_email?, only: %i[show]
 
   def show
     token_executor.execute!
@@ -90,7 +90,7 @@ class TokensController < ApplicationController
   end
 
   def permit_params
-    params.require(:data).require(:attributes).permit(%i(redirect_url))
+    params.require(:data).require(:attributes).permit(%i[redirect_url])
   end
 
   def resource_by_secret
@@ -98,8 +98,8 @@ class TokensController < ApplicationController
   end
 
   def token_creator
-    unless %w(bearerToken emailTokenRequest).include?(params.require(:data)[:type])
-      raise ActionController::UnpermittedParameters.new(%w(type))
+    unless %w[bearerToken emailTokenRequest].include?(params.require(:data)[:type])
+      raise ActionController::UnpermittedParameters.new(%w[type])
     end
     @token_creator ||= TokenCreator.new(params: params)
   end
