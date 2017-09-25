@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 class Token < ApplicationRecord
+  include UriTemplateHelper
+
   scope :active, lambda {
     where('retracted_at IS NULL AND (expires_at IS NULL OR expires_at > ?)'\
           ' AND (max_usages IS NULL OR usages < max_usages)',
@@ -12,6 +14,14 @@ class Token < ApplicationRecord
 
   def active?
     retracted_at.nil? && (expires_at.nil? || expires_at > DateTime.current) && (max_usages.nil? || usages < max_usages)
+  end
+
+  def confirm_email(argu_token, email)
+    argu_token.put(
+      expand_uri_template(:user_confirmation),
+      body: {email: email.attributes['email']},
+      headers: {accept: 'application/json'}
+    )
   end
 
   def context_id

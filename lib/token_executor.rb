@@ -11,6 +11,7 @@ class TokenExecutor
 
   def execute!
     post_membership
+    confirm_email if token.email
   end
 
   def notice(locale)
@@ -34,6 +35,11 @@ class TokenExecutor
   end
 
   private
+
+  def confirm_email
+    email = user.emails.detect { |e| e.attributes['email'] == token.email }
+    token.confirm_email(argu_token, email) if email.attributes['confirmed_at'].nil?
+  end
 
   def group_name(request)
     json_api_included_resource(

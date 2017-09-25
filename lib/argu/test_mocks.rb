@@ -135,6 +135,12 @@ module TestMocks
     ).to_return(status: 200, body: [].to_json)
   end
 
+  def confirm_email_mock(email)
+    stub_request(:put, argu_url('/users/confirmation'))
+      .with(body: {email: email}, headers: {'Accept'=>'application/json'})
+      .to_return(status: 200)
+  end
+
   def authorized_mock(type: nil, id: nil, iri: nil, action: nil)
     params = {
       authorize_action: action,

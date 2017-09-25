@@ -288,6 +288,22 @@ describe 'Token show' do
     expect(response.cookies['token']).to be_nil
   end
 
+  it 'unconfirmed user should confirm and redirect email_token to welcome page' do
+    current_user_user_mock(1, email: 'email@example.com', confirmed: false)
+    create_membership_mock(user_id: 1, group_id: 1, secret: email_token.secret)
+    emails_mock('tokens', email_token.id)
+    confirm_email_mock(email_token.email)
+
+    get "/#{email_token.secret}"
+    expect(email_token.reload.last_used_at).to be_truthy
+    expect(email_token.reload.usages).to eq(1)
+
+    expect(response.code).to eq('302')
+    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
+    expect(response).to redirect_to(argu_url('/group_memberships/1'))
+    expect(response.cookies['token']).to be_nil
+  end
+
   it 'user should redirect email_token to welcome page with r' do
     current_user_user_mock(1, email: 'email@example.com')
     create_membership_mock(user_id: 1, group_id: 1, secret: email_token_with_r.secret)
