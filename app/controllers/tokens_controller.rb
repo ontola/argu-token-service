@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'token_creator'
 require 'token_executor'
 

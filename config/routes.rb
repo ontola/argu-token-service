@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'argu/whitelist_constraint'
 
 Rails.application.routes.draw do

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class BearerTokenController < TokensController
   def index
     render json: Token.bearer.active.where(group_id: group_id), include: {emails: :email_events}

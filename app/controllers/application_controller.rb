@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class ApplicationController < ApiController
   before_action :check_if_registered
 

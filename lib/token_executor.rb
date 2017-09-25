@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class TokenExecutor
   include UrlHelper, JsonApiHelper, UriTemplateHelper
   attr_accessor :token, :user, :argu_token

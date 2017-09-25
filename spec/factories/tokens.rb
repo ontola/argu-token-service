@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :token do
     sequence(:secret) { |n| "correct_token_#{n}" }

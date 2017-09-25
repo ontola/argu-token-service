@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class EmailTokenController < TokensController
   def index
     render json: Token.email.active.where(group_id: group_id), include: {emails: :email_events}
