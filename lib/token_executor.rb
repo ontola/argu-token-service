@@ -40,7 +40,7 @@ class TokenExecutor
   private
 
   def confirm_email
-    email = user.emails.detect { |e| e.attributes['email'] == token.email }
+    email = user.email_addresses.detect { |e| e.attributes['email'] == token.email }
     token.confirm_email(argu_token, email) if email.attributes['confirmed_at'].nil?
   end
 

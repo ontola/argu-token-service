@@ -61,9 +61,9 @@ module TestMocks
                   }
                 }
               },
-              emails: {
+              email_addresses: {
                 data: Array.new((secondary_emails.count + 1)) do |i|
-                  {id: "https://argu.dev/u/#{id}/email/#{i}", type: 'emails'}
+                  {id: "https://argu.dev/u/#{id}/email/#{i}", type: 'emailAddresses'}
                 end
               }
             },
@@ -77,7 +77,7 @@ module TestMocks
                       .map do |e, i|
                       {
                         id: "https://argu.dev/u/#{id}/email/#{i}",
-                        type: 'emails',
+                        type: 'emailAddresses',
                         attributes: {
                           '@type' => 'argu:Email',
                           email: e[:email],
