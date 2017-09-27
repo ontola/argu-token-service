@@ -137,7 +137,7 @@ module TestMocks
   end
 
   def confirm_email_mock(email)
-    stub_request(:put, argu_url('/users/confirmation'))
+    stub_request(:put, argu_url('/users/confirm'))
       .with(body: {email: email}, headers: {'Accept' => 'application/json'})
       .to_return(status: 200)
   end

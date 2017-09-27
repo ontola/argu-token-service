@@ -19,7 +19,7 @@ class Token < ApplicationRecord
 
   def confirm_email(argu_token, email)
     argu_token.put(
-      expand_uri_template(:user_confirmation),
+      expand_uri_template(:user_confirm),
       body: {email: email.attributes['email']},
       headers: {accept: 'application/json'}
     )
