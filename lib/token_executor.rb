@@ -4,12 +4,13 @@ class TokenExecutor
   include UriTemplateHelper
   include JsonApiHelper
   include UrlHelper
-  attr_accessor :token, :user, :argu_token
+  attr_accessor :token, :user, :service_token, :user_token
 
-  def initialize(token: nil, user: nil, argu_token: nil)
+  def initialize(token: nil, user: nil, service_token: nil, user_token: nil)
     self.token = token
     self.user = user
-    self.argu_token = argu_token
+    self.service_token = service_token
+    self.user_token = user_token
   end
 
   def execute!
@@ -32,7 +33,7 @@ class TokenExecutor
       resource_iri: token.redirect_url,
       authorize_action: :show
     )
-    argu_token.get(authorize_url).status == 200
+    user_token.get(authorize_url).status == 200
   rescue OAuth2::Error
     false
   end
@@ -41,7 +42,7 @@ class TokenExecutor
 
   def confirm_email
     email = user.email_addresses.detect { |e| e.attributes['email'] == token.email }
-    token.confirm_email(argu_token, email) if email.attributes['confirmed_at'].nil?
+    token.confirm_email(service_token, email) if email.attributes['confirmed_at'].nil?
   end
 
   def group_name(request)
@@ -53,7 +54,7 @@ class TokenExecutor
   end
 
   def post_membership
-    @membership_request = token.post_membership(argu_token, user)
+    @membership_request = token.post_membership(user_token, user)
     token.update_usage! if @membership_request.status == 201
   end
 end

@@ -17,8 +17,8 @@ class Token < ApplicationRecord
     retracted_at.nil? && (expires_at.nil? || expires_at > DateTime.current) && (max_usages.nil? || usages < max_usages)
   end
 
-  def confirm_email(argu_token, email)
-    argu_token.put(
+  def confirm_email(access_token, email)
+    access_token.put(
       expand_uri_template(:user_confirm),
       body: {email: email.attributes['email']},
       headers: {accept: 'application/json'}
@@ -37,8 +37,8 @@ class Token < ApplicationRecord
     DataEvent.publish(self)
   end
 
-  def post_membership(argu_token, user)
-    @post_membership ||= argu_token.post(
+  def post_membership(access_token, user)
+    @post_membership ||= access_token.post(
       "/g/#{group_id}/memberships",
       body: {shortname: user.url, token: secret},
       headers: {accept: 'application/json'}

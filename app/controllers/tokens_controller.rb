@@ -107,7 +107,8 @@ class TokensController < ApplicationController
   end
 
   def token_executor(user = current_user)
-    @token_executor ||= TokenExecutor.new(token: resource_by_secret, user: user, argu_token: argu_token)
+    @token_executor ||=
+      TokenExecutor.new(token: resource_by_secret, user: user, user_token: user_token, service_token: service_token)
   end
 
   def validate_active

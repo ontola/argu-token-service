@@ -5,10 +5,6 @@ class ApplicationController < ApiController
 
   private
 
-  def client_token
-    request.cookie_jar.encrypted['argu_client_token']
-  end
-
   def handle_record_not_found_error
     respond_to do |format|
       format.html do
