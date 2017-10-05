@@ -98,6 +98,25 @@ describe 'Token bearer create' do
     end
   end
 
+  it 'manager should not create bearer token for group_id < 0' do
+    current_user_user_mock
+    authorized_mock(type: 'Group', id: -1, action: 'update')
+    assert_difference('Token.count', 0) do
+      post '/', params: {
+        data: {
+          type: 'bearerToken',
+          attributes: {
+            group_id: -1
+          }
+        }
+      }
+    end
+
+    expect(response.code).to eq('400')
+    expect_error_message('must be greater than 0')
+    expect_error_size(1)
+  end
+
   it 'manager should create valid bearer token' do
     current_user_user_mock
     authorized_mock(type: 'Group', id: 1, action: 'update')

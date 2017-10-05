@@ -75,6 +75,26 @@ describe 'Token email create' do
     end
   end
 
+  it 'manager should not create bearer token for group_id < 0' do
+    current_user_user_mock
+    authorized_mock(type: 'Group', id: -1, action: 'update')
+    assert_difference('Token.count', 0) do
+      post '/', params: {
+        data: {
+          type: 'emailTokenRequest',
+          attributes: {
+            group_id: -1,
+            addresses: ['email1@example.com', 'email2@example.com']
+          }
+        }
+      }
+    end
+
+    expect(response.code).to eq('400')
+    expect_error_message('must be greater than 0')
+    expect_error_size(1)
+  end
+
   it 'manager should create valid email token request with missing send_mail' do
     current_user_user_mock
     authorized_mock(type: 'Group', id: 1, action: 'update')
