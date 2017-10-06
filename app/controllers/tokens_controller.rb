@@ -58,7 +58,6 @@ class TokensController < ApplicationController
   end
 
   def current_user_is_group_member?
-    return unless current_user.email == resource_by_secret.email
     authorize_action('Group', group_id, 'is_member')
   rescue OAuth2::Error => e
     [401, 403].include?(e.response.status) ? false : handle_oauth_error(e)

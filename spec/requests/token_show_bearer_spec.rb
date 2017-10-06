@@ -226,9 +226,9 @@ describe 'Bearer token show' do
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{retracted_token.secret}"
 
-    expect(response).to(redirect_to(argu_url('/token', error: :inactive, token: retracted_token.secret)))
+    expect(response).to(redirect_to(argu_url))
     expect(response.cookies['token']).to be_nil
-    expect(flash[:notice]).to be_nil
+    expect(flash[:notice]).to eq('You are already member of this group')
   end
 
   it 'member should show an expired token' do
@@ -236,9 +236,9 @@ describe 'Bearer token show' do
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{expired_token.secret}"
 
-    expect(response).to(redirect_to(argu_url('/token', error: :inactive, token: expired_token.secret)))
+    expect(response).to(redirect_to(argu_url))
     expect(response.cookies['token']).to be_nil
-    expect(flash[:notice]).to be_nil
+    expect(flash[:notice]).to eq('You are already member of this group')
   end
 
   it 'member should show a used token' do
@@ -246,9 +246,9 @@ describe 'Bearer token show' do
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{used_token.secret}"
 
-    expect(response).to(redirect_to(argu_url('/token', error: :inactive, token: used_token.secret)))
+    expect(response).to(redirect_to(argu_url))
     expect(response.cookies['token']).to be_nil
-    expect(flash[:notice]).to be_nil
+    expect(flash[:notice]).to eq('You are already member of this group')
   end
 
   it 'member should not show a retracted token with r' do
@@ -256,9 +256,9 @@ describe 'Bearer token show' do
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{retracted_token_with_r.secret}"
 
-    expect(response).to(redirect_to(argu_url('/token', error: :inactive, token: retracted_token_with_r.secret)))
+    expect(response).to(redirect_to('https://example.com'))
     expect(response.cookies['token']).to be_nil
-    expect(flash[:notice]).to be_nil
+    expect(flash[:notice]).to eq('You are already member of this group')
   end
 
   it 'member should redirect to group_membership' do
