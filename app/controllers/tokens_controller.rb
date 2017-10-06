@@ -52,19 +52,11 @@ class TokensController < ApplicationController
   end
 
   def authorize_redirect_resource
-    token_executor(nil).authorize_redirect_resource
-  rescue ActiveRecord::RecordNotFound
-    false
-  end
-
-  def current_user_is_group_member?
-    authorize_action('Group', group_id, 'is_member')
-  rescue OAuth2::Error => e
-    [401, 403].include?(e.response.status) ? false : handle_oauth_error(e)
+    api.authorize_redirect_resource(resource_by_secret)
   end
 
   def group_id
-    @group_id ||= action_name == 'create' ? token_creator.group_id : resource_by_secret.group_id
+    @group_id ||= action_name == 'create' ? token_creator.group_id : resource_by_secret!.group_id
   end
 
   def handle_unauthorized_error
@@ -90,7 +82,11 @@ class TokensController < ApplicationController
   end
 
   def resource_by_secret
-    @resource ||= Token.find_by!(secret: params[:secret])
+    @resource ||= Token.find_by(secret: params[:secret])
+  end
+
+  def resource_by_secret!
+    resource_by_secret || raise(ActiveRecord::RecordNotFound)
   end
 
   def token_creator
@@ -101,13 +97,12 @@ class TokensController < ApplicationController
   end
 
   def token_executor(user = current_user)
-    @token_executor ||=
-      TokenExecutor.new(token: resource_by_secret, user: user, user_token: user_token, service_token: service_token)
+    @token_executor ||= TokenExecutor.new(token: resource_by_secret!, user: user, api: api)
   end
 
   def validate_active
-    return if resource_by_secret.active?
-    if current_user_is_group_member?
+    return if resource_by_secret!.active?
+    if api.user_is_group_member?(group_id)
       redirect_to resource_by_secret.redirect_url || argu_url, notice: I18n.t('already_member')
     else
       redirect_to argu_url('/token', token: params[:secret], error: 'inactive')

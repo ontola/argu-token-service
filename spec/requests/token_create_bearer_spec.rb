@@ -113,7 +113,7 @@ describe 'Token bearer create' do
     end
 
     expect(response.code).to eq('400')
-    expect_error_message('must be greater than 0')
+    expect_error_message('Group must be greater than 0')
     expect_error_size(1)
   end
 

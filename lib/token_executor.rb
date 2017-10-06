@@ -1,20 +1,18 @@
 # frozen_string_literal: true
 
 class TokenExecutor
-  include UriTemplateHelper
   include JsonApiHelper
   include UrlHelper
-  attr_accessor :token, :user, :service_token, :user_token
+  attr_accessor :token, :user, :api
 
-  def initialize(token: nil, user: nil, service_token: nil, user_token: nil)
+  def initialize(token: nil, user: nil, api: nil)
     self.token = token
     self.user = user
-    self.service_token = service_token
-    self.user_token = user_token
+    self.api = api
   end
 
   def execute!
-    post_membership
+    create_membership
     confirm_email if token.email
   end
 
@@ -31,22 +29,15 @@ class TokenExecutor
     token.redirect_url || @membership_request&.headers.try(:[], :location) || argu_url
   end
 
-  def authorize_redirect_resource
-    return if token.redirect_url.blank?
-    authorize_url = uri_template(:spi_authorize).expand(
-      resource_iri: token.redirect_url,
-      authorize_action: :show
-    )
-    user_token.get(authorize_url).status == 200
-  rescue OAuth2::Error
-    false
-  end
-
   private
 
   def confirm_email
-    email = user.email_addresses.detect { |e| e.attributes['email'] == token.email }
-    token.confirm_email(service_token, email) if email.attributes['confirmed_at'].nil?
+    api.confirm_email_address(email_record.attributes['email']) if email_record.attributes['confirmed_at'].nil?
+  end
+
+  def create_membership
+    @membership_request = api.create_membership(token, user)
+    token.update_usage! if @membership_request.status == 201
   end
 
   def group_name(request)
@@ -57,8 +48,7 @@ class TokenExecutor
     )[:attributes][:name]
   end
 
-  def post_membership
-    @membership_request = token.post_membership(user_token, user)
-    token.update_usage! if @membership_request.status == 201
+  def email_record
+    user.email_addresses.detect { |e| e.attributes['email'] == token.email }
   end
 end
