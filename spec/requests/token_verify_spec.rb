@@ -32,21 +32,18 @@ describe 'Token verify' do
     get "/verify?jwt=#{invalid_jwt}"
 
     expect(response.code).to eq('404')
-    expect_error_message('Please provide a valid token')
   end
 
   it 'jwt for retracted token should 404' do
     get "/verify?jwt=#{retracted_jwt}"
 
     expect(response.code).to eq('404')
-    expect_error_message('Please provide a valid token')
   end
 
   it 'jwt for expired token should 404' do
     get "/verify?jwt=#{expired_jwt}"
 
     expect(response.code).to eq('404')
-    expect_error_message('Please provide a valid token')
   end
 
   it 'valid jwt should 200' do

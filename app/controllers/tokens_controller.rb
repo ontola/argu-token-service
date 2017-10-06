@@ -9,9 +9,8 @@ class TokensController < ApplicationController
   include ActionController::Cookies
   rescue_from ActionController::UnpermittedParameters, with: :handle_unpermitted_parameters_error
 
-  skip_before_action :check_if_registered, only: :verify
   before_action :validate_active, only: :show
-  before_action :authorize_action, except: %i[show verify]
+  before_action :authorize_action, except: %i[show]
   before_action :redirect_wrong_email, unless: :valid_email?, only: %i[show]
 
   def show
@@ -25,14 +24,6 @@ class TokensController < ApplicationController
     else
       render json_api_error(400, resource_by_secret.errors)
     end
-  end
-
-  # Used by the argu_service to verify whether the POST made in #post_membership is valid
-  # GET /verify
-  def verify
-    hash = JWT.decode(params[:jwt], Rails.application.secrets.jwt_encryption_token, algorithm: 'HS256')[0]
-    Token.active.find_by!(hash)
-    head 200
   end
 
   def create
