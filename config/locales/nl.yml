@@ -2,3 +2,4 @@ nl:
   group_memberships:
     welcome: "Je bent lid geworden van de groep '%{group}'"
   please_login: "Log in om de uitnodiging te accepteren"
+  already_member: "Je bent al lid van deze groep"

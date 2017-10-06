@@ -35,7 +35,7 @@ describe 'Email token show' do
     expect(response.code).to eq('302')
     expect(response).to redirect_to('https://example.com')
     expect(flash[:notice]).to be_nil
-    expect(response.cookies['token']).to eq(retracted_email_token_with_r.context_id)
+    expect(response.cookies['token']).to be_nil
   end
 
   it 'guest should redirect retracted email token with unauthorized r to login page' do
@@ -70,7 +70,7 @@ describe 'Email token show' do
 
     expect(response.code).to eq('302')
     expect(response).to redirect_to('https://example.com')
-    expect(flash[:notice]).to be_nil
+    expect(flash[:notice]).to eq('Please login to accept this invitation')
     expect(response.cookies['token']).to eq(email_token_with_r.context_id)
   end
 
@@ -209,7 +209,7 @@ describe 'Email token show' do
     get "/#{retracted_email_token.secret}"
 
     expect(response).to redirect_to(argu_url)
-    expect(flash[:notice]).to be_nil
+    expect(flash[:notice]).to eq('You are already member of this group')
     expect(response.cookies['token']).to be_nil
   end
 
@@ -219,7 +219,7 @@ describe 'Email token show' do
     get "/#{retracted_email_token_with_r.secret}"
 
     expect(response).to redirect_to('https://example.com')
-    expect(flash[:notice]).to be_nil
+    expect(flash[:notice]).to eq('You are already member of this group')
     expect(response.cookies['token']).to be_nil
   end
 
@@ -229,7 +229,7 @@ describe 'Email token show' do
     get "/#{expired_email_token.secret}"
 
     expect(response).to redirect_to(argu_url)
-    expect(flash[:notice]).to be_nil
+    expect(flash[:notice]).to eq('You are already member of this group')
     expect(response.cookies['token']).to be_nil
   end
 
@@ -239,7 +239,7 @@ describe 'Email token show' do
     get "/#{used_email_token.secret}"
 
     expect(response).to redirect_to(argu_url)
-    expect(flash[:notice]).to be_nil
+    expect(flash[:notice]).to eq('You are already member of this group')
     expect(response.cookies['token']).to be_nil
   end
 end

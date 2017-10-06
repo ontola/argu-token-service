@@ -2,3 +2,4 @@ en:
   group_memberships:
     welcome: "You have joined the group '%{group}'"
   please_login: "Please login to accept this invitation"
+  already_member: "You are already member of this group"

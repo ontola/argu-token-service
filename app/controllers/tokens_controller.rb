@@ -71,11 +71,15 @@ class TokensController < ApplicationController
   def handle_unauthorized_error
     return super unless action_name == 'show'
     if authorize_redirect_resource
-      cookies[:token] = resource_by_secret.context_id
-      redirect_to resource_by_secret.redirect_url
+      redirect_to_authorized_r
     else
       redirect_to argu_url('/users/sign_in', r: @_request.env['REQUEST_URI']), notice: I18n.t('please_login')
     end
+  end
+
+  def redirect_to_authorized_r
+    cookies[:token] = resource_by_secret.context_id if resource_by_secret.active?
+    redirect_to resource_by_secret.redirect_url, notice: resource_by_secret.active? ? I18n.t('please_login') : nil
   end
 
   def handle_unpermitted_parameters_error(e)
@@ -105,7 +109,7 @@ class TokensController < ApplicationController
   def validate_active
     return if resource_by_secret.active?
     if current_user_is_group_member?
-      redirect_to resource_by_secret.redirect_url || argu_url
+      redirect_to resource_by_secret.redirect_url || argu_url, notice: I18n.t('already_member')
     else
       redirect_to argu_url('/token', token: params[:secret], error: 'inactive')
     end

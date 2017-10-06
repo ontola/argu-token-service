@@ -19,8 +19,12 @@ class TokenExecutor
   end
 
   def notice(locale)
-    return unless @membership_request.status == 201
-    I18n.t('group_memberships.welcome', group: group_name(@membership_request), locale: locale)
+    case @membership_request.status
+    when 201
+      I18n.t('group_memberships.welcome', group: group_name(@membership_request), locale: locale)
+    when 304
+      I18n.t('already_member')
+    end
   end
 
   def redirect_url
