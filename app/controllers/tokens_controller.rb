@@ -55,6 +55,11 @@ class TokensController < ApplicationController
     api.authorize_redirect_resource(resource_by_secret)
   end
 
+  def check_if_registered
+    return super unless action_name == 'show'
+    current_user || create_user || raise(Errors::UnauthorizedError)
+  end
+
   def group_id
     @group_id ||= action_name == 'create' ? token_creator.group_id : resource_by_secret!.group_id
   end
@@ -79,6 +84,10 @@ class TokensController < ApplicationController
 
   def permit_params
     params.require(:data).require(:attributes).permit(%i[redirect_url])
+  end
+
+  def create_user
+    @current_user = api.create_user(resource_by_secret.email) if resource_by_secret&.email
   end
 
   def resource_by_secret
