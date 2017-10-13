@@ -15,41 +15,39 @@ describe 'Email token show' do
   ####################################
   # As Guest without account
   ####################################
-  it 'guest without account with retracted token should create account and redirect to welcome page' do
-    guest_without_account_mock(retracted_email_token.email)
-    unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-
+  it 'guest without account with retracted token should not create account and redirect to welcome page' do
+    current_user_guest_mock
     get "/#{retracted_email_token.secret}"
 
     expect(response.code).to eq('302')
-    expect(response).to redirect_to(argu_url('/token', error: :inactive, token: retracted_email_token.secret))
-    expect(flash[:notice]).to be_nil
+    expect(response).to(
+      redirect_to(argu_url('/users/sign_in', r: "/#{retracted_email_token.secret}"))
+    )
+    expect(flash[:notice]).to eq('Please login to accept this invitation')
     expect(response.cookies['token']).to be_nil
   end
 
-  it 'guest without account with retracted token should create account and redirect to r' do
-    guest_without_account_mock(retracted_email_token_with_r.email)
+  it 'guest without account with retracted token should not create account and redirect to r' do
+    current_user_guest_mock
     authorized_mock(action: 'show', iri: 'https://example.com')
-    unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-
     get "/#{retracted_email_token_with_r.secret}"
 
     expect(response.code).to eq('302')
-    expect(response).to redirect_to(argu_url('/token', error: :inactive, token: retracted_email_token_with_r.secret))
+    expect(response).to redirect_to('https://example.com')
     expect(flash[:notice]).to be_nil
     expect(response.cookies['token']).to be_nil
   end
 
-  it 'guest without account with retracted token should create account and should not redirect to unauthorized r' do
-    guest_without_account_mock(retracted_email_token_with_r.email)
+  it 'guest without account with retracted token should not create account and should not redirect to unauthorized r' do
+    current_user_guest_mock
     unauthorized_mock(action: 'show', iri: 'https://example.com')
-    unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-
     get "/#{retracted_email_token_with_r.secret}"
 
     expect(response.code).to eq('302')
-    expect(response).to redirect_to(argu_url('/token', error: :inactive, token: retracted_email_token_with_r.secret))
-    expect(flash[:notice]).to be_nil
+    expect(response).to(
+      redirect_to(argu_url('/users/sign_in', r: "/#{retracted_email_token_with_r.secret}"))
+    )
+    expect(flash[:notice]).to eq('Please login to accept this invitation')
     expect(response.cookies['token']).to be_nil
   end
 
@@ -87,7 +85,7 @@ describe 'Email token show' do
   # As Guest with account
   ####################################
   it 'guest with account should redirect retracted email token to login page' do
-    guest_with_account_mock
+    current_user_guest_mock
     get "/#{retracted_email_token.secret}"
 
     expect(response.code).to eq('302')
@@ -99,7 +97,7 @@ describe 'Email token show' do
   end
 
   it 'guest with account should redirect retracted email token with authorized r to r' do
-    guest_with_account_mock
+    current_user_guest_mock
     authorized_mock(action: 'show', iri: 'https://example.com')
     get "/#{retracted_email_token_with_r.secret}"
 
@@ -110,7 +108,7 @@ describe 'Email token show' do
   end
 
   it 'guest with account should redirect retracted email token with unauthorized r to login page' do
-    guest_with_account_mock
+    current_user_guest_mock
     unauthorized_mock(action: 'show', iri: 'https://example.com')
     get "/#{retracted_email_token_with_r.secret}"
 

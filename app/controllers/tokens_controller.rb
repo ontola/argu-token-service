@@ -87,7 +87,8 @@ class TokensController < ApplicationController
   end
 
   def create_user
-    @current_user = api.create_user(resource_by_secret.email) if resource_by_secret&.email
+    return unless resource_by_secret&.active? && resource_by_secret&.email
+    @current_user = api.create_user(resource_by_secret.email)
   end
 
   def resource_by_secret
