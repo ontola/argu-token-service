@@ -77,7 +77,6 @@ module TestMocks
     stub_request(:post, argu_url("/g/#{opts[:group_id]}/memberships"))
       .with(
         body: {
-          shortname: "user#{opts[:user_id]}",
           token: opts[:secret]
         }
       )

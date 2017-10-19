@@ -36,7 +36,7 @@ class TokenExecutor
   end
 
   def create_membership
-    @membership_request = api.create_membership(token, user)
+    @membership_request = api.create_membership(token)
     token.update_usage! if @membership_request.status == 201
   end
 
