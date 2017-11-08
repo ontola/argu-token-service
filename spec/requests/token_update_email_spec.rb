@@ -12,7 +12,7 @@ describe 'Token email update' do
     current_user_guest_mock
     put token_path(token), params: {
       data: {
-        id: token.context_id,
+        id: token.iri,
         type: 'tokens',
         attributes: {
           redirect_url: 'https://example.com'
@@ -33,7 +33,7 @@ describe 'Token email update' do
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     put token_path(token), params: {
       data: {
-        id: token.context_id,
+        id: token.iri,
         type: 'tokens',
         attributes: {
           redirect_url: 'https://example.com'
@@ -55,7 +55,7 @@ describe 'Token email update' do
     authorized_mock(type: 'Group', id: 1, action: 'update')
     put token_path(token), params: {
       data: {
-        id: token.context_id,
+        id: token.iri,
         type: 'tokens',
         attributes: {
           redirect_url: 'https://example.com'

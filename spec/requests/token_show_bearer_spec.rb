@@ -69,7 +69,7 @@ describe 'Bearer token show' do
     expect(response.code).to eq('302')
     expect(response).to(redirect_to('https://example.com'))
     expect(flash[:notice]).to eq('Please login to accept this invitation')
-    expect(response.cookies['token']).to eq(token_with_r.context_id)
+    expect(response.cookies['token']).to eq(token_with_r.iri)
   end
 
   it 'guest should redirect to login page' do

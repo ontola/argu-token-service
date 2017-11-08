@@ -74,7 +74,7 @@ class TokensController < ApplicationController
   end
 
   def redirect_to_authorized_r
-    cookies[:token] = resource_by_secret.context_id if resource_by_secret.active?
+    cookies[:token] = resource_by_secret.iri if resource_by_secret.active?
     redirect_to resource_by_secret.redirect_url, notice: resource_by_secret.active? ? I18n.t('please_login') : nil
   end
 
@@ -120,7 +120,7 @@ class TokensController < ApplicationController
   end
 
   def redirect_wrong_email
-    redirect_to argu_url('/users/wrong_email', r: resource_by_secret.context_id, email: resource_by_secret.email)
+    redirect_to argu_url('/users/wrong_email', r: resource_by_secret.iri, email: resource_by_secret.email)
   end
 
   def valid_email?

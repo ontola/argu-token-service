@@ -8,7 +8,7 @@ class TokenSerializer < ActiveModel::Serializer
                 send_mail group_id opened status message actor_iri clicked]
   attribute :email, if: :service_scope?
 
-  link(:self) { object.context_id }
+  link(:self) { object.iri }
 
   def clicked
     object.emails&.first&.clicked? || false

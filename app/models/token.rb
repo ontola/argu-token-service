@@ -15,7 +15,7 @@ class Token < ApplicationRecord
     retracted_at.nil? && (expires_at.nil? || expires_at > DateTime.current) && (max_usages.nil? || usages < max_usages)
   end
 
-  def context_id
+  def iri
     Rails.application.routes.url_helpers.token_url(secret, protocol: :https)
   end
 

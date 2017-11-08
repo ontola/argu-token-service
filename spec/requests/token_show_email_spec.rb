@@ -140,7 +140,7 @@ describe 'Email token show' do
     expect(response.code).to eq('302')
     expect(response).to redirect_to('https://example.com')
     expect(flash[:notice]).to eq('Please login to accept this invitation')
-    expect(response.cookies['token']).to eq(email_token_with_r.context_id)
+    expect(response.cookies['token']).to eq(email_token_with_r.iri)
   end
 
   it 'guest with account should redirect valid token with unauthorized r to login page' do
@@ -202,7 +202,7 @@ describe 'Email token show' do
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to(argu_url('/users/wrong_email', r: email_token.context_id, email: email_token.email))
+      redirect_to(argu_url('/users/wrong_email', r: email_token.iri, email: email_token.email))
     )
     expect(flash[:notice]).to be_nil
     expect(response.cookies['token']).to be_nil

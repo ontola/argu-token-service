@@ -22,7 +22,7 @@ class TokenCreator
   end
 
   def location
-    tokens.context_id if tokens.is_a?(Token)
+    tokens.iri if tokens.is_a?(Token)
   end
 
   private
