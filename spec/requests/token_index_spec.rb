@@ -41,10 +41,6 @@ describe 'Token index' do
     get "/bearer/g/#{token.group_id}"
 
     expect(response.code).to eq('200')
-    expect_data_size(1)
-    expect_attributes(
-      %w[invitee sendMail groupId usages createdAt expiresAt retractedAt opened status message actorIRI clicked],
-      0
-    )
+    expect_included(token.iri)
   end
 end

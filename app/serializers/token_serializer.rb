@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TokenSerializer < ActiveModel::Serializer
+class TokenSerializer < BaseSerializer
   def service_scope?
     scope&.doorkeeper_scopes&.include? 'service'
   end

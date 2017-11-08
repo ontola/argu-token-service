@@ -1,0 +1,1 @@
+../../../service_module/app/serializers/base/base_serializer.rb

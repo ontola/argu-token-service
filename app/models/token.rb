@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Token < ApplicationRecord
+  include Ldable
+
   scope :active, lambda {
     where('retracted_at IS NULL AND (expires_at IS NULL OR expires_at > ?)'\
           ' AND (max_usages IS NULL OR usages < max_usages)',
@@ -10,6 +12,9 @@ class Token < ApplicationRecord
   scope :email, -> { where('email IS NOT NULL') }
   validates :group_id, presence: true, numericality: {greater_than: 0}
   after_commit :publish_data_event
+
+  filterable group_id: {}, type: {key: :email, values: {email: 'NOT NULL', bearer: 'NULL'}}
+  paginates_per 50
 
   def active?
     retracted_at.nil? && (expires_at.nil? || expires_at > DateTime.current) && (max_usages.nil? || usages < max_usages)
