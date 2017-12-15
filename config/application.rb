@@ -44,6 +44,8 @@ module Service
                           domain: :all,
                           tld_length: Rails.env.staging? ? 3 : 2
 
+    config.autoload_paths += %W[#{config.root}/app/models/actions]
+
     Rails.application.routes.default_url_options[:host] = "#{config.host_name}/tokens"
     ActiveModelSerializers.config.key_transform = :camel_lower
   end

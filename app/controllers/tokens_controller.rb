@@ -34,7 +34,7 @@ class TokensController < ApplicationController
   end
 
   def destroy
-    resource_by_secret.update(retracted_at: DateTime.current)
+    resource_by_secret.update(retracted_at: Time.current)
     render status: 200
   end
 

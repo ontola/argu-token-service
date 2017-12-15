@@ -1,0 +1,1 @@
+../../../service_module/app/models/concerns/actionable.rb

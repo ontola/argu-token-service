@@ -34,8 +34,8 @@ group :development, :test do
   gem 'bundler-audit', '~> 0.5.0'
   gem 'byebug', platform: :mri
   gem 'rspec-rails'
-  gem 'rubocop', '~> 0.49.1'
-  gem 'rubocop-rspec', '~> 1.15.1'
+  gem 'rubocop', '~> 0.52.0'
+  gem 'rubocop-rspec'
 end
 
 group :development do

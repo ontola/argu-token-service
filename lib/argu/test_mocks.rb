@@ -65,7 +65,7 @@ module TestMocks
                           '@type' => 'argu:Email',
                           email: e[:email],
                           primary: i.zero?,
-                          confirmedAt: e[:confirmed] ? DateTime.current : nil
+                          confirmedAt: e[:confirmed] ? Time.current : nil
                         }
                       }
                     end

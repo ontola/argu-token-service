@@ -15,10 +15,6 @@ Rails:
   Enabled: true
 Metrics/LineLength:
   Max: 120
-Style/IfUnlessModifier:
-  MaxLineLength: 100
-Style/WhileUntilModifier:
-  MaxLineLength: 100
 Style/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 Style/MultilineOperationIndentation:
@@ -37,3 +33,9 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
+Rails/UnknownEnv:
+  Environments:
+    - production
+    - development
+    - test
+    - staging

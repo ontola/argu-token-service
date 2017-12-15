@@ -6,7 +6,7 @@ class Token < ApplicationRecord
   scope :active, lambda {
     where('retracted_at IS NULL AND (expires_at IS NULL OR expires_at > ?)'\
           ' AND (max_usages IS NULL OR usages < max_usages)',
-          DateTime.current)
+          Time.current)
   }
   scope :bearer, -> { where(email: nil) }
   scope :email, -> { where('email IS NOT NULL') }
@@ -17,7 +17,7 @@ class Token < ApplicationRecord
   paginates_per 50
 
   def active?
-    retracted_at.nil? && (expires_at.nil? || expires_at > DateTime.current) && (max_usages.nil? || usages < max_usages)
+    retracted_at.nil? && (expires_at.nil? || expires_at > Time.current) && (max_usages.nil? || usages < max_usages)
   end
 
   def iri
@@ -38,7 +38,7 @@ class Token < ApplicationRecord
 
   def update_usage!
     increment(:usages)
-    update!(last_used_at: DateTime.current)
+    update!(last_used_at: Time.current)
   end
 
   def valid_email?(user)
