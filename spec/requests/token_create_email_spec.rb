@@ -383,7 +383,8 @@ describe 'Token email create' do
 
   def expect_token_attributes(index = 0)
     expect_attributes(
-      %w[type invitee sendMail groupId usages createdAt expiresAt retractedAt opened status message actorIRI clicked],
+      %w[type canonicalIRI invitee sendMail groupId usages createdAt expiresAt retractedAt
+         opened status message actorIRI clicked],
       index
     )
   end

@@ -1,0 +1,1 @@
+../../../service_module/app/serializers/rdf/sequence_serializer.rb

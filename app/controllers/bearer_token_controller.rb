@@ -2,8 +2,7 @@
 
 class BearerTokenController < TokensController
   def index
-    render json: collection,
-           include: [:members, :create_action, views: [:members, :create_action, views: %i[members create_action]]]
+    render json: collection, include: inc_nested_collection
   end
 
   private
@@ -15,8 +14,9 @@ class BearerTokenController < TokensController
       user_context: {},
       page: params[:page],
       pagination: true,
-      url_constructor: :bearer_index_url,
-      url_constructor_opts: group_id
+      parent_uri_template: :tokens_bearer_collection_iri,
+      parent_uri_template_canonical: :tokens_bearer_collection_iri,
+      parent_uri_template_opts: {group_id: group_id}
     )
   end
 

@@ -1,0 +1,1 @@
+../../service_module/config/initializers/uri_templates.rb

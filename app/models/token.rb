@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Token < ApplicationRecord
+  include Iriable
   include Ldable
 
   scope :active, lambda {
@@ -20,8 +21,8 @@ class Token < ApplicationRecord
     retracted_at.nil? && (expires_at.nil? || expires_at > Time.current) && (max_usages.nil? || usages < max_usages)
   end
 
-  def iri
-    Rails.application.routes.url_helpers.token_url(secret, protocol: :https)
+  def iri_opts
+    {secret: secret}
   end
 
   def generate_token

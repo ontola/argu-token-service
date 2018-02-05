@@ -7,7 +7,7 @@ gem 'rails', '~> 5.0.1'
 # Use Puma as the app server
 gem 'puma', '~> 3.9.1'
 
-gem 'active_model_serializers', '~> 0.10.3'
+gem 'active_model_serializers'
 gem 'activeresource',
     git: 'https://github.com/rails/activeresource',
     ref: 'e28f907145c34bcad1d354fa9b25fbd4264e52e9'
@@ -21,6 +21,7 @@ gem 'oauth2'
 gem 'pragmatic_context'
 gem 'pundit', '~> 1.0.0'
 gem 'rdf'
+gem 'rdf-serializers'
 gem 'tzinfo-data'
 gem 'uri_template'
 
