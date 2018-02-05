@@ -60,6 +60,11 @@ class TokensController < ApplicationController
     current_user || create_user || raise(Errors::UnauthorizedError)
   end
 
+  def create_user
+    return unless resource_by_secret&.active? && resource_by_secret&.email
+    @current_user = api.create_user(resource_by_secret.email)
+  end
+
   def group_id
     @group_id ||= action_name == 'create' ? token_creator.group_id : resource_by_secret!.group_id
   end
@@ -73,11 +78,6 @@ class TokensController < ApplicationController
     end
   end
 
-  def redirect_to_authorized_r
-    cookies[:token] = resource_by_secret.iri if resource_by_secret.active?
-    redirect_to resource_by_secret.redirect_url, notice: resource_by_secret.active? ? I18n.t('please_login') : nil
-  end
-
   def handle_unpermitted_parameters_error(e)
     render json_api_error(422, e.message)
   end
@@ -86,9 +86,13 @@ class TokensController < ApplicationController
     params.require(:data).require(:attributes).permit(%i[redirect_url])
   end
 
-  def create_user
-    return unless resource_by_secret&.active? && resource_by_secret&.email
-    @current_user = api.create_user(resource_by_secret.email)
+  def redirect_to_authorized_r
+    cookies[:token] = resource_by_secret.iri if resource_by_secret.active?
+    redirect_to resource_by_secret.redirect_url, notice: resource_by_secret.active? ? I18n.t('please_login') : nil
+  end
+
+  def redirect_wrong_email
+    redirect_to argu_url('/users/wrong_email', r: resource_by_secret.iri, email: resource_by_secret.email)
   end
 
   def resource_by_secret
@@ -117,10 +121,6 @@ class TokensController < ApplicationController
     else
       redirect_to argu_url('/token', token: params[:secret], error: 'inactive')
     end
-  end
-
-  def redirect_wrong_email
-    redirect_to argu_url('/users/wrong_email', r: resource_by_secret.iri, email: resource_by_secret.email)
   end
 
   def valid_email?
