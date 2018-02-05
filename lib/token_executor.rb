@@ -45,7 +45,7 @@ class TokenExecutor
       JSON.parse(request.body),
       id: JSON.parse(request.body)['data']['relationships']['group']['data']['id'],
       type: 'groups'
-    )[:attributes][:name]
+    )[:attributes][:display_name]
   end
 
   def email_record

@@ -103,7 +103,7 @@ module TestMocks
               id: 1,
               type: 'groups',
               attributes: {
-                name: 'group_name'
+                display_name: 'group_name'
               }
             }
           ]
