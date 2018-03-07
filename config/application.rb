@@ -36,6 +36,7 @@ module Service
     config.api_only = true
     config.host_name = ENV['HOSTNAME']
     config.oauth_url = ENV['OAUTH_URL']
+    config.origin = "https://#{Rails.application.config.host_name}"
 
     config.middleware.use ActionDispatch::Flash
     config.middleware.use ActionDispatch::Cookies
