@@ -180,6 +180,7 @@ describe 'Bearer token show' do
     current_user_user_mock(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token_with_r.secret)
     emails_mock('tokens', token_with_r.id)
+    create_favorite_mock(iri: token_with_r.redirect_url)
 
     get "/#{token_with_r.secret}"
     expect(token_with_r.reload.last_used_at).to be_truthy
@@ -195,6 +196,23 @@ describe 'Bearer token show' do
     current_user_user_mock(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token_with_r.secret)
     emails_mock('tokens', token_with_r.id)
+    create_favorite_mock(iri: token_with_r.redirect_url)
+
+    get "?secret=#{token_with_r.secret}"
+    expect(token_with_r.reload.last_used_at).to be_truthy
+    expect(token_with_r.reload.usages).to eq(1)
+
+    expect(response.code).to eq('302')
+    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
+    expect(response).to redirect_to('https://example.com')
+    expect(response.cookies['token']).to be_nil
+  end
+
+  it 'user should redirect when failed to create favorite' do
+    current_user_user_mock(1)
+    create_membership_mock(user_id: 1, group_id: 1, secret: token_with_r.secret)
+    emails_mock('tokens', token_with_r.id)
+    create_favorite_mock(iri: token_with_r.redirect_url, status: 500)
 
     get "?secret=#{token_with_r.secret}"
     expect(token_with_r.reload.last_used_at).to be_truthy

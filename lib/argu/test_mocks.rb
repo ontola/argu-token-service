@@ -111,6 +111,12 @@ module TestMocks
       )
   end
 
+  def create_favorite_mock(opts = {})
+    stub_request(:post, argu_url('/favorites'))
+      .with(body: {iri: opts[:iri]})
+      .to_return(status: opts[:status] || 201)
+  end
+
   def emails_mock(type, id, event = 'create')
     stub_request(
       :get,

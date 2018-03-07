@@ -72,6 +72,7 @@ describe 'Email token show' do
     emails_mock('tokens', email_token_with_r.id)
     confirm_email_mock(email_token_with_r.email)
     unauthorized_mock(action: 'show', iri: 'https://example.com')
+    create_favorite_mock(iri: email_token_with_r.redirect_url)
 
     get "/#{email_token_with_r.secret}"
 
@@ -243,6 +244,23 @@ describe 'Email token show' do
     current_user_user_mock(1, email: 'email@example.com')
     create_membership_mock(user_id: 1, group_id: 1, secret: email_token_with_r.secret)
     emails_mock('tokens', email_token_with_r.id)
+    create_favorite_mock(iri: email_token_with_r.redirect_url)
+
+    get "/#{email_token_with_r.secret}"
+    expect(email_token_with_r.reload.last_used_at).to be_truthy
+    expect(email_token_with_r.reload.usages).to eq(1)
+
+    expect(response.code).to eq('302')
+    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
+    expect(response).to redirect_to('https://example.com')
+    expect(response.cookies['token']).to be_nil
+  end
+
+  it 'user should redirect when failed to create favorite' do
+    current_user_user_mock(1, email: 'email@example.com')
+    create_membership_mock(user_id: 1, group_id: 1, secret: email_token_with_r.secret)
+    emails_mock('tokens', email_token_with_r.id)
+    create_favorite_mock(iri: email_token_with_r.redirect_url, status: 500)
 
     get "/#{email_token_with_r.secret}"
     expect(email_token_with_r.reload.last_used_at).to be_truthy
