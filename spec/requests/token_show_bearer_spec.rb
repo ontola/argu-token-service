@@ -224,13 +224,13 @@ describe 'Bearer token show' do
     expect(response.cookies['token']).to be_nil
   end
 
-  it 'user should 403 when failed to create membership' do
+  it 'user should 500 when failed to create membership' do
     current_user_user_mock(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret, response: 403)
     get "/#{token.secret}"
 
-    expect(response.code).to eq('403')
-    expect(response.body).to include('403')
+    expect(response.code).to eq('500')
+    expect(response.body).to include('Something went wrong on our side.')
     expect(response.body).not_to include('MissingFile')
     expect(response.cookies['token']).to be_nil
     expect(flash[:notice]).to be_nil

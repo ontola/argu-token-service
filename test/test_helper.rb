@@ -1,1 +1,0 @@
-../service_module/test/test_helper.rb

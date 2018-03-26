@@ -1,0 +1,1 @@
+../../service_module/app/serializers/serializable_error_serializer.rb

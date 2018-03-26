@@ -26,7 +26,7 @@ describe 'Token index' do
     get "/bearer/g/#{token.group_id}"
 
     expect(response.code).to eq('403')
-    expect_error_message('You are not authorized for this action')
+    expect_error_message("You're not authorized for this action. (update)")
     expect_error_size(1)
   end
 

@@ -7,7 +7,6 @@ class TokensController < ApplicationController
   include ActionController::Helpers
   include ActionController::Flash
   include ActionController::Cookies
-  rescue_from ActionController::UnpermittedParameters, with: :handle_unpermitted_parameters_error
 
   before_action :validate_active, only: :show
   before_action :authorize_action, except: %i[show]
@@ -57,7 +56,7 @@ class TokensController < ApplicationController
 
   def check_if_registered
     return super unless action_name == 'show'
-    current_user || create_user || raise(Errors::UnauthorizedError)
+    current_user || create_user || raise(Argu::Errors::Unauthorized)
   end
 
   def create_user
@@ -69,17 +68,13 @@ class TokensController < ApplicationController
     @group_id ||= action_name == 'create' ? token_creator.group_id : resource_by_secret!.group_id
   end
 
-  def handle_unauthorized_error
+  def handle_unauthorized_html(_e)
     return super unless action_name == 'show'
     if authorize_redirect_resource
       redirect_to_authorized_r
     else
       redirect_to argu_url('/users/sign_in', r: @_request.env['REQUEST_URI']), notice: I18n.t('please_login')
     end
-  end
-
-  def handle_unpermitted_parameters_error(e)
-    render json_api_error(422, e.message)
   end
 
   def permit_params

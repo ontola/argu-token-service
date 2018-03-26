@@ -42,7 +42,7 @@ describe 'Token bearer create' do
     end
 
     expect(response.code).to eq('403')
-    expect_error_message('You are not authorized for this action')
+    expect_error_message("You're not authorized for this action. (update)")
     expect_error_size(1)
   end
 
@@ -73,7 +73,7 @@ describe 'Token bearer create' do
     assert_difference('Token.count', 0) do
       post '/'
 
-      expect(response.code).to eq('400')
+      expect(response.code).to eq('422')
       expect_error_message('param is missing or the value is empty: data')
       expect_error_size(1)
     end
@@ -92,7 +92,7 @@ describe 'Token bearer create' do
         }
       }
 
-      expect(response.code).to eq('400')
+      expect(response.code).to eq('422')
       expect_error_message('param is missing or the value is empty: group_id')
       expect_error_size(1)
     end
