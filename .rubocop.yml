@@ -1,4 +1,4 @@
-inherit_from: service_module/.rubocop_todo.yml
+inherit_from: service_module/.rubocop.yml
 AllCops:
   TargetRubyVersion: 2.4
   Exclude:
@@ -15,11 +15,11 @@ Rails:
   Enabled: true
 Metrics/LineLength:
   Max: 120
-Style/SpaceInsideHashLiteralBraces:
+Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
-Style/MultilineOperationIndentation:
+Layout/MultilineOperationIndentation:
   EnforcedStyle: indented
-Style/MultilineMethodCallIndentation:
+Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented_relative_to_receiver
 Style/RaiseArgs:
   EnforcedStyle: compact
@@ -39,3 +39,11 @@ Rails/UnknownEnv:
     - development
     - test
     - staging
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/DescribeClass:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/RepeatedExample:
+  Enabled: false

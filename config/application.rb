@@ -22,7 +22,6 @@ require_relative 'initializers/build'
 Bundler.require(*Rails.groups)
 
 require_relative '../lib/ns'
-require_relative '../app/serializers/base/base_serializer'
 
 module Service
   class Application < Rails::Application
@@ -45,7 +44,11 @@ module Service
                           domain: :all,
                           tld_length: Rails.env.staging? ? 3 : 2
 
+    config.autoload_paths += %w[lib]
+    config.autoload_paths += %W[#{config.root}/app/serializers/base]
     config.autoload_paths += %W[#{config.root}/app/models/actions]
+    config.autoload_paths += %W[#{config.root}/app/responders]
+
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
 
     Rails.application.routes.default_url_options[:host] = "#{config.host_name}/tokens"

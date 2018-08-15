@@ -1,0 +1,1 @@
+../../service_module/app/models/paginated_collection_view.rb

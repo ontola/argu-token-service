@@ -1,0 +1,1 @@
+../../service_module/app/serializers/entry_point_serializer.rb

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class ApplicationController < ApiController
+  include ActiveResponse::Controller
+  include ActiveResponseHelper
+
   before_action :check_if_registered
 
   private

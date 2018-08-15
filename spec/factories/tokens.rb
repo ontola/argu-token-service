@@ -3,17 +3,17 @@
 FactoryGirl.define do
   factory :token do
     sequence(:secret) { |n| "correct_token_#{n}" }
-    expires_at 1.day.from_now
+    expires_at { 1.day.from_now }
     group_id 1
 
     factory :retracted_token do
       sequence(:secret) { |n| "retracted_token_#{n}" }
-      retracted_at 1.day.ago
+      retracted_at { 1.day.ago }
     end
 
     factory :expired_token do
       sequence(:secret) { |n| "expired_token_#{n}" }
-      expires_at 1.day.ago
+      expires_at { 1.day.ago }
     end
 
     factory :used_token do

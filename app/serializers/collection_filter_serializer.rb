@@ -1,0 +1,1 @@
+../../service_module/app/serializers/collection_filter_serializer.rb
