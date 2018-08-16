@@ -13,6 +13,20 @@ describe 'Email token show' do
   let(:used_email_token) { create(:used_token, email: 'email@example.com') }
 
   ####################################
+  # As Guest without access token
+  ####################################
+  it 'guest without access token should redirect valid token with authorized r to r' do
+    as_guest_with_account(false)
+    authorized_mock(action: 'show', iri: 'https://example.com')
+    get "/#{email_token_with_r.secret}", headers: service_headers
+
+    expect(response.code).to eq('302')
+    expect(response).to redirect_to('https://example.com')
+    expect(flash[:notice]).to eq('Please login to accept this invitation')
+    expect(response.cookies['token']).to eq(email_token_with_r.iri)
+  end
+
+  ####################################
   # As Guest without account
   ####################################
   it 'guest without account with retracted token should not create account and redirect to welcome page' do

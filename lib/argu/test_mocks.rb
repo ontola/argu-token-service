@@ -8,8 +8,13 @@ module TestMocks
     current_user_guest_mock
   end
 
-  def as_guest_with_account
-    as_guest
+  def as_guest_with_account(with_access_token = true)
+    if with_access_token
+      as_guest
+    else
+      current_user_guest_mock(token: '')
+      generate_guest_token_mock
+    end
     stub_request(:post, argu_url('/users'))
       .with(headers: {'Authorization' => 'Bearer guest'})
       .to_return(
@@ -44,9 +49,9 @@ module TestMocks
     current_user_user_mock(id, opts)
   end
 
-  def current_user_guest_mock
+  def current_user_guest_mock(token: ' guest')
     stub_request(:get, argu_url('/spi/current_user'))
-      .with(headers: {'Authorization' => 'Bearer guest'})
+      .with(headers: {'Authorization' => "Bearer#{token}"})
       .to_return(
         status: 401,
         headers: {'Content-Type' => 'application/json'}
@@ -56,6 +61,14 @@ module TestMocks
   def current_user_user_mock(id = 1, email: nil, confirmed: true, secondary_emails: [])
     url = argu_url('/spi/current_user')
     user_mock(id, email: email, confirmed: confirmed, secondary_emails: secondary_emails, url: url)
+  end
+
+  def generate_guest_token_mock
+    stub_request(:post, argu_url('/spi/oauth/token'))
+      .to_return(
+        status: 201,
+        body: {access_token: 'guest'}.to_json
+      )
   end
 
   def user_mock(id = 1, opts = {}) # rubocop:disable Metrics/AbcSize
