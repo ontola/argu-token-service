@@ -7,7 +7,7 @@ describe 'Token bearer create' do
   # As Guest
   ####################################
   it 'guest should not create valid bearer token' do
-    current_user_guest_mock
+    as_guest
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
@@ -16,7 +16,7 @@ describe 'Token bearer create' do
             group_id: 1
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('401')
@@ -28,7 +28,7 @@ describe 'Token bearer create' do
   # As User
   ####################################
   it 'user should not create valid bearer token' do
-    current_user_user_mock
+    as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
@@ -38,7 +38,7 @@ describe 'Token bearer create' do
             group_id: 1
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('403')
@@ -50,7 +50,7 @@ describe 'Token bearer create' do
   # As Manager
   ####################################
   it 'manager should not create token with wrong type' do
-    current_user_user_mock
+    as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
@@ -60,7 +60,7 @@ describe 'Token bearer create' do
             group_id: 1
           }
         }
-      }
+      }, headers: service_headers
 
       expect(response.code).to eq('422')
       expect_error_message('found unpermitted parameter: type')
@@ -69,9 +69,9 @@ describe 'Token bearer create' do
   end
 
   it 'manager should not create without attributes' do
-    current_user_user_mock
+    as_user
     assert_difference('Token.count', 0) do
-      post '/'
+      post '/', headers: service_headers
 
       expect(response.code).to eq('422')
       expect_error_message('param is missing or the value is empty: data')
@@ -80,7 +80,7 @@ describe 'Token bearer create' do
   end
 
   it 'manager should not create bearer token with invalid attributes' do
-    current_user_user_mock
+    as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
@@ -90,7 +90,7 @@ describe 'Token bearer create' do
             bla: 'blabla'
           }
         }
-      }
+      }, headers: service_headers
 
       expect(response.code).to eq('422')
       expect_error_message('param is missing or the value is empty: group_id')
@@ -99,7 +99,7 @@ describe 'Token bearer create' do
   end
 
   it 'manager should not create bearer token for group_id < 0' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: -1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
@@ -109,7 +109,7 @@ describe 'Token bearer create' do
             group_id: -1
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('400')
@@ -118,7 +118,7 @@ describe 'Token bearer create' do
   end
 
   it 'manager should create valid bearer token' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
@@ -128,7 +128,7 @@ describe 'Token bearer create' do
             group_id: 1
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -138,7 +138,7 @@ describe 'Token bearer create' do
   end
 
   it 'manager should create bearer token with expired_at attribute' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
@@ -149,7 +149,7 @@ describe 'Token bearer create' do
             expires_at: 1.day.from_now
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -159,7 +159,7 @@ describe 'Token bearer create' do
   end
 
   it 'manager should create bearer token with redirect_url' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
@@ -170,7 +170,7 @@ describe 'Token bearer create' do
             redirect_url: 'https://example.com'
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')

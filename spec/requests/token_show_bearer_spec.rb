@@ -14,8 +14,8 @@ describe 'Bearer token show' do
   # As Guest
   ####################################
   it 'guest should redirect non-existent to login page' do
-    current_user_guest_mock
-    get '/invalid_token'
+    as_guest
+    get '/invalid_token', headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(
@@ -26,8 +26,8 @@ describe 'Bearer token show' do
   end
 
   it 'guest should redirect retracted to login page' do
-    current_user_guest_mock
-    get "/#{retracted_token.secret}"
+    as_guest
+    get "/#{retracted_token.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(
@@ -38,9 +38,9 @@ describe 'Bearer token show' do
   end
 
   it 'guest should redirect retracted with authorized r to r' do
-    current_user_guest_mock
+    as_guest
     authorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{retracted_token_with_r.secret}"
+    get "/#{retracted_token_with_r.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to redirect_to('https://example.com')
@@ -49,9 +49,9 @@ describe 'Bearer token show' do
   end
 
   it 'guest should redirect retracted with unauthorized r to login page' do
-    current_user_guest_mock
+    as_guest
     unauthorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{retracted_token_with_r.secret}"
+    get "/#{retracted_token_with_r.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(
@@ -62,9 +62,9 @@ describe 'Bearer token show' do
   end
 
   it 'guest should redirect with authorized r to login page' do
-    current_user_guest_mock
+    as_guest
     authorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{token_with_r.secret}"
+    get "/#{token_with_r.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(redirect_to('https://example.com'))
@@ -73,8 +73,8 @@ describe 'Bearer token show' do
   end
 
   it 'guest should redirect to login page' do
-    current_user_guest_mock
-    get "/#{token.secret}"
+    as_guest
+    get "/#{token.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(
@@ -85,8 +85,8 @@ describe 'Bearer token show' do
   end
 
   it 'guest should redirect valid token from query param to login page' do
-    current_user_guest_mock
-    get "?secret=#{token.secret}"
+    as_guest
+    get "?secret=#{token.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(
@@ -100,8 +100,8 @@ describe 'Bearer token show' do
   # As User
   ####################################
   it 'user should not show a non-existent token' do
-    current_user_user_mock(1)
-    get '/invalid_token', as: :html
+    as_user(1)
+    get '/invalid_token', headers: service_headers
 
     expect(response).to(
       redirect_to(argu_url('/token', error: :not_found, token: :invalid_token))
@@ -111,9 +111,9 @@ describe 'Bearer token show' do
   end
 
   it 'user should not show a retracted token' do
-    current_user_user_mock(1)
+    as_user(1)
     unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{retracted_token.secret}"
+    get "/#{retracted_token.secret}", headers: service_headers
 
     expect(response).to(
       redirect_to(argu_url('/token', error: :inactive, token: retracted_token.secret))
@@ -123,9 +123,9 @@ describe 'Bearer token show' do
   end
 
   it 'user should not show an expired token' do
-    current_user_user_mock(1)
+    as_user(1)
     unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{expired_token.secret}"
+    get "/#{expired_token.secret}", headers: service_headers
 
     expect(response).to(
       redirect_to(argu_url('/token', error: :inactive, token: expired_token.secret))
@@ -135,9 +135,9 @@ describe 'Bearer token show' do
   end
 
   it 'user should not show a used token' do
-    current_user_user_mock(1)
+    as_user(1)
     unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{used_token.secret}"
+    get "/#{used_token.secret}", headers: service_headers
 
     expect(response).to(
       redirect_to(argu_url('/token', error: :inactive, token: used_token.secret))
@@ -147,11 +147,11 @@ describe 'Bearer token show' do
   end
 
   it 'user should redirect valid token to welcome page' do
-    current_user_user_mock(1)
+    as_user(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret)
     emails_mock('tokens', token.id)
 
-    get "/#{token.secret}"
+    get "/#{token.secret}", headers: service_headers
     expect(token.reload.last_used_at).to be_truthy
     expect(token.reload.usages).to eq(1)
 
@@ -162,11 +162,11 @@ describe 'Bearer token show' do
   end
 
   it 'user should redirect valid token form query param to welcome page' do
-    current_user_user_mock(1)
+    as_user(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret)
     emails_mock('tokens', token.id)
 
-    get "?secret=#{token.secret}"
+    get "?secret=#{token.secret}", headers: service_headers
     expect(token.reload.last_used_at).to be_truthy
     expect(token.reload.usages).to eq(1)
 
@@ -177,12 +177,12 @@ describe 'Bearer token show' do
   end
 
   it 'user should redirect valid token to welcome page with r' do
-    current_user_user_mock(1)
+    as_user(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token_with_r.secret)
     emails_mock('tokens', token_with_r.id)
     create_favorite_mock(iri: token_with_r.redirect_url)
 
-    get "/#{token_with_r.secret}"
+    get "/#{token_with_r.secret}", headers: service_headers
     expect(token_with_r.reload.last_used_at).to be_truthy
     expect(token_with_r.reload.usages).to eq(1)
 
@@ -193,12 +193,12 @@ describe 'Bearer token show' do
   end
 
   it 'user should redirect valid token from query param to welcome page with r' do
-    current_user_user_mock(1)
+    as_user(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token_with_r.secret)
     emails_mock('tokens', token_with_r.id)
     create_favorite_mock(iri: token_with_r.redirect_url)
 
-    get "?secret=#{token_with_r.secret}"
+    get "?secret=#{token_with_r.secret}", headers: service_headers
     expect(token_with_r.reload.last_used_at).to be_truthy
     expect(token_with_r.reload.usages).to eq(1)
 
@@ -209,12 +209,12 @@ describe 'Bearer token show' do
   end
 
   it 'user should redirect when failed to create favorite' do
-    current_user_user_mock(1)
+    as_user(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token_with_r.secret)
     emails_mock('tokens', token_with_r.id)
     create_favorite_mock(iri: token_with_r.redirect_url, status: 500)
 
-    get "?secret=#{token_with_r.secret}"
+    get "?secret=#{token_with_r.secret}", headers: service_headers
     expect(token_with_r.reload.last_used_at).to be_truthy
     expect(token_with_r.reload.usages).to eq(1)
 
@@ -225,9 +225,9 @@ describe 'Bearer token show' do
   end
 
   it 'user should 500 when failed to create membership' do
-    current_user_user_mock(1)
+    as_user(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret, response: 403)
-    get "/#{token.secret}"
+    get "/#{token.secret}", headers: service_headers
 
     expect(response.code).to eq('500')
     expect(response.body).to include('Something went wrong on our side.')
@@ -240,9 +240,9 @@ describe 'Bearer token show' do
   # As Member
   ####################################
   it 'member should show a retracted token' do
-    current_user_user_mock(1)
+    as_user(1)
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{retracted_token.secret}"
+    get "/#{retracted_token.secret}", headers: service_headers
 
     expect(response).to(redirect_to(argu_url))
     expect(response.cookies['token']).to be_nil
@@ -250,9 +250,9 @@ describe 'Bearer token show' do
   end
 
   it 'member should show an expired token' do
-    current_user_user_mock(1)
+    as_user(1)
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{expired_token.secret}"
+    get "/#{expired_token.secret}", headers: service_headers
 
     expect(response).to(redirect_to(argu_url))
     expect(response.cookies['token']).to be_nil
@@ -260,9 +260,9 @@ describe 'Bearer token show' do
   end
 
   it 'member should show a used token' do
-    current_user_user_mock(1)
+    as_user(1)
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{used_token.secret}"
+    get "/#{used_token.secret}", headers: service_headers
 
     expect(response).to(redirect_to(argu_url))
     expect(response.cookies['token']).to be_nil
@@ -270,9 +270,9 @@ describe 'Bearer token show' do
   end
 
   it 'member should not show a retracted token with r' do
-    current_user_user_mock(1)
+    as_user(1)
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{retracted_token_with_r.secret}"
+    get "/#{retracted_token_with_r.secret}", headers: service_headers
 
     expect(response).to(redirect_to('https://example.com'))
     expect(response.cookies['token']).to be_nil
@@ -280,10 +280,10 @@ describe 'Bearer token show' do
   end
 
   it 'member should redirect to group_membership' do
-    current_user_user_mock(1)
+    as_user(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret, response: 304)
 
-    get "/#{token.secret}"
+    get "/#{token.secret}", headers: service_headers
     expect(token.reload.last_used_at).to be_nil
     expect(token.reload.usages).to eq(0)
 

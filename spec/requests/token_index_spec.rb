@@ -9,8 +9,8 @@ describe 'Token index' do
   # As Guest
   ####################################
   it 'guest should not get index' do
-    current_user_guest_mock
-    get "/bearer/g/#{token.group_id}"
+    as_guest
+    get "/bearer/g/#{token.group_id}", headers: service_headers
 
     expect(response.code).to eq('401')
     expect_error_message('Please sign in to continue')
@@ -21,9 +21,9 @@ describe 'Token index' do
   # As User
   ####################################
   it 'user should not get index' do
-    current_user_user_mock
+    as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
-    get "/bearer/g/#{token.group_id}"
+    get "/bearer/g/#{token.group_id}", headers: service_headers
 
     expect(response.code).to eq('403')
     expect_error_message("You're not authorized for this action. (update)")
@@ -34,11 +34,11 @@ describe 'Token index' do
   # As Manager
   ####################################
   it 'manager should get index' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     emails_mock('tokens', token.id)
 
-    get "/bearer/g/#{token.group_id}"
+    get "/bearer/g/#{token.group_id}", headers: service_headers
 
     expect(response.code).to eq('200')
     expect_included(token.iri)

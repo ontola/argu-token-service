@@ -9,10 +9,10 @@ describe 'Token retract' do
   # As Guest
   ####################################
   it 'guest should not retract valid' do
-    current_user_guest_mock
+    as_guest
     token
     assert_difference('Token.count', 0) do
-      delete "/#{token.secret}"
+      delete "/#{token.secret}", headers: service_headers
     end
 
     expect(response.code).to eq('401')
@@ -24,11 +24,11 @@ describe 'Token retract' do
   # As User
   ####################################
   it 'user should not retract valid' do
-    current_user_user_mock
+    as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     token
     assert_difference('Token.count', 0) do
-      delete "/#{token.secret}"
+      delete "/#{token.secret}", headers: service_headers
     end
 
     expect(response.code).to eq('403')
@@ -40,8 +40,8 @@ describe 'Token retract' do
   # As Manager
   ####################################
   it 'manager should not retract invalid token' do
-    current_user_user_mock
-    delete '/invalid_webhook'
+    as_user
+    delete '/invalid_webhook', headers: service_headers
 
     expect(response.code).to eq('404')
 
@@ -50,12 +50,12 @@ describe 'Token retract' do
   end
 
   it 'manager should retract valid' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     emails_mock('tokens', token.id)
 
     assert_difference('Token.active.count', -1) do
-      delete "/#{token.secret}"
+      delete "/#{token.secret}", headers: service_headers
 
       expect(response.code).to eq('200')
       expect(token.reload.retracted_at).to be_truthy

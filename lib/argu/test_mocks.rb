@@ -3,33 +3,15 @@
 module TestMocks
   include UrlHelper
 
-  def current_user_guest_mock
-    stub_request(:get, argu_url('/spi/current_user'))
-      .to_return(
-        status: 401,
-        headers: {'Content-Type' => 'application/json'}
-      )
-  end
-
-  def current_user_user_mock(id = 1, email: nil, confirmed: true, secondary_emails: [])
-    url = argu_url('/spi/current_user')
-    user_mock(id, email: email, confirmed: confirmed, secondary_emails: secondary_emails, url: url)
-  end
-
-  def guest_without_account_mock(email)
+  def as_guest
+    @bearer_token = 'guest'
     current_user_guest_mock
-    stub_request(:post, argu_url('/users'))
-      .to_return(
-        status: 201,
-        body: {
-          data: user_data(1, email)
-        }.to_json
-      )
   end
 
-  def guest_with_account_mock
-    current_user_guest_mock
+  def as_guest_with_account
+    as_guest
     stub_request(:post, argu_url('/users'))
+      .with(headers: {'Authorization' => 'Bearer guest'})
       .to_return(
         status: 422,
         body: {
@@ -45,17 +27,52 @@ module TestMocks
       )
   end
 
-  def user_mock(id = 1, email: nil, confirmed: true, secondary_emails: [], url: nil)
-    url ||= argu_url("/u/#{id}")
-    email ||= "user#{id}@email.com"
-    stub_request(:get, url)
+  def as_guest_without_account(email)
+    as_guest
+    stub_request(:post, argu_url('/users'))
+      .with(headers: {'Authorization' => 'Bearer guest'})
+      .to_return(
+        status: 201,
+        body: {
+          data: user_data(1, email)
+        }.to_json
+      )
+  end
+
+  def as_user(id = 1, opts = {})
+    @bearer_token = 'user'
+    current_user_user_mock(id, opts)
+  end
+
+  def current_user_guest_mock
+    stub_request(:get, argu_url('/spi/current_user'))
+      .with(headers: {'Authorization' => 'Bearer guest'})
+      .to_return(
+        status: 401,
+        headers: {'Content-Type' => 'application/json'}
+      )
+  end
+
+  def current_user_user_mock(id = 1, email: nil, confirmed: true, secondary_emails: [])
+    url = argu_url('/spi/current_user')
+    user_mock(id, email: email, confirmed: confirmed, secondary_emails: secondary_emails, url: url)
+  end
+
+  def user_mock(id = 1, opts = {}) # rubocop:disable Metrics/AbcSize
+    opts[:confirmed] ||= true
+    opts[:secondary_emails] ||= []
+    opts[:token] ||= 'user'
+    opts[:url] ||= argu_url("/u/#{id}")
+    opts[:email] ||= "user#{id}@email.com"
+    stub_request(:get, opts[:url])
+      .with(headers: {'Authorization' => "Bearer #{opts[:token]}"})
       .to_return(
         status: 200,
         headers: {'Content-Type' => 'application/json'},
         body: {
-          data: user_data(id, email, secondary_emails),
-          included: [email: email, confirmed: confirmed]
-                      .concat(secondary_emails)
+          data: user_data(id, opts[:email], opts[:secondary_emails]),
+          included: [email: opts[:email], confirmed: opts[:confirmed]]
+                      .concat(opts[:secondary_emails])
                       .each_with_index
                       .map do |e, i|
                       {

@@ -11,7 +11,7 @@ describe 'Token email create' do
   # As Guest
   ####################################
   it 'guest should not create valid email token' do
-    current_user_guest_mock
+    as_guest
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
@@ -21,7 +21,7 @@ describe 'Token email create' do
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('401')
@@ -33,7 +33,7 @@ describe 'Token email create' do
   # As User
   ####################################
   it 'user should not create valid email token' do
-    current_user_user_mock
+    as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
@@ -44,7 +44,7 @@ describe 'Token email create' do
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('403')
@@ -56,7 +56,7 @@ describe 'Token email create' do
   # As Manager
   ####################################
   it 'manager should not create email token request with invalid attributes' do
-    current_user_user_mock
+    as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
@@ -67,7 +67,7 @@ describe 'Token email create' do
             bla: 'blabla'
           }
         }
-      }
+      }, headers: service_headers
 
       expect(response.code).to eq('422')
       expect_error_message('param is missing or the value is empty: group_id')
@@ -76,7 +76,7 @@ describe 'Token email create' do
   end
 
   it 'manager should not create bearer token for group_id < 0' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: -1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
@@ -87,7 +87,7 @@ describe 'Token email create' do
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('400')
@@ -96,7 +96,7 @@ describe 'Token email create' do
   end
 
   it 'manager should create valid email token request with missing send_mail' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
@@ -107,7 +107,7 @@ describe 'Token email create' do
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -115,7 +115,7 @@ describe 'Token email create' do
   end
 
   it 'manager should create valid email token request' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
@@ -127,7 +127,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -138,9 +138,9 @@ describe 'Token email create' do
   end
 
   it 'manager should create valid email token request with shortnames without duplicates' do
-    current_user_user_mock
-    user_mock('user2', email: 'user2@example.com')
-    user_mock('user3', email: 'user3@example.com')
+    as_user
+    user_mock('user2', email: 'user2@example.com', token: ENV['SERVICE_TOKEN'])
+    user_mock('user3', email: 'user3@example.com', token: ENV['SERVICE_TOKEN'])
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 3) do
       post '/', params: {
@@ -152,7 +152,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -165,7 +165,7 @@ describe 'Token email create' do
   end
 
   it 'manager should create email token request with expired_at attribute' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
@@ -178,7 +178,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -188,7 +188,7 @@ describe 'Token email create' do
   end
 
   it 'manager should create email token request with redirect_url' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
@@ -201,7 +201,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -211,7 +211,7 @@ describe 'Token email create' do
   end
 
   it 'manager should create valid email token request with send_mail false' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
@@ -223,7 +223,7 @@ describe 'Token email create' do
             send_mail: false
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -234,7 +234,7 @@ describe 'Token email create' do
   end
 
   it 'manager should create valid email token request with message' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
@@ -247,7 +247,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -258,7 +258,7 @@ describe 'Token email create' do
   end
 
   it 'manager should create valid email token request with valid actor_iri' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     authorized_mock(type: 'CurrentActor', id: 'https://argu.dev/u/1', action: 'show')
     assert_difference('Token.count', 2) do
@@ -272,7 +272,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -283,7 +283,7 @@ describe 'Token email create' do
   end
 
   it 'manager should not create valid email token request with invalid actor_iri' do
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     unauthorized_mock(type: 'CurrentActor', id: 'https://argu.dev/u/1', action: 'show')
     assert_difference('Token.count', 0) do
@@ -297,7 +297,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('403')
@@ -307,7 +307,7 @@ describe 'Token email create' do
 
   it 'manager should create valid email token request without duplicates' do
     token
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
@@ -319,7 +319,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -332,7 +332,7 @@ describe 'Token email create' do
   it 'manager should duplicate retracted and expired tokens' do
     retracted_token
     expired_token
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
       post '/', params: {
@@ -344,7 +344,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')
@@ -356,7 +356,7 @@ describe 'Token email create' do
 
   it 'manager should duplicate with different redirect_url' do
     token
-    current_user_user_mock
+    as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
       post '/', params: {
@@ -369,7 +369,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }
+      }, headers: service_headers
     end
 
     expect(response.code).to eq('201')

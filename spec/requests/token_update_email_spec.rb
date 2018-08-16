@@ -9,7 +9,7 @@ describe 'Token email update' do
   # As Guest
   ####################################
   it 'guest should not put update email token' do
-    current_user_guest_mock
+    as_guest
     put token_path(token), params: {
       data: {
         id: token.iri,
@@ -18,7 +18,7 @@ describe 'Token email update' do
           redirect_url: 'https://example.com'
         }
       }
-    }
+    }, headers: service_headers
     expect(response.code).to eq('401')
     expect_error_message('Please sign in to continue')
     expect_error_size(1)
@@ -29,7 +29,7 @@ describe 'Token email update' do
   # As User
   ####################################
   it 'user should not put update email token' do
-    current_user_user_mock
+    as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     put token_path(token), params: {
       data: {
@@ -39,7 +39,7 @@ describe 'Token email update' do
           redirect_url: 'https://example.com'
         }
       }
-    }
+    }, headers: service_headers
 
     expect(response.code).to eq('403')
     expect_error_message("You're not authorized for this action. (update)")
@@ -50,7 +50,7 @@ describe 'Token email update' do
   # As Manager
   ####################################
   it 'manager should put update email token' do
-    current_user_user_mock
+    as_user
     emails_mock('tokens', token.id)
     authorized_mock(type: 'Group', id: 1, action: 'update')
     put token_path(token), params: {
@@ -61,7 +61,7 @@ describe 'Token email update' do
           redirect_url: 'https://example.com'
         }
       }
-    }
+    }, headers: service_headers
     expect(response.code).to eq('200')
     expect(token.reload.redirect_url).to eq('https://example.com')
   end
