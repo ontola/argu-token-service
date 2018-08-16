@@ -21,7 +21,7 @@ describe 'Token email create' do
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('401')
@@ -44,7 +44,7 @@ describe 'Token email create' do
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('403')
@@ -67,7 +67,7 @@ describe 'Token email create' do
             bla: 'blabla'
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
 
       expect(response.code).to eq('422')
       expect_error_message('param is missing or the value is empty: group_id')
@@ -87,10 +87,10 @@ describe 'Token email create' do
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
-    expect(response.code).to eq('400')
+    expect(response.code).to eq('422')
     expect_error_message('Group must be greater than 0')
     expect_error_size(1)
   end
@@ -107,7 +107,7 @@ describe 'Token email create' do
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -127,7 +127,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -152,7 +152,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -178,7 +178,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -201,7 +201,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -223,7 +223,7 @@ describe 'Token email create' do
             send_mail: false
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -247,7 +247,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -272,7 +272,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -297,7 +297,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('403')
@@ -319,7 +319,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -344,7 +344,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -369,7 +369,7 @@ describe 'Token email create' do
             send_mail: true
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -384,7 +384,7 @@ describe 'Token email create' do
   def expect_token_attributes(index = 0)
     expect_attributes(
       %w[type canonicalIRI invitee sendMail groupId usages createdAt expiresAt retractedAt
-         opened status message actorIRI clicked],
+         opened status message actorIRI clicked iri displayName],
       index
     )
   end

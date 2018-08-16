@@ -18,7 +18,7 @@ describe 'Token email update' do
           redirect_url: 'https://example.com'
         }
       }
-    }, headers: service_headers
+    }, headers: service_headers(accept: :json_api)
     expect(response.code).to eq('401')
     expect_error_message('Please sign in to continue')
     expect_error_size(1)
@@ -39,7 +39,7 @@ describe 'Token email update' do
           redirect_url: 'https://example.com'
         }
       }
-    }, headers: service_headers
+    }, headers: service_headers(accept: :json_api)
 
     expect(response.code).to eq('403')
     expect_error_message("You're not authorized for this action. (update)")
@@ -61,8 +61,8 @@ describe 'Token email update' do
           redirect_url: 'https://example.com'
         }
       }
-    }, headers: service_headers
-    expect(response.code).to eq('200')
+    }, headers: service_headers(accept: :json_api)
+    expect(response.code).to eq('204')
     expect(token.reload.redirect_url).to eq('https://example.com')
   end
 end

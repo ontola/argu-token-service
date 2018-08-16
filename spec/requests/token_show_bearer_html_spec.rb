@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Bearer token show' do
+describe 'Bearer token show html' do
   let(:token) { create(:token) }
   let(:token_with_r) { create(:token, redirect_url: 'https://example.com') }
   let(:retracted_token) { create(:retracted_token) }

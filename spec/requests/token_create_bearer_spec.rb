@@ -16,7 +16,7 @@ describe 'Token bearer create' do
             group_id: 1
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('401')
@@ -38,7 +38,7 @@ describe 'Token bearer create' do
             group_id: 1
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('403')
@@ -60,7 +60,7 @@ describe 'Token bearer create' do
             group_id: 1
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
 
       expect(response.code).to eq('422')
       expect_error_message('found unpermitted parameter: type')
@@ -71,7 +71,7 @@ describe 'Token bearer create' do
   it 'manager should not create without attributes' do
     as_user
     assert_difference('Token.count', 0) do
-      post '/', headers: service_headers
+      post '/', headers: service_headers(accept: :json_api)
 
       expect(response.code).to eq('422')
       expect_error_message('param is missing or the value is empty: data')
@@ -90,7 +90,7 @@ describe 'Token bearer create' do
             bla: 'blabla'
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
 
       expect(response.code).to eq('422')
       expect_error_message('param is missing or the value is empty: group_id')
@@ -109,10 +109,10 @@ describe 'Token bearer create' do
             group_id: -1
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
-    expect(response.code).to eq('400')
+    expect(response.code).to eq('422')
     expect_error_message('Group must be greater than 0')
     expect_error_size(1)
   end
@@ -128,7 +128,7 @@ describe 'Token bearer create' do
             group_id: 1
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -149,7 +149,7 @@ describe 'Token bearer create' do
             expires_at: 1.day.from_now
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -170,7 +170,7 @@ describe 'Token bearer create' do
             redirect_url: 'https://example.com'
           }
         }
-      }, headers: service_headers
+      }, headers: service_headers(accept: :json_api)
     end
 
     expect(response.code).to eq('201')
@@ -184,7 +184,7 @@ describe 'Token bearer create' do
   def expect_token_attributes(index = nil)
     expect_attributes(
       %w[type canonicalIRI invitee sendMail groupId usages createdAt expiresAt retractedAt
-         opened status message actorIRI clicked],
+         opened status message actorIRI clicked iri displayName],
       index
     )
   end

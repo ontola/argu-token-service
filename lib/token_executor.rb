@@ -15,6 +15,7 @@ class TokenExecutor
     create_membership
     confirm_email if token.email
     create_favorite(token.redirect_url)
+    true
   end
 
   def notice(locale)

@@ -1,18 +1,25 @@
 # frozen_string_literal: true
 
-class TokenSerializer < BaseSerializer
-  def service_scope?
-    scope&.doorkeeper_scopes&.include? 'service'
-  end
-  attributes %i[id usages created_at expires_at retracted_at invitee
-                send_mail group_id opened status message actor_iri clicked]
-  attribute :email, if: :service_scope?
+class TokenSerializer < RecordSerializer
+  attribute :usages, predicate: NS::ARGU[:usages]
+  attribute :retracted_at, predicate: NS::ARGU[:retractedAt]
+  attribute :invitee, predicate: NS::ARGU[:invitee]
+  attribute :send_mail, predicate: NS::ARGU[:sendMail]
+  attribute :group_id, predicate: NS::ARGU[:groupId]
+  attribute :opened, predicate: NS::ARGU[:opened]
+  attribute :status, predicate: NS::ARGU[:status]
+  attribute :message, predicate: NS::ARGU[:message]
+  attribute :actor_iri, predicate: NS::ARGU[:actorIri]
+  attribute :clicked, predicate: NS::ARGU[:clicked]
+  attribute :email, predicate: NS::ARGU[:email], if: :service_scope?
 
   link(:self) { object.iri }
 
   def clicked
     object.emails&.first&.clicked? || false
   end
+
+  def display_name; end
 
   def opened
     object.emails&.first&.opened? || false
