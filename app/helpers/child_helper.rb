@@ -1,0 +1,1 @@
+../../service_module/app/helpers/child_helper.rb
