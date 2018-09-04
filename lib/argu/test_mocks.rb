@@ -15,7 +15,7 @@ module TestMocks
       current_user_guest_mock(token: '')
       generate_guest_token_mock
     end
-    stub_request(:post, argu_url('/users'))
+    stub_request(:post, expand_service_url(:argu, '/users'))
       .with(headers: {'Authorization' => 'Bearer guest'})
       .to_return(
         status: 422,
@@ -34,7 +34,8 @@ module TestMocks
 
   def as_guest_without_account(email)
     as_guest
-    stub_request(:post, argu_url('/users'))
+    generate_guest_token_mock
+    stub_request(:post, expand_service_url(:argu, '/users'))
       .with(headers: {'Authorization' => 'Bearer guest'})
       .to_return(
         status: 201,
@@ -50,7 +51,7 @@ module TestMocks
   end
 
   def current_user_guest_mock(token: ' guest')
-    stub_request(:get, argu_url('/spi/current_user'))
+    stub_request(:get, expand_service_url(:argu, '/spi/current_user'))
       .with(headers: {'Authorization' => "Bearer#{token}"})
       .to_return(
         status: 401,
@@ -59,12 +60,12 @@ module TestMocks
   end
 
   def current_user_user_mock(id = 1, email: nil, confirmed: true, secondary_emails: [])
-    url = argu_url('/spi/current_user')
+    url = expand_service_url(:argu, '/spi/current_user')
     user_mock(id, email: email, confirmed: confirmed, secondary_emails: secondary_emails, url: url)
   end
 
   def generate_guest_token_mock
-    stub_request(:post, argu_url('/spi/oauth/token'))
+    stub_request(:post, expand_service_url(:argu, '/spi/oauth/token'))
       .to_return(
         status: 201,
         body: {access_token: 'guest'}.to_json
@@ -75,7 +76,7 @@ module TestMocks
     opts[:confirmed] ||= true
     opts[:secondary_emails] ||= []
     opts[:token] ||= 'user'
-    opts[:url] ||= argu_url("/u/#{id}")
+    opts[:url] ||= expand_service_url(:argu, "/u/#{id}")
     opts[:email] ||= "user#{id}@email.com"
     stub_request(:get, opts[:url])
       .with(headers: {'Authorization' => "Bearer #{opts[:token]}"})
@@ -104,7 +105,7 @@ module TestMocks
   end
 
   def create_membership_mock(opts = {})
-    stub_request(:post, argu_url("/g/#{opts[:group_id]}/memberships"))
+    stub_request(:post, expand_service_url(:argu, "/g/#{opts[:group_id]}/memberships"))
       .with(
         body: {
           token: opts[:secret]
@@ -142,7 +143,7 @@ module TestMocks
   end
 
   def create_favorite_mock(opts = {})
-    stub_request(:post, argu_url('/favorites'))
+    stub_request(:post, expand_service_url(:argu, '/favorites'))
       .with(body: {iri: opts[:iri]})
       .to_return(status: opts[:status] || 201)
   end
@@ -150,12 +151,12 @@ module TestMocks
   def emails_mock(type, id, event = 'create')
     stub_request(
       :get,
-      argu_url('/email/emails', event: event, resource_id: id, resource_type: type)
+      expand_service_url(:email, '/email/emails', event: event, resource_id: id, resource_type: type)
     ).to_return(status: 200, body: [].to_json)
   end
 
   def confirm_email_mock(email)
-    stub_request(:put, argu_url('/users/confirm'))
+    stub_request(:put, expand_service_url(:argu, '/users/confirm'))
       .with(body: {email: email}, headers: {'Accept' => 'application/json'})
       .to_return(status: 200)
   end
@@ -167,7 +168,7 @@ module TestMocks
       resource_iri: iri,
       resource_type: type
     }.delete_if { |_k, v| v.nil? }
-    stub_request(:get, argu_url('/spi/authorize', params)).to_return(status: 200)
+    stub_request(:get, expand_service_url(:argu, '/spi/authorize', params)).to_return(status: 200)
   end
 
   def unauthorized_mock(type: nil, id: nil, iri: nil, action: nil)
@@ -177,7 +178,7 @@ module TestMocks
       resource_iri: iri,
       resource_type: type
     }.delete_if { |_k, v| v.nil? }
-    stub_request(:get, argu_url('/spi/authorize', params)).to_return(status: 403)
+    stub_request(:get, expand_service_url(:argu, '/spi/authorize', params)).to_return(status: 403)
   end
 
   private

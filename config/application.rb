@@ -34,7 +34,6 @@ module Service
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.host_name = ENV['HOSTNAME']
-    config.oauth_url = ENV['OAUTH_URL']
     config.origin = "https://#{Rails.application.config.host_name}"
 
     config.middleware.use ActionDispatch::Flash
