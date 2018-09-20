@@ -11,6 +11,7 @@ class TokenSerializer < RecordSerializer
   attribute :message, predicate: NS::ARGU[:message]
   attribute :actor_iri, predicate: NS::ARGU[:actorIri]
   attribute :clicked, predicate: NS::ARGU[:clicked]
+  attribute :root_id, predicate: NS::ARGU[:rootId]
   attribute :email, predicate: NS::ARGU[:email], if: :service_scope?
 
   link(:self) { object.iri }
