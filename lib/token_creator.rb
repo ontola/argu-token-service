@@ -25,6 +25,10 @@ class TokenCreator
     tokens.iri if tokens.is_a?(Token)
   end
 
+  def root_id
+    attribute_params.require(:root_id)
+  end
+
   private
 
   attr_accessor :batch, :attribute_params
@@ -35,7 +39,7 @@ class TokenCreator
   end
 
   def batch_params
-    params = attribute_params.permit(%i[actor_iri expires_at group_id message redirect_url send_mail])
+    params = attribute_params.permit(%i[actor_iri expires_at group_id root_id message redirect_url send_mail])
     invitees
       .reject { |invitee| existing_tokens.include?(invitee[:email]) }
       .map { |invitee| params.merge(invitee: invitee[:invitee], email: invitee[:email]) }
@@ -45,8 +49,13 @@ class TokenCreator
     @existing_tokens ||=
       Token
         .active
-        .where(group_id: group_id, usages: 0, redirect_url: redirect_url_param, email: invitees.map { |i| i[:email] })
-        .pluck(:email)
+        .where(
+          root_id: root_id,
+          group_id: group_id,
+          usages: 0,
+          redirect_url: redirect_url_param,
+          email: invitees.map { |i| i[:email] }
+        ).pluck(:email)
   end
 
   def initialize_tokens
@@ -66,6 +75,6 @@ class TokenCreator
   end
 
   def single_params
-    attribute_params.permit(%i[actor_iri expires_at group_id message redirect_url])
+    attribute_params.permit(%i[actor_iri expires_at group_id root_id message redirect_url])
   end
 end

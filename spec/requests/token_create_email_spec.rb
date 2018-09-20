@@ -18,6 +18,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
@@ -41,6 +42,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
@@ -70,7 +72,7 @@ describe 'Token email create' do
       }, headers: service_headers(accept: :json_api)
 
       expect(response.code).to eq('422')
-      expect_error_message('param is missing or the value is empty: group_id')
+      expect_error_message('param is missing or the value is empty: root_id')
       expect_error_size(1)
     end
   end
@@ -84,6 +86,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: -1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
@@ -104,6 +107,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com']
           }
         }
@@ -123,6 +127,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com'],
             send_mail: true
           }
@@ -148,6 +153,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['user1@example.com', 'user2', 'user3', 'user3@example.com'],
             send_mail: true
           }
@@ -173,6 +179,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com'],
             expires_at: 1.day.from_now,
             send_mail: true
@@ -196,6 +203,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com'],
             redirect_url: 'https://example.com',
             send_mail: true
@@ -219,6 +227,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com'],
             send_mail: false
           }
@@ -242,6 +251,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com'],
             message: 'Hello world.',
             send_mail: true
@@ -267,6 +277,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com'],
             actor_iri: 'https://argu.dev/u/1',
             send_mail: true
@@ -292,6 +303,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com'],
             actor_iri: 'https://argu.dev/u/1',
             send_mail: true
@@ -315,6 +327,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['email1@example.com', 'email2@example.com', 'email2@example.com'],
             send_mail: true
           }
@@ -340,6 +353,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: ['retracted@example.com', 'expired@example.com'],
             send_mail: true
           }
@@ -364,6 +378,7 @@ describe 'Token email create' do
           type: 'emailTokenRequest',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             addresses: [token.email],
             redirect_url: 'https://example.com',
             send_mail: true

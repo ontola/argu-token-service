@@ -35,7 +35,8 @@ describe 'Token bearer create' do
         data: {
           type: 'bearerToken',
           attributes: {
-            group_id: 1
+            group_id: 1,
+            root_id: TEST_ROOT_ID
           }
         }
       }, headers: service_headers(accept: :json_api)
@@ -57,7 +58,8 @@ describe 'Token bearer create' do
         data: {
           type: 'wrongType',
           attributes: {
-            group_id: 1
+            group_id: 1,
+            root_id: TEST_ROOT_ID
           }
         }
       }, headers: service_headers(accept: :json_api)
@@ -106,7 +108,8 @@ describe 'Token bearer create' do
         data: {
           type: 'bearerToken',
           attributes: {
-            group_id: -1
+            group_id: -1,
+            root_id: TEST_ROOT_ID
           }
         }
       }, headers: service_headers(accept: :json_api)
@@ -125,7 +128,8 @@ describe 'Token bearer create' do
         data: {
           type: 'bearerToken',
           attributes: {
-            group_id: 1
+            group_id: 1,
+            root_id: TEST_ROOT_ID
           }
         }
       }, headers: service_headers(accept: :json_api)
@@ -146,6 +150,7 @@ describe 'Token bearer create' do
           type: 'bearerToken',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             expires_at: 1.day.from_now
           }
         }
@@ -167,6 +172,7 @@ describe 'Token bearer create' do
           type: 'bearerToken',
           attributes: {
             group_id: 1,
+            root_id: TEST_ROOT_ID,
             redirect_url: 'https://example.com'
           }
         }

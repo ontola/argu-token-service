@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+require_relative '../support/test_root_id'
+
 FactoryGirl.define do
   factory :token do
+    root_id TEST_ROOT_ID
     sequence(:secret) { |n| "correct_token_#{n}" }
     expires_at { 1.day.from_now }
     group_id 1

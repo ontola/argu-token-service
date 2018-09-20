@@ -105,7 +105,7 @@ module TestMocks
   end
 
   def create_membership_mock(opts = {})
-    stub_request(:post, expand_service_url(:argu, "/g/#{opts[:group_id]}/memberships"))
+    stub_request(:post, expand_service_url(:argu, "/#{TEST_ROOT_ID}/g/#{opts[:group_id]}/group_memberships"))
       .with(
         body: {
           token: opts[:secret]
@@ -134,7 +134,7 @@ module TestMocks
               id: 1,
               type: 'groups',
               attributes: {
-                display_name: 'group_name'
+                displayName: 'group_name'
               }
             }
           ]
@@ -143,7 +143,7 @@ module TestMocks
   end
 
   def create_favorite_mock(opts = {})
-    stub_request(:post, expand_service_url(:argu, '/favorites'))
+    stub_request(:post, expand_service_url(:argu, "/#{TEST_ROOT_ID}/favorites"))
       .with(body: {iri: opts[:iri]})
       .to_return(status: opts[:status] || 201)
   end
