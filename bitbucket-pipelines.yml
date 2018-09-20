@@ -17,3 +17,10 @@ pipelines:
           - rake db:setup
           - rake spec
           - rake test
+        services:
+          - postgres
+
+definitions:
+  services:
+    postgres:
+      image: postgres
