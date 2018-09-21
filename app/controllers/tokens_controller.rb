@@ -31,6 +31,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def check_if_registered
+    return true if request.head?
     return super unless action_name == 'show'
     current_user || create_user || raise(Argu::Errors::Unauthorized)
   end
@@ -52,7 +53,10 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def create_user
     return unless resource_by_secret&.active? && resource_by_secret&.email
-    @current_user = api.create_user(resource_by_secret.email)
+    new_user = api.create_user(resource_by_secret.email)
+    return if new_user.blank?
+    @new_authorization = api.instance_variable_get(:@user_token)
+    @current_user = new_user
   end
 
   def destroy_execute
@@ -118,12 +122,21 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     resource_by_secret || raise(ActiveRecord::RecordNotFound)
   end
 
+  def respond_with_redirect(opts)
+    response.headers['New-Authorization'] = @new_authorization if @new_authorization
+    super
+  end
+
   def show_execute
-    token_executor.execute!
+    request.head? ? true : token_executor.execute!
   end
 
   def show_success
-    respond_with_redirect(location: token_executor.redirect_url, notice: token_executor.notice(cookies[:locale]))
+    if request.head?
+      head 200
+    else
+      respond_with_redirect(location: token_executor.redirect_url, notice: token_executor.notice(cookies[:locale]))
+    end
   end
 
   def token_creator
@@ -146,6 +159,6 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def valid_email?
-    resource_by_secret.valid_email?(current_user)
+    request.head? ? true : resource_by_secret.valid_email?(current_user)
   end
 end

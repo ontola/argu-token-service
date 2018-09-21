@@ -108,9 +108,9 @@ describe 'Bearer token show n3' do
     expect(token.reload.last_used_at).to be_truthy
     expect(token.reload.usages).to eq(1)
 
-    expect(response.code).to eq('302')
-    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
-    expect(response).to redirect_to(argu_url('/group_memberships/1'))
+    expect(response.code).to eq('200')
+    expect_snackbar('You have joined the group \'group_name\'')
+    expect_redirect(argu_url('/group_memberships/1'))
     expect(response.cookies['token']).to be_nil
   end
 
@@ -123,9 +123,9 @@ describe 'Bearer token show n3' do
     expect(token.reload.last_used_at).to be_truthy
     expect(token.reload.usages).to eq(1)
 
-    expect(response.code).to eq('302')
-    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
-    expect(response).to redirect_to(argu_url('/group_memberships/1'))
+    expect(response.code).to eq('200')
+    expect_snackbar('You have joined the group \'group_name\'')
+    expect_redirect(argu_url('/group_memberships/1'))
     expect(response.cookies['token']).to be_nil
   end
 
@@ -139,9 +139,9 @@ describe 'Bearer token show n3' do
     expect(token_with_r.reload.last_used_at).to be_truthy
     expect(token_with_r.reload.usages).to eq(1)
 
-    expect(response.code).to eq('302')
-    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
-    expect(response).to redirect_to('https://example.com')
+    expect(response.code).to eq('200')
+    expect_snackbar('You have joined the group \'group_name\'')
+    expect_redirect('https://example.com')
     expect(response.cookies['token']).to be_nil
   end
 
@@ -155,9 +155,9 @@ describe 'Bearer token show n3' do
     expect(token_with_r.reload.last_used_at).to be_truthy
     expect(token_with_r.reload.usages).to eq(1)
 
-    expect(response.code).to eq('302')
-    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
-    expect(response).to redirect_to('https://example.com')
+    expect(response.code).to eq('200')
+    expect_snackbar('You have joined the group \'group_name\'')
+    expect_redirect('https://example.com')
     expect(response.cookies['token']).to be_nil
   end
 
@@ -171,9 +171,9 @@ describe 'Bearer token show n3' do
     expect(token_with_r.reload.last_used_at).to be_truthy
     expect(token_with_r.reload.usages).to eq(1)
 
-    expect(response.code).to eq('302')
-    expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
-    expect(response).to redirect_to('https://example.com')
+    expect(response.code).to eq('200')
+    expect_snackbar('You have joined the group \'group_name\'')
+    expect_redirect('https://example.com')
     expect(response.cookies['token']).to be_nil
   end
 
@@ -193,9 +193,9 @@ describe 'Bearer token show n3' do
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{retracted_token.secret}", headers: service_headers(accept: :n3)
 
-    expect(response).to(redirect_to(argu_url))
-    expect(response.cookies['token']).to be_nil
-    expect(flash[:notice]).to eq('You are already member of this group')
+    expect(response.code).to eq('200')
+    expect_snackbar('You are already member of this group')
+    expect_redirect(argu_url)
   end
 
   it 'member should show an expired token' do
@@ -203,9 +203,9 @@ describe 'Bearer token show n3' do
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{expired_token.secret}", headers: service_headers(accept: :n3)
 
-    expect(response).to(redirect_to(argu_url))
-    expect(response.cookies['token']).to be_nil
-    expect(flash[:notice]).to eq('You are already member of this group')
+    expect(response.code).to eq('200')
+    expect_snackbar('You are already member of this group')
+    expect_redirect(argu_url)
   end
 
   it 'member should show a used token' do
@@ -213,9 +213,9 @@ describe 'Bearer token show n3' do
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{used_token.secret}", headers: service_headers(accept: :n3)
 
-    expect(response).to(redirect_to(argu_url))
-    expect(response.cookies['token']).to be_nil
-    expect(flash[:notice]).to eq('You are already member of this group')
+    expect(response.code).to eq('200')
+    expect_snackbar('You are already member of this group')
+    expect_redirect(argu_url)
   end
 
   it 'member should not show a retracted token with r' do
@@ -223,9 +223,9 @@ describe 'Bearer token show n3' do
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
     get "/#{retracted_token_with_r.secret}", headers: service_headers(accept: :n3)
 
-    expect(response).to(redirect_to('https://example.com'))
-    expect(response.cookies['token']).to be_nil
-    expect(flash[:notice]).to eq('You are already member of this group')
+    expect(response.code).to eq('200')
+    expect_snackbar('You are already member of this group')
+    expect_redirect('https://example.com')
   end
 
   it 'member should redirect to group_membership' do
@@ -236,9 +236,23 @@ describe 'Bearer token show n3' do
     expect(token.reload.last_used_at).to be_nil
     expect(token.reload.usages).to eq(0)
 
-    expect(response.code).to eq('302')
-    expect(response).to redirect_to(argu_url('/group_memberships/1'))
+    expect(response.code).to eq('200')
+    expect_snackbar('You are already member of this group')
+    expect_redirect(argu_url('/group_memberships/1'))
     expect(response.cookies['token']).to be_nil
-    expect(flash[:notice]).to eq('You are already member of this group')
+  end
+
+  private
+
+  def expect_snackbar(text)
+    expect(response.headers['Exec-Action']).to(
+      include("actions/snackbar?#{{text: text}.to_param}")
+    )
+  end
+
+  def expect_redirect(location)
+    expect(response.headers['Exec-Action']).to(
+      include("actions/redirect?#{{location: location}.to_param}")
+    )
   end
 end
