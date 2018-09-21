@@ -110,7 +110,11 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def redirect_wrong_email
-    redirect_to argu_url('/users/wrong_email', r: resource_by_secret.iri, email: resource_by_secret.email)
+    active_response_block do
+      respond_with_redirect(
+        location: argu_url('/users/wrong_email', r: resource_by_secret.iri, email: resource_by_secret.email)
+      )
+    end
   end
 
   def resource_by_secret
