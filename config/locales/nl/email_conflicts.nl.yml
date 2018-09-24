@@ -1,0 +1,10 @@
+nl:
+  email_conflicts:
+    title: "Ander email adres"
+    description: "De uitnodiging die je volgt is bedoeld voor %{email}. Dit adres is niet gekoppeld aan het account waarmee je nu bent ingelogd."
+    email_list: "Email adressen die nu gekoppeld zijn aan jouw account:"
+    account_exists: "Er bestaat een ander account voor %{email}. Log uit en log in met dit andere account om de uitnodiging te accepteren."
+    link_or_logout: "Je kan ervoor kiezen om %{email} toe te voegen aan jouw account, of maak een nieuw account aan met %{email}."
+    add: "Voeg %{email} toe aan jouw account"
+    switch: "Account wisselen"
+    create_new_account: "Maak nieuw account aan"

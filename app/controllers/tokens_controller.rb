@@ -33,7 +33,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   def check_if_registered
     return true if request.head?
     return super unless action_name == 'show'
-    current_user || create_user || raise(Argu::Errors::Unauthorized)
+    current_user || create_user || raise(Argu::Errors::Unauthorized.new(message: I18n.t('please_login')))
   end
 
   def create_execute
@@ -111,9 +111,12 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def redirect_wrong_email
     active_response_block do
-      respond_with_redirect(
-        location: argu_url('/users/wrong_email', r: resource_by_secret.iri, email: resource_by_secret.email)
-      )
+      location = if active_response_type == :html
+                   argu_url('/users/wrong_email', r: resource_by_secret.iri, email: resource_by_secret.email)
+                 else
+                   "#{resource_by_secret.iri}/email_conflict"
+                 end
+      respond_with_redirect(location: location)
     end
   end
 

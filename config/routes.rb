@@ -17,7 +17,9 @@ Rails.application.routes.draw do
             only: :index,
             to: 'email_token#index'
   resources :tokens, path: '', param: :secret, only: %i[destroy create update]
-  resources :tokens, path: '', param: :secret, only: [:show]
+  resources :tokens, path: '', param: :secret, only: [:show] do
+    resource :email_conflict, only: :show
+  end
 
   constraints(Argu::WhitelistConstraint) do
     health_check_routes
