@@ -53,7 +53,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def create_user
     return unless resource_by_secret&.active? && resource_by_secret&.email
-    new_user = api.create_user(resource_by_secret.email)
+    new_user = api.create_user(resource_by_secret.email, r: resource_by_secret.redirect_url)
     return if new_user.blank?
     @new_authorization = api.instance_variable_get(:@user_token)
     @current_user = new_user
