@@ -61,7 +61,14 @@ module TestMocks
 
   def current_user_user_mock(id = 1, email: nil, confirmed: true, secondary_emails: [])
     url = expand_service_url(:argu, '/spi/current_user')
-    user_mock(id, email: email, confirmed: confirmed, secondary_emails: secondary_emails, url: url)
+    user_mock(
+      id,
+      email: email,
+      confirmed: confirmed,
+      secondary_emails: secondary_emails,
+      url: url,
+      language: NS::ARGU['locale/en']
+    )
   end
 
   def generate_guest_token_mock
@@ -84,7 +91,7 @@ module TestMocks
         status: 200,
         headers: {'Content-Type' => 'application/json'},
         body: {
-          data: user_data(id, opts[:email], opts[:secondary_emails]),
+          data: user_data(id, opts[:email], opts[:language], opts[:secondary_emails]),
           included: [email: opts[:email], confirmed: opts[:confirmed]]
                       .concat(opts[:secondary_emails])
                       .each_with_index
@@ -187,7 +194,7 @@ module TestMocks
     Rails.application.config.host_name
   end
 
-  def user_data(id, email, secondary_emails = [])
+  def user_data(id, email, language = nil, secondary_emails = [])
     {
       id: id,
       type: 'users',
@@ -207,7 +214,8 @@ module TestMocks
         displayName: "User#{id}",
         about: '',
         url: "user#{id}",
-        email: email
+        email: email,
+        language: language
       },
       relationships: {
         profilePhoto: {
