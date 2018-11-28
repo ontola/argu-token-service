@@ -65,7 +65,7 @@ describe 'Token bearer create' do
       }, headers: service_headers(accept: :json_api)
 
       expect(response.code).to eq('422')
-      expect_error_message('found unpermitted parameter: type')
+      expect_error_message('found unpermitted parameter: :type')
       expect_error_size(1)
     end
   end
