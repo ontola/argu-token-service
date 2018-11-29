@@ -31,9 +31,9 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def check_if_registered
-    return true if request.head?
     return super unless action_name == 'show'
-    current_user || create_user || raise(Argu::Errors::Unauthorized.new(message: I18n.t('please_login')))
+    return true if request.head?
+    !current_user.guest? || create_user || raise(Argu::Errors::Unauthorized.new(message: I18n.t('please_login')))
   end
 
   def create_execute

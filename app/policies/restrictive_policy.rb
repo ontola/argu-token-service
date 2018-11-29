@@ -1,0 +1,1 @@
+../../service_module/app/policies/restrictive_policy.rb

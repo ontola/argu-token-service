@@ -4,8 +4,6 @@ class ApplicationController < ApiController
   include ActiveResponse::Controller
   include ActiveResponseHelper
 
-  before_action :check_if_registered
-
   private
 
   def handle_record_not_found_html(_e)

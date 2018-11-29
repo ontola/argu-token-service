@@ -3,6 +3,7 @@
 class Token < ApplicationRecord
   include Iriable
   include Ldable
+  include Broadcastable
 
   scope :active, lambda {
     where('retracted_at IS NULL AND (expires_at IS NULL OR expires_at > ?)'\
@@ -12,7 +13,6 @@ class Token < ApplicationRecord
   scope :bearer, -> { where(email: nil) }
   scope :email, -> { where('email IS NOT NULL') }
   validates :group_id, presence: true, numericality: {greater_than: 0}
-  after_commit :publish_data_event
 
   filterable group_id: {}, type: {key: :email, values: {email: 'NOT NULL', bearer: 'NULL'}}
   paginates_per 50
@@ -27,10 +27,6 @@ class Token < ApplicationRecord
 
   def generate_token
     self.secret = email.present? ? SecureRandom.urlsafe_base64(128) : human_readable_token unless secret?
-  end
-
-  def publish_data_event
-    DataEvent.publish(self)
   end
 
   def to_param
