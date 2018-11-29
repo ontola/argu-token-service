@@ -50,7 +50,7 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('403')
-    expect_error_message("You're not authorized for this action. (update)")
+    expect_error_message("You're not authorized for this action. (create)")
     expect_error_size(1)
   end
 
@@ -313,7 +313,7 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('403')
-    expect_error_message("You're not authorized for this action. (show)")
+    expect_error_message("You're not authorized for this action. (create)")
     expect_error_size(1)
   end
 

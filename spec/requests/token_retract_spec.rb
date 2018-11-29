@@ -32,7 +32,7 @@ describe 'Token retract' do
     end
 
     expect(response.code).to eq('403')
-    expect_error_message("You're not authorized for this action. (update)")
+    expect_error_message("You're not authorized for this action. (destroy)")
     expect_error_size(1)
   end
 

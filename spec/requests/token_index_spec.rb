@@ -26,7 +26,7 @@ describe 'Token index' do
     get "/bearer/g/#{token.group_id}", headers: service_headers(accept: :json_api)
 
     expect(response.code).to eq('403')
-    expect_error_message("You're not authorized for this action. (update)")
+    expect_error_message("You're not authorized for this action. (index)")
     expect_error_size(1)
   end
 

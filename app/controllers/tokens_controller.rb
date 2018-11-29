@@ -10,24 +10,20 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   active_response :show, :update, :create, :destroy
 
   before_action :handle_inactive_token, only: :show, unless: :token_active?
-  before_action :authorize_action, except: %i[show]
   before_action :redirect_wrong_email, unless: :valid_email?, only: %i[show]
 
   private
 
   def actor_iri
-    params.require(:data).require(:attributes).permit(:actor_iri)[:actor_iri]
-  end
-
-  def authorize_action(resource_type = nil, resource_id = nil, action = nil)
-    return super if [resource_type, resource_id, action].compact.present?
-    super('Group', group_id, 'update')
-    return unless action_name == 'create' && actor_iri.present?
-    super('CurrentActor', actor_iri, 'show')
+    attribute_params&.permit(:actor_iri).try(:[], :actor_iri)
   end
 
   def authorize_redirect_resource
     api.authorize_redirect_resource(resource_by_secret)
+  end
+
+  def attribute_params
+    @attribute_params ||= params.permit(data: {attributes: %i[actor_iri]})[:data].try(:[], :attributes)
   end
 
   def check_if_registered
@@ -64,7 +60,15 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def group_id
-    @group_id ||= action_name == 'create' ? token_creator.group_id : resource_by_secret!.group_id
+    @group_id ||=
+      case action_name
+      when 'create'
+        token_creator.group_id
+      when 'index'
+        params[:group_id]
+      else
+        resource_by_secret!.group_id
+      end
   end
 
   def handle_inactive_token
@@ -86,6 +90,10 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     else
       redirect_to argu_url('/users/sign_in', r: @_request.env['REQUEST_URI']), notice: I18n.t('please_login')
     end
+  end
+
+  def new_resource
+    Token.new(group_id: group_id, actor_iri: actor_iri)
   end
 
   def permit_params
