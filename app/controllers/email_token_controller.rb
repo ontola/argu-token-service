@@ -5,15 +5,8 @@ class EmailTokenController < TokensController
 
   private
 
-  def index_collection
-    @index_collection ||= ::Collection.new(
-      association_class: Token,
-      filter: {group_id: group_id, type: 'email'},
-      user_context: {},
-      parent_uri_template: :tokens_email_collection_iri,
-      parent_uri_template_canonical: :tokens_email_collection_iri,
-      parent_uri_template_opts: {group_id: group_id}
-    )
+  def index_collection_name
+    :email_token_collection
   end
 
   def index_includes

@@ -96,6 +96,10 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     Token.new(group_id: group_id, actor_iri: actor_iri)
   end
 
+  def parent_resource!
+    @parent_resource ||= Group.new(id: group_id)
+  end
+
   def permit_params
     params.require(:data).require(:attributes).permit(%i[redirect_url])
   end

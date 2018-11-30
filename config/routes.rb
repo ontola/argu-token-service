@@ -3,6 +3,8 @@
 require 'argu/whitelist_constraint'
 
 Rails.application.routes.draw do
+  concerns_from_enhancements
+
   root 'tokens#show'
   get 'verify', to: 'verifications#show'
 
@@ -16,7 +18,9 @@ Rails.application.routes.draw do
             path: 'email/g/:group_id',
             only: :index,
             to: 'email_token#index'
-  resources :tokens, path: '', param: :secret, only: %i[destroy create update]
+  resources :tokens, path: '', param: :secret, only: %i[create update] do
+    include_route_concerns
+  end
   resources :tokens, path: '', param: :secret, only: [:show] do
     resource :email_conflict, only: :show
   end

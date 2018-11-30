@@ -1,0 +1,13 @@
+
+nl:
+  actions:
+    default:
+      submit: "Opslaan"
+      destroy:
+        label: "Vernietigen"
+        description: "Dit object en alle bijbehorende data zal permanent verwijderd worden. Deze actie is niet ongedaan te maken."
+        submit: "Verwijder"
+      publish:
+        label: "Publiceer"
+        submit: "Publiceer"
+        description: "Concept versie, nog niet gepubliceerd."

@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
 class Token < ApplicationRecord
+  include ApplicationModel
+  include Enhanceable
   include Iriable
   include Ldable
   include Broadcastable
+
+  enhance Actionable
+  enhance Createable
+  enhance Destroyable
 
   scope :active, lambda {
     where('retracted_at IS NULL AND (expires_at IS NULL OR expires_at > ?)'\

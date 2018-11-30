@@ -1,0 +1,13 @@
+
+en:
+  actions:
+    default:
+      submit: "Save"
+      destroy:
+        label: "Destroy"
+        description: "This object and all related data will be permanently removed. This cannot be undone."
+        submit: "Delete"
+      publish:
+        label: "Publish"
+        submit: "Publish"
+        description: "Draft version, not yet published."
