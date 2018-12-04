@@ -55,11 +55,13 @@ class EmailConflictsController < ApplicationController
     email_node = RDF::Node.new
 
     graph << [::RDF::URI(request.url), NS::SCHEMA[:potentialAction], iri]
+    graph << [::RDF::URI(request.url), NS::ARGU[:favoriteAction], iri]
 
     graph << [iri, RDF[:type], NS::SCHEMA[:Action]]
     graph << [iri, NS::SCHEMA[:name], I18n.t('email_conflicts.add', email: token.email)]
     graph << [iri, NS::SCHEMA[:target], entry_point_iri]
     graph << [iri, NS::SCHEMA[:object], token.iri]
+    graph << [iri, NS::ARGU[:favoriteAction], true]
 
     graph << [entry_point_iri, RDF[:type], NS::SCHEMA[:EntryPoint]]
     graph << [entry_point_iri, NS::SCHEMA[:name], I18n.t('email_conflicts.add', email: token.email)]
@@ -86,11 +88,13 @@ class EmailConflictsController < ApplicationController
     label = I18n.t("email_conflicts.#{account_exists? ? :switch : :create_new_account}")
 
     graph << [::RDF::URI(request.url), NS::SCHEMA[:potentialAction], iri]
+    graph << [::RDF::URI(request.url), NS::ARGU[:favoriteAction], iri]
 
     graph << [iri, RDF[:type], NS::SCHEMA[:Action]]
     graph << [iri, NS::SCHEMA[:name], label]
     graph << [iri, NS::SCHEMA[:target], entry_point_iri]
     graph << [iri, NS::SCHEMA[:object], token.iri]
+    graph << [iri, NS::ARGU[:favoriteAction], true]
 
     graph << [entry_point_iri, RDF[:type], NS::SCHEMA[:EntryPoint]]
     graph << [entry_point_iri, NS::SCHEMA[:name], label]
@@ -100,10 +104,11 @@ class EmailConflictsController < ApplicationController
   end
 
   def token
-    @token = Token.find_by(secret: params[:token_secret])
+    @token ||= Token.find_by(secret: params[:token_secret])
   end
+  alias requested_resource token
 
   def verify_email_conflict
-    redirect_to token.iri if token.email.blank? || token.email == current_user.email
+    redirect_to token.iri.to_s if token.email.blank? || token.email == current_user.email
   end
 end

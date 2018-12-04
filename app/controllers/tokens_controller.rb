@@ -123,12 +123,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def redirect_wrong_email
     active_response_block do
-      location = if active_response_type == :html
-                   argu_url('/users/wrong_email', r: resource_by_secret.iri, email: resource_by_secret.email)
-                 else
-                   "#{resource_by_secret.iri}/email_conflict"
-                 end
-      respond_with_redirect(location: location)
+      respond_with_redirect(location: wrong_email_location)
     end
   end
 
@@ -179,5 +174,17 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def valid_email?
     request.head? ? true : resource_by_secret.valid_email?(current_user)
+  end
+
+  def wrong_email_location
+    if active_response_type == :html
+      argu_url(
+        '/users/wrong_email',
+        r: argu_url('/users/sign_in', r: resource_by_secret.iri, notice: I18n.t('please_login')),
+        email: resource_by_secret.email
+      )
+    else
+      "#{resource_by_secret.iri}/email_conflict"
+    end
   end
 end

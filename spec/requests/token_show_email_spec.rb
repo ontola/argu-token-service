@@ -216,9 +216,7 @@ describe 'Email token show' do
     expect(email_token.reload.usages).to eq(0)
 
     expect(response.code).to eq('302')
-    expect(response).to(
-      redirect_to(argu_url('/users/wrong_email', r: email_token.iri, email: email_token.email))
-    )
+    expect(response).to redirect_to(wrong_email_location(email_token))
     expect(flash[:notice]).to be_nil
     expect(response.cookies['token']).to be_nil
   end
@@ -342,5 +340,15 @@ describe 'Email token show' do
     expect(response).to redirect_to(argu_url)
     expect(flash[:notice]).to eq('You are already member of this group')
     expect(response.cookies['token']).to be_nil
+  end
+
+  private
+
+  def wrong_email_location(token)
+    argu_url(
+      '/users/wrong_email',
+      r: argu_url('/users/sign_in', r: token.iri, notice: I18n.t('please_login')),
+      email: token.email
+    )
   end
 end
