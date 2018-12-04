@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class EmailTokenController < TokensController
+class EmailTokensController < TokensController
   active_response :index
 
   private

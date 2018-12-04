@@ -1,0 +1,9 @@
+en:
+  bearer_tokens:
+    type: "Invite link"
+    plural: "Invite links"
+    type_new: "New invite link"
+    form:
+      redirect_url:
+        label: "Redirect url after clicking the invite link"
+        description: "Enter a url"

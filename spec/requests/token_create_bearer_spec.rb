@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 describe 'Token bearer create' do
+  before do
+    group_mock(1)
+  end
+
   ####################################
   # As Guest
   ####################################
@@ -52,7 +56,7 @@ describe 'Token bearer create' do
   ####################################
   it 'manager should not create token with wrong type' do
     as_user
-    unauthorized_mock(type: 'Group', id: 1, action: 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/', params: {
         data: {
@@ -136,7 +140,6 @@ describe 'Token bearer create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_truthy
     expect_token_attributes
     expect(Token.last.secret.length).to eq(16)
   end
@@ -158,7 +161,6 @@ describe 'Token bearer create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_truthy
     expect_token_attributes
     expect(Token.last.expires_at).to be_truthy
   end
@@ -180,7 +182,6 @@ describe 'Token bearer create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_truthy
     expect_token_attributes
     expect(Token.last.redirect_url).to eq('https://example.com')
   end
@@ -190,7 +191,7 @@ describe 'Token bearer create' do
   def expect_token_attributes(index = nil)
     expect_attributes(
       %w[type canonicalIRI invitee sendMail groupId usages createdAt expiresAt retractedAt
-         opened status message actorIRI clicked iri displayName rootId tokenUrl],
+         opened status message actorIRI clicked iri displayName redirectUrl rootId tokenUrl],
       index
     )
   end

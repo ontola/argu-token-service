@@ -1,0 +1,1 @@
+../../service_module/config/initializers/active_resource_base.rb

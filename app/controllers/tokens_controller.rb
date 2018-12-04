@@ -7,6 +7,8 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   include ActionController::Helpers
   include ActionController::Flash
   include ActionController::Cookies
+  include Destroyable::Controller
+  include UriTemplateHelper
   active_response :show, :update, :create, :destroy
 
   before_action :handle_inactive_token, only: :show, unless: :token_active?
@@ -40,7 +42,6 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def create_execute
-    response.headers['location'] = token_creator.location
     token_creator.create!
   rescue ActiveRecord::ActiveRecordError
     false
@@ -51,8 +52,13 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def create_success
-    respond_with_new_resource(resource: token_creator.tokens)
+    respond_with_new_resource(create_success_options.merge(resource: token_creator.tokens))
   end
+
+  def create_success_location
+    settings_iri_path(Group.new(id: group_id).iri_path, fragment: :"#{token_type}_invite")
+  end
+  alias destroy_success_location create_success_location
 
   def create_user
     return unless resource_by_secret&.active? && resource_by_secret&.email
@@ -179,6 +185,10 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def token_active?
     resource_by_secret!.active?
+  end
+
+  def token_type
+    @token_type ||= resource_by_secret&.type&.gsub('Token', '')&.underscore || token_creator.type
   end
 
   def update_execute

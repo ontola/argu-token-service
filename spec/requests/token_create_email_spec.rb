@@ -7,6 +7,10 @@ describe 'Token email create' do
   let(:retracted_token) { create(:retracted_token, email: 'retracted@example.com') }
   let(:expired_token) { create(:expired_token, email: 'expired@example.com') }
 
+  before do
+    group_mock(1)
+  end
+
   ####################################
   # As Guest
   ####################################
@@ -72,7 +76,7 @@ describe 'Token email create' do
       }, headers: service_headers(accept: :json_api)
 
       expect(response.code).to eq('422')
-      expect_error_message('param is missing or the value is empty: root_id')
+      expect_error_message('param is missing or the value is empty: group_id')
       expect_error_size(1)
     end
   end
@@ -136,7 +140,6 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_nil
     expect_data_size(2)
     expect_token_attributes
     expect(Token.last.secret.length).to eq(171)
@@ -162,7 +165,6 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_nil
     expect_data_size(3)
     expect_token_attributes
     expect(Token.last.secret.length).to eq(171)
@@ -189,7 +191,6 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_nil
     expect_token_attributes
     expect(Token.last.expires_at).to be_truthy
   end
@@ -213,7 +214,6 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_nil
     expect_token_attributes
     expect(Token.last.redirect_url).to eq('https://example.com')
   end
@@ -236,7 +236,6 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_nil
     expect_data_size(2)
     expect_token_attributes
     expect(Token.last.send_mail).to be_falsey
@@ -261,7 +260,6 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_nil
     expect_data_size(2)
     expect_token_attributes
     expect(Token.last.message).to eq('Hello world.')
@@ -287,7 +285,6 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_nil
     expect_data_size(2)
     expect_token_attributes
     expect(Token.last.actor_iri).to eq('https://argu.dev/u/1')
@@ -336,7 +333,6 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_nil
     expect_data_size(1)
     expect_token_attributes
     expect(Token.last.secret.length).to eq(171)
@@ -362,7 +358,6 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_nil
     expect_data_size(2)
     expect_token_attributes
     expect(Token.last.secret.length).to eq(171)
@@ -388,7 +383,6 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('201')
-    expect(response.headers['location']).to be_nil
     expect_data_size(1)
     expect_token_attributes
     expect(Token.last.secret.length).to eq(171)
@@ -399,7 +393,7 @@ describe 'Token email create' do
   def expect_token_attributes(index = 0)
     expect_attributes(
       %w[type canonicalIRI invitee sendMail groupId usages createdAt expiresAt retractedAt
-         opened status message actorIRI clicked iri displayName rootId],
+         opened status message actorIRI clicked iri displayName redirectUrl rootId],
       index
     )
   end

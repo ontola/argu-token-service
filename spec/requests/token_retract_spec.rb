@@ -53,6 +53,7 @@ describe 'Token retract' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     emails_mock('tokens', token.id)
+    group_mock(1)
 
     assert_difference('Token.active.count', -1) do
       delete "/#{token.secret}", headers: service_headers(accept: :json_api)

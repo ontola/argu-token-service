@@ -1,0 +1,16 @@
+en:
+  email_tokens:
+    type: "Email invite"
+    plural: "Email invites"
+    type_new: "New email invite"
+    form:
+      message:
+        default_message: "I invite you to join the group '%{group}'."
+        label: "Message"
+        description: "Enter a message for in the email"
+      addresses:
+        label: "Email addresses"
+        description: "Enter one or multiple email addresses"
+      redirect_url:
+        label: "Redirect url after clicking the invite link"
+        description: "Enter a url"

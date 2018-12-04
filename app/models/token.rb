@@ -3,21 +3,16 @@
 class Token < ApplicationRecord
   include ApplicationModel
   include Enhanceable
-  include Iriable
-  include Ldable
+  include RailsLD::Model
   include Broadcastable
 
-  enhance Actionable
-  enhance Createable
-  enhance Destroyable
+  before_create :set_token_type
 
   scope :active, lambda {
     where('retracted_at IS NULL AND (expires_at IS NULL OR expires_at > ?)'\
           ' AND (max_usages IS NULL OR usages < max_usages)',
           Time.current)
   }
-  scope :bearer, -> { where(email: nil) }
-  scope :email, -> { where('email IS NOT NULL') }
   validates :group_id, presence: true, numericality: {greater_than: 0}
 
   filterable group_id: {}, type: {key: :email, values: {email: 'NOT NULL', bearer: 'NULL'}}
@@ -61,10 +56,27 @@ class Token < ApplicationRecord
     )
   end
 
+  def group
+    @group ||= group_id && Group.new(id: group_id)
+  end
+
+  def group=(group)
+    @group = group
+    self.group_id = group&.id
+  end
+
+  def root
+    group.organization
+  end
+
   private
 
   def human_readable_token
     token = SecureRandom.urlsafe_base64(128).upcase.scan(/[0123456789ACDEFGHJKLMNPQRTUVWXYZ]+/).join
     token.length >= 16 ? token[0...16] : human_readable_token
+  end
+
+  def set_token_type
+    self.type ||= email.present? ? :EmailToken : :BearerToken
   end
 end

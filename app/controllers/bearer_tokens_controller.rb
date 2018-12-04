@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class BearerTokenController < TokensController
+class BearerTokensController < TokensController
   active_response :index
 
   private

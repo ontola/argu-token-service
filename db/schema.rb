@@ -10,32 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180920072811) do
+ActiveRecord::Schema.define(version: 2018_12_04_134258) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
-  create_table "tokens", force: :cascade do |t|
-    t.string   "secret",                       null: false
-    t.integer  "group_id",                     null: false
-    t.integer  "usages",       default: 0,     null: false
-    t.integer  "max_usages"
+  create_table "tokens", id: :serial, force: :cascade do |t|
+    t.string "secret", null: false
+    t.integer "group_id", null: false
+    t.integer "usages", default: 0, null: false
+    t.integer "max_usages"
     t.datetime "expires_at"
     t.datetime "retracted_at"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.string   "email"
-    t.boolean  "send_mail",    default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "email"
+    t.boolean "send_mail", default: false, null: false
     t.datetime "last_used_at"
-    t.text     "message"
-    t.string   "actor_iri"
-    t.string   "invitee"
-    t.string   "redirect_url"
-    t.uuid     "root_id",                      null: false
-    t.index ["expires_at", "retracted_at", "group_id"], name: "index_tokens_on_expires_at_and_retracted_at_and_group_id", using: :btree
-    t.index ["root_id"], name: "index_tokens_on_root_id", using: :btree
-    t.index ["secret"], name: "index_tokens_on_secret", using: :btree
+    t.text "message"
+    t.string "actor_iri"
+    t.string "invitee"
+    t.string "redirect_url"
+    t.uuid "root_id", null: false
+    t.string "type", null: false
+    t.index ["expires_at", "retracted_at", "group_id"], name: "index_tokens_on_expires_at_and_retracted_at_and_group_id"
+    t.index ["root_id"], name: "index_tokens_on_root_id"
+    t.index ["secret"], name: "index_tokens_on_secret"
   end
 
 end

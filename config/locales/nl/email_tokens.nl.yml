@@ -1,0 +1,16 @@
+nl:
+  email_tokens:
+    type: "Uitnodigingslink"
+    plural: "Uitnodigingslinks"
+    type_new: "Nieuwe uitnodigingslink"
+    form:
+      message:
+        default_message: "Ik nodig je uit om lid te worden van de groep '%{group}'."
+        label: "Toelichting"
+        description: "Schrijf een bericht voor in de email"
+      addresses:
+        label: "Email adressen"
+        description: "Voer een of meerdere email adressen in"
+      redirect_url:
+        label: "Url om naar door te verwijzen na het klikken op de link"
+        description: "Geef een url op"

@@ -2,7 +2,7 @@
 
 class GroupPolicy < RestrictivePolicy
   def create_child?(raw_klass)
-    return false if raw_klass != :tokens
+    return false unless %i[bearer_tokens email_tokens].include?(raw_klass)
 
     Pundit.policy(context, Token.new(group_id: record.id)).create?
   end
