@@ -104,6 +104,10 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     params.require(:data).require(:attributes).permit(%i[redirect_url])
   end
 
+  def r_for_guest_token
+    resource_by_secret&.redirect_url || super
+  end
+
   def redirect_already_member
     respond_with_redirect(location: resource_by_secret.redirect_url || argu_url, notice: I18n.t('already_member'))
   end
