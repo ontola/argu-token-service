@@ -15,15 +15,22 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   private
 
   def actor_iri
-    attribute_params&.permit(:actor_iri).try(:[], :actor_iri)
+    @actor_iri ||= params.key?(:actor_iri) ? params.require(:actor_iri) : permit_params[:actor_iri]
+  rescue ActionController::ParameterMissing
+    nil
+  end
+
+  def attribute_params
+    @attribute_params ||=
+      if request.format.json_api?
+        params.require(:data).require(:attributes)
+      else
+        params.require(controller_name.singularize)
+      end
   end
 
   def authorize_redirect_resource
     api.authorize_redirect_resource(resource_by_secret)
-  end
-
-  def attribute_params
-    @attribute_params ||= params.permit(data: {attributes: %i[actor_iri]})[:data].try(:[], :attributes)
   end
 
   def check_if_registered
@@ -63,7 +70,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     @group_id ||=
       case action_name
       when 'create'
-        token_creator.group_id
+        params.key?(:group_id) ? params.require(:group_id) : attribute_params.require(:group_id)
       when 'index'
         params[:group_id]
       else
@@ -101,7 +108,9 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def permit_params
-    params.require(:data).require(:attributes).permit(%i[redirect_url])
+    @permit_params ||=
+      attribute_params
+        .permit(%i[actor_iri expires_at group_id root_id message redirect_url send_mail addresses] + [addresses: []])
   end
 
   def r_for_guest_token
@@ -158,10 +167,10 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def token_creator
-    unless %w[bearerToken emailTokenRequest].include?(params.require(:data)[:type])
+    if request.format.json_api? && !%w[bearerToken emailTokenRequest].include?(params.require(:data)[:type])
       raise ActionController::UnpermittedParameters.new(%w[type])
     end
-    @token_creator ||= TokenCreator.new(params: params)
+    @token_creator ||= TokenCreator.new(actor_iri, group_id, params: permit_params)
   end
 
   def token_executor(user = current_user)

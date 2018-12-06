@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class TokenCreator
-  attr_accessor :tokens
+  attr_accessor :actor_iri, :group_id, :tokens, :params
 
-  def initialize(params: [])
-    self.batch = params.require(:data).require(:type) == 'emailTokenRequest'
-    self.attribute_params = params.require(:data).require(:attributes)
+  def initialize(actor_iri, group_id, params: [])
+    self.actor_iri = actor_iri
+    self.group_id = group_id
+    self.params = params
     initialize_tokens
   end
 
@@ -17,32 +18,33 @@ class TokenCreator
     batch? ? tokens&.map(&:errors) : tokens&.errors
   end
 
-  def group_id
-    attribute_params.require(:group_id)
-  end
-
   def location
     tokens.iri if tokens.is_a?(Token)
   end
 
   def root_id
-    attribute_params.require(:root_id)
+    params.require(:root_id)
+  end
+
+  def type
+    @type ||= params.key?(:addresses) ? :email : :bearer
   end
 
   private
 
-  attr_accessor :batch, :attribute_params
-  alias batch? batch
-
   def addresses_param
-    @addresses_param ||= attribute_params.require(:addresses).uniq
+    @addresses_param ||=
+      (params[:addresses].is_a?(String) ? params[:addresses].split(',').map(&:strip) : params[:addresses]).uniq
+  end
+
+  def batch?
+    type == :email
   end
 
   def batch_params
-    params = attribute_params.permit(%i[actor_iri expires_at group_id root_id message redirect_url send_mail])
     invitees
       .reject { |invitee| existing_tokens.include?(invitee[:email]) }
-      .map { |invitee| params.merge(invitee: invitee[:invitee], email: invitee[:email]) }
+      .map { |invitee| single_params.merge(invitee: invitee[:invitee], email: invitee[:email]) }
   end
 
   def existing_tokens
@@ -71,10 +73,13 @@ class TokenCreator
   end
 
   def redirect_url_param
-    attribute_params.permit(:redirect_url)[:redirect_url]
+    params[:redirect_url]
   end
 
   def single_params
-    attribute_params.permit(%i[actor_iri expires_at group_id root_id message redirect_url])
+    @single_params ||=
+      params
+        .slice(:expires_at, :root_id, :message, :redirect_url, :send_mail)
+        .merge(actor_iri: actor_iri, group_id: group_id)
   end
 end
