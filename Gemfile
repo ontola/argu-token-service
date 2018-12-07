@@ -29,6 +29,7 @@ gem 'rdf-rdfa'
 gem 'rdf-rdfxml', git: 'https://github.com/ruby-rdf/rdf-rdfxml', ref: 'dd99a73'
 gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers', ref: '71b6222'
 gem 'rdf-turtle'
+gem 'rfc-822', '~> 0.4.1'
 gem 'tzinfo-data'
 gem 'uri_template'
 

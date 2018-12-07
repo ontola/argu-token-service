@@ -255,6 +255,7 @@ GEM
       rdf (~> 3.0)
     rdf-xsd (3.0.0)
       rdf (~> 3.0)
+    rfc-822 (0.4.1)
     rspec-core (3.5.4)
       rspec-support (~> 3.5.0)
     rspec-expectations (3.5.0)
@@ -358,6 +359,7 @@ DEPENDENCIES
   rdf-rdfxml!
   rdf-serializers!
   rdf-turtle
+  rfc-822 (~> 0.4.1)
   rspec-rails
   rubocop (~> 0.52.0)
   rubocop-rspec
