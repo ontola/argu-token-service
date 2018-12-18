@@ -73,7 +73,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def group_id
-    @group_id ||=
+    @group_id ||= parse_group_id(
       case action_name
       when 'create'
         params.key?(:group_id) ? params.require(:group_id) : attribute_params.require(:group_id)
@@ -82,6 +82,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
       else
         resource_by_secret!.group_id
       end
+    )
   end
 
   def handle_inactive_token
@@ -111,6 +112,12 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def parent_resource!
     @parent_resource ||= Group.new(id: group_id)
+  end
+
+  def parse_group_id(group_id)
+    return group_id unless group_id.to_s.include?(Rails.application.config.frontend_url)
+    path = group_id.gsub(Rails.application.config.frontend_url, '')
+    uri_template(:groups_iri).extract(path)['id']
   end
 
   def permit_params
