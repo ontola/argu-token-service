@@ -5,18 +5,22 @@ class TokenSerializer < RecordSerializer
 
   attribute :usages, predicate: NS::ARGU[:usages]
   attribute :retracted_at, predicate: NS::ARGU[:retractedAt]
-  attribute :invitee, predicate: NS::ARGU[:invitee]
-  attribute :send_mail, predicate: NS::ARGU[:sendMail]
   attribute :group_id, predicate: NS::ARGU[:groupId]
-  attribute :opened, predicate: NS::ARGU[:opened]
-  attribute :status, predicate: NS::ARGU[:status]
   attribute :message, predicate: NS::ARGU[:message]
-  attribute :actor_iri, predicate: NS::ARGU[:actorIri]
-  attribute :clicked, predicate: NS::ARGU[:clicked]
   attribute :root_id, predicate: NS::ARGU[:rootId], datatype: NS::XSD[:string]
-  attribute :email, predicate: NS::ARGU[:email], if: :service_scope?
   attribute :token_url, predicate: NS::ARGU[:applyLink], if: :token_url?
   attribute :redirect_url, predicate: NS::ARGU[:redirectUrl]
+
+  # @todo EmailToken only
+  attribute :email, predicate: NS::ARGU[:email], if: :service_scope?
+  attribute :actor_iri, predicate: NS::ARGU[:actorIRI]
+  attribute :clicked, predicate: NS::ARGU[:clicked]
+  attribute :invitee, predicate: NS::ARGU[:invitee]
+  attribute :opened, predicate: NS::ARGU[:opened]
+  attribute :status, predicate: NS::ARGU[:status]
+  attribute :creator, predicate: NS::SCHEMA[:creator], if: :never
+  attribute :addresses, predicate: NS::ARGU[:emailAddresses], datatype: NS::XSD[:string], if: :never
+  attribute :send_mail, predicate: NS::ARGU[:sendMail], datatype: NS::XSD[:boolean], if: :service_scope?
 
   link(:self) { object.iri }
 
