@@ -1,8 +1,8 @@
 nl:
   bearer_tokens:
-    type: "Email uitnodiging"
-    plural: "Email uitnodigingen"
-    type_new: "Nieuwe email uitnodiging"
+    type: "Uitnodigingslink"
+    plural: "Uitnodigingslinks"
+    type_new: "Nieuwe uitnodigingslink"
     form:
       redirect_url:
         label: "Url om naar door te verwijzen na het klikken op de link"
