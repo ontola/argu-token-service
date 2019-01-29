@@ -18,7 +18,7 @@ class EmailTokenForm < RailsLD::Form
     },
     {
       redirect_url: {
-        default_value: ->(r) { RDF::DynamicURI(r.form.target.group.organization.iri).rewrite_value!.to_s }
+        default_value: ->(r) { RDF::DynamicURI(r.form.target.group.organization.iri).to_s }
       }
     },
     :hidden,

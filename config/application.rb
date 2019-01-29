@@ -22,6 +22,7 @@ require_relative 'initializers/build'
 Bundler.require(*Rails.groups)
 
 require_relative '../lib/rails_ld/middleware/linked_data_params'
+require_relative '../lib/tenant_middleware'
 require_relative '../lib/ns'
 
 module Service
@@ -44,6 +45,7 @@ module Service
                           key: '_Argu_sesion',
                           domain: :all,
                           tld_length: Rails.env.staging? ? 3 : 2
+    config.middleware.use TenantMiddleware
     config.middleware.use RailsLD::Middleware::LinkedDataParams
 
     config.autoload_paths += %w[lib]

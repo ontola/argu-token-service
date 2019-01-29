@@ -15,14 +15,14 @@ describe 'Bearer token show n3' do
   ####################################
   it 'guest should get 401' do
     as_guest
-    get '/invalid_token', headers: service_headers(accept: :n3)
+    get '/argu/tokens/invalid_token', headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('401')
   end
 
   it 'guest should redirect retracted to login page' do
     as_guest
-    get "/#{retracted_token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{retracted_token.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('401')
   end
@@ -30,7 +30,7 @@ describe 'Bearer token show n3' do
   it 'guest should redirect retracted with authorized r to r' do
     as_guest
     authorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{retracted_token_with_r.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{retracted_token_with_r.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('401')
   end
@@ -38,7 +38,7 @@ describe 'Bearer token show n3' do
   it 'guest should redirect retracted with unauthorized r to login page' do
     as_guest
     unauthorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{retracted_token_with_r.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{retracted_token_with_r.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('401')
   end
@@ -46,21 +46,21 @@ describe 'Bearer token show n3' do
   it 'guest should redirect with authorized r to login page' do
     as_guest
     authorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{token_with_r.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{token_with_r.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('401')
   end
 
   it 'guest should redirect to login page' do
     as_guest
-    get "/#{token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{token.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('401')
   end
 
   it 'guest should redirect valid token from query param to login page' do
     as_guest
-    get "?secret=#{token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens?secret=#{token.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('401')
   end
@@ -70,7 +70,7 @@ describe 'Bearer token show n3' do
   ####################################
   it 'user should not show a non-existent token' do
     as_user(1)
-    get '/invalid_token', headers: service_headers(accept: :n3)
+    get '/argu/tokens/invalid_token', headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('404')
   end
@@ -78,7 +78,7 @@ describe 'Bearer token show n3' do
   it 'user should not show a retracted token' do
     as_user(1)
     unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{retracted_token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{retracted_token.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('404')
   end
@@ -86,7 +86,7 @@ describe 'Bearer token show n3' do
   it 'user should not show an expired token' do
     as_user(1)
     unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{expired_token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{expired_token.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('404')
   end
@@ -94,7 +94,7 @@ describe 'Bearer token show n3' do
   it 'user should not show a used token' do
     as_user(1)
     unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{used_token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{used_token.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('404')
   end
@@ -104,13 +104,13 @@ describe 'Bearer token show n3' do
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret)
     emails_mock('tokens', token.id)
 
-    get "/#{token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{token.secret}", headers: service_headers(accept: :n3)
     expect(token.reload.last_used_at).to be_truthy
     expect(token.reload.usages).to eq(1)
 
     expect(response.code).to eq('200')
     expect_snackbar('You have joined the group \'group_name\'')
-    expect_redirect(argu_url('/group_memberships/1'))
+    expect_redirect(resource_iri(argu_url('/group_memberships/1')))
     expect(response.cookies['token']).to be_nil
   end
 
@@ -119,13 +119,13 @@ describe 'Bearer token show n3' do
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret)
     emails_mock('tokens', token.id)
 
-    get "?secret=#{token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens?secret=#{token.secret}", headers: service_headers(accept: :n3)
     expect(token.reload.last_used_at).to be_truthy
     expect(token.reload.usages).to eq(1)
 
     expect(response.code).to eq('200')
     expect_snackbar('You have joined the group \'group_name\'')
-    expect_redirect(argu_url('/group_memberships/1'))
+    expect_redirect(resource_iri(argu_url('/group_memberships/1')))
     expect(response.cookies['token']).to be_nil
   end
 
@@ -135,7 +135,7 @@ describe 'Bearer token show n3' do
     emails_mock('tokens', token_with_r.id)
     create_favorite_mock(iri: token_with_r.redirect_url)
 
-    get "/#{token_with_r.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{token_with_r.secret}", headers: service_headers(accept: :n3)
     expect(token_with_r.reload.last_used_at).to be_truthy
     expect(token_with_r.reload.usages).to eq(1)
 
@@ -151,7 +151,7 @@ describe 'Bearer token show n3' do
     emails_mock('tokens', token_with_r.id)
     create_favorite_mock(iri: token_with_r.redirect_url)
 
-    get "?secret=#{token_with_r.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens?secret=#{token_with_r.secret}", headers: service_headers(accept: :n3)
     expect(token_with_r.reload.last_used_at).to be_truthy
     expect(token_with_r.reload.usages).to eq(1)
 
@@ -167,7 +167,7 @@ describe 'Bearer token show n3' do
     emails_mock('tokens', token_with_r.id)
     create_favorite_mock(iri: token_with_r.redirect_url, status: 500)
 
-    get "?secret=#{token_with_r.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens?secret=#{token_with_r.secret}", headers: service_headers(accept: :n3)
     expect(token_with_r.reload.last_used_at).to be_truthy
     expect(token_with_r.reload.usages).to eq(1)
 
@@ -180,7 +180,7 @@ describe 'Bearer token show n3' do
   it 'user should 500 when failed to create membership' do
     as_user(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret, response: 403)
-    get "/#{token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{token.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('500')
   end
@@ -191,37 +191,37 @@ describe 'Bearer token show n3' do
   it 'member should show a retracted token' do
     as_user(1)
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{retracted_token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{retracted_token.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('200')
     expect_snackbar('You are already member of this group')
-    expect_redirect(argu_url)
+    expect_redirect(resource_iri(argu_url))
   end
 
   it 'member should show an expired token' do
     as_user(1)
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{expired_token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{expired_token.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('200')
     expect_snackbar('You are already member of this group')
-    expect_redirect(argu_url)
+    expect_redirect(resource_iri(argu_url))
   end
 
   it 'member should show a used token' do
     as_user(1)
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{used_token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{used_token.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('200')
     expect_snackbar('You are already member of this group')
-    expect_redirect(argu_url)
+    expect_redirect(resource_iri(argu_url))
   end
 
   it 'member should not show a retracted token with r' do
     as_user(1)
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{retracted_token_with_r.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{retracted_token_with_r.secret}", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('200')
     expect_snackbar('You are already member of this group')
@@ -232,13 +232,13 @@ describe 'Bearer token show n3' do
     as_user(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: token.secret, response: 304)
 
-    get "/#{token.secret}", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{token.secret}", headers: service_headers(accept: :n3)
     expect(token.reload.last_used_at).to be_nil
     expect(token.reload.usages).to eq(0)
 
     expect(response.code).to eq('200')
     expect_snackbar('You are already member of this group')
-    expect_redirect(argu_url('/group_memberships/1'))
+    expect_redirect(resource_iri(argu_url('/group_memberships/1')))
     expect(response.cookies['token']).to be_nil
   end
 

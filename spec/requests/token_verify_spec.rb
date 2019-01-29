@@ -29,25 +29,25 @@ describe 'Token verify' do
   end
 
   it 'jwt with wrong combination should 404' do
-    get "/verify?jwt=#{invalid_jwt}", headers: service_headers(accept: :json_api)
+    get "/argu/tokens/verify?jwt=#{invalid_jwt}", headers: service_headers(accept: :json_api)
 
     expect(response.code).to eq('404')
   end
 
   it 'jwt for retracted token should 404' do
-    get "/verify?jwt=#{retracted_jwt}", headers: service_headers(accept: :json_api)
+    get "/argu/tokens/verify?jwt=#{retracted_jwt}", headers: service_headers(accept: :json_api)
 
     expect(response.code).to eq('404')
   end
 
   it 'jwt for expired token should 404' do
-    get "/verify?jwt=#{expired_jwt}", headers: service_headers(accept: :json_api)
+    get "/argu/tokens/verify?jwt=#{expired_jwt}", headers: service_headers(accept: :json_api)
 
     expect(response.code).to eq('404')
   end
 
   it 'valid jwt should 200' do
-    get "/verify?jwt=#{valid_jwt}", headers: service_headers(accept: :json_api)
+    get "/argu/tokens/verify?jwt=#{valid_jwt}", headers: service_headers(accept: :json_api)
 
     expect(response.code).to eq('200')
   end

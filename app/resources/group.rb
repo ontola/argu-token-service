@@ -2,6 +2,7 @@
 
 class Group < ActiveResourceModel
   include RailsLD::Model
+  self.collection_name = 'g'
 
   with_collection :bearer_tokens,
                   parent_uri_template_opts: ->(r) { {group_id: r.id} }
@@ -14,12 +15,8 @@ class Group < ActiveResourceModel
     end
   end
 
-  def self.collection_name
-    'g'
-  end
-
   def bearer_tokens
-    @bearer_tokens ||= BearerToken.where(group_id: id)
+    @bearer_tokens ||= BearerToken.where(root_id: root_id, group_id: id)
   end
 
   def build_child(klass)
@@ -27,11 +24,14 @@ class Group < ActiveResourceModel
   end
 
   def email_tokens
-    @email_tokens ||= EmailToken.where(group_id: id)
+    @email_tokens ||= EmailToken.where(root_id: root_id, group_id: id)
   end
 
   def iri_path(_opts = {})
-    @iri_path ||= argu_attribute(:iri).gsub(Rails.application.config.origin, '')
+    @iri_path ||=
+      DynamicUriHelper
+        .revert(argu_attribute(:iri), ActsAsTenant.current_tenant)
+        .gsub(Rails.application.config.origin, '')
   end
 
   private
@@ -44,7 +44,7 @@ class Group < ActiveResourceModel
   def fetch
     original_id = id
     load(
-      self.class.format.decode(self.class.send(:connection).get(self.class.element_path(id), self.class.headers).body)
+      self.class.format.decode(connection.get(self.class.element_path(id, root_id: root_id), self.class.headers).body)
     )
     @attributes[:id] = original_id
     @fetched = true

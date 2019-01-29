@@ -1,0 +1,1 @@
+../../service_module/app/helpers/dynamic_uri_helper.rb

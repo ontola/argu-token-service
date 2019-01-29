@@ -18,12 +18,12 @@ describe 'Email token show' do
   it 'guest without access token should redirect valid token with authorized r to r' do
     as_guest_with_account(false)
     authorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{email_token_with_r.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token_with_r.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to redirect_to('https://example.com')
     expect(flash[:notice]).to eq('Please login to accept this invitation')
-    expect(response.cookies['token']).to eq(email_token_with_r.iri)
+    expect(response.cookies['token']).to eq(resource_iri(email_token_with_r, iri_prefix: "#{ENV['HOSTNAME']}/argu"))
   end
 
   ####################################
@@ -31,11 +31,11 @@ describe 'Email token show' do
   ####################################
   it 'guest without account with retracted token should not create account and redirect to welcome page' do
     as_guest
-    get "/#{retracted_email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{retracted_email_token.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to(argu_url('/users/sign_in', r: "/#{retracted_email_token.secret}"))
+      redirect_to(argu_url('/users/sign_in', r: "/argu/tokens/#{retracted_email_token.secret}"))
     )
     expect(flash[:notice]).to eq('Please login to accept this invitation')
     expect(response.cookies['token']).to be_nil
@@ -44,7 +44,7 @@ describe 'Email token show' do
   it 'guest without account with retracted token should not create account and redirect to r' do
     as_guest
     authorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{retracted_email_token_with_r.secret}", headers: service_headers
+    get "/argu/tokens/#{retracted_email_token_with_r.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to redirect_to('https://example.com')
@@ -55,11 +55,11 @@ describe 'Email token show' do
   it 'guest without account with retracted token should not create account and should not redirect to unauthorized r' do
     as_guest
     unauthorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{retracted_email_token_with_r.secret}", headers: service_headers
+    get "/argu/tokens/#{retracted_email_token_with_r.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to(argu_url('/users/sign_in', r: "/#{retracted_email_token_with_r.secret}"))
+      redirect_to(argu_url('/users/sign_in', r: "/argu/tokens/#{retracted_email_token_with_r.secret}"))
     )
     expect(flash[:notice]).to eq('Please login to accept this invitation')
     expect(response.cookies['token']).to be_nil
@@ -72,7 +72,7 @@ describe 'Email token show' do
     confirm_email_mock(email_token.email)
     unauthorized_mock(action: 'show', iri: 'https://example.com')
 
-    get "/#{email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to redirect_to(argu_url('/group_memberships/1'))
@@ -88,7 +88,7 @@ describe 'Email token show' do
     unauthorized_mock(action: 'show', iri: 'https://example.com')
     create_favorite_mock(iri: email_token_with_r.redirect_url)
 
-    get "/#{email_token_with_r.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token_with_r.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to redirect_to('https://example.com')
@@ -101,11 +101,11 @@ describe 'Email token show' do
   ####################################
   it 'guest with account should redirect retracted email token to login page' do
     as_guest
-    get "/#{retracted_email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{retracted_email_token.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to(argu_url('/users/sign_in', r: "/#{retracted_email_token.secret}"))
+      redirect_to(argu_url('/users/sign_in', r: "/argu/tokens/#{retracted_email_token.secret}"))
     )
     expect(flash[:notice]).to eq('Please login to accept this invitation')
     expect(response.cookies['token']).to be_nil
@@ -114,7 +114,7 @@ describe 'Email token show' do
   it 'guest with account should redirect retracted email token with authorized r to r' do
     as_guest
     authorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{retracted_email_token_with_r.secret}", headers: service_headers
+    get "/argu/tokens/#{retracted_email_token_with_r.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to redirect_to('https://example.com')
@@ -125,11 +125,11 @@ describe 'Email token show' do
   it 'guest with account should redirect retracted email token with unauthorized r to login page' do
     as_guest
     unauthorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{retracted_email_token_with_r.secret}", headers: service_headers
+    get "/argu/tokens/#{retracted_email_token_with_r.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to(argu_url('/users/sign_in', r: "/#{retracted_email_token_with_r.secret}"))
+      redirect_to(argu_url('/users/sign_in', r: "/argu/tokens/#{retracted_email_token_with_r.secret}"))
     )
     expect(flash[:notice]).to eq('Please login to accept this invitation')
     expect(response.cookies['token']).to be_nil
@@ -137,11 +137,11 @@ describe 'Email token show' do
 
   it 'guest with account should redirect valid token to login page' do
     as_guest_with_account
-    get "/#{email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to(argu_url('/users/sign_in', r: "/#{email_token.secret}"))
+      redirect_to(argu_url('/users/sign_in', r: "/argu/tokens/#{email_token.secret}"))
     )
     expect(flash[:notice]).to eq('Please login to accept this invitation')
     expect(response.cookies['token']).to be_nil
@@ -150,22 +150,22 @@ describe 'Email token show' do
   it 'guest with account should redirect valid token with authorized r to r' do
     as_guest_with_account
     authorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{email_token_with_r.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token_with_r.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to redirect_to('https://example.com')
     expect(flash[:notice]).to eq('Please login to accept this invitation')
-    expect(response.cookies['token']).to eq(email_token_with_r.iri)
+    expect(response.cookies['token']).to eq(resource_iri(email_token_with_r))
   end
 
   it 'guest with account should redirect valid token with unauthorized r to login page' do
     as_guest_with_account
     unauthorized_mock(action: 'show', iri: 'https://example.com')
-    get "/#{email_token_with_r.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token_with_r.secret}", headers: service_headers
 
     expect(response.code).to eq('302')
     expect(response).to(
-      redirect_to(argu_url('/users/sign_in', r: "/#{email_token_with_r.secret}"))
+      redirect_to(argu_url('/users/sign_in', r: "/argu/tokens/#{email_token_with_r.secret}"))
     )
     expect(flash[:notice]).to eq('Please login to accept this invitation')
     expect(response.cookies['token']).to be_nil
@@ -177,7 +177,7 @@ describe 'Email token show' do
   it 'user should not show a retracted email token' do
     as_user(1, email: 'email@example.com')
     unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{retracted_email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{retracted_email_token.secret}", headers: service_headers
 
     expect(response).to(
       redirect_to(argu_url('/token', error: :inactive, token: retracted_email_token.secret))
@@ -188,7 +188,7 @@ describe 'Email token show' do
   it 'user should not show an expired email token' do
     as_user(1, email: 'email@example.com')
     unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{expired_email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{expired_email_token.secret}", headers: service_headers
 
     expect(response).to(
       redirect_to(argu_url('/token', error: :inactive, token: expired_email_token.secret))
@@ -199,7 +199,7 @@ describe 'Email token show' do
   it 'user should not show a used email token' do
     as_user(1, email: 'email@example.com')
     unauthorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{used_email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{used_email_token.secret}", headers: service_headers
 
     expect(response).to(
       redirect_to(argu_url('/token', error: :inactive, token: used_email_token.secret))
@@ -211,7 +211,7 @@ describe 'Email token show' do
     as_user(1)
     create_membership_mock(user_id: 1, group_id: 1, secret: email_token.secret)
 
-    get "/#{email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token.secret}", headers: service_headers
     expect(email_token.reload.last_used_at).to be_nil
     expect(email_token.reload.usages).to eq(0)
 
@@ -226,7 +226,7 @@ describe 'Email token show' do
     create_membership_mock(user_id: 1, group_id: 1, secret: email_token.secret)
     emails_mock('tokens', email_token.id)
 
-    get "/#{email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token.secret}", headers: service_headers
     expect(email_token.reload.last_used_at).to be_truthy
     expect(email_token.reload.usages).to eq(1)
 
@@ -242,7 +242,7 @@ describe 'Email token show' do
     emails_mock('tokens', email_token.id)
     confirm_email_mock(email_token.email)
 
-    get "/#{email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token.secret}", headers: service_headers
     expect(email_token.reload.last_used_at).to be_truthy
     expect(email_token.reload.usages).to eq(1)
 
@@ -258,7 +258,7 @@ describe 'Email token show' do
     emails_mock('tokens', email_token_with_r.id)
     create_favorite_mock(iri: email_token_with_r.redirect_url)
 
-    get "/#{email_token_with_r.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token_with_r.secret}", headers: service_headers
     expect(email_token_with_r.reload.last_used_at).to be_truthy
     expect(email_token_with_r.reload.usages).to eq(1)
 
@@ -274,7 +274,7 @@ describe 'Email token show' do
     emails_mock('tokens', email_token_with_r.id)
     create_favorite_mock(iri: email_token_with_r.redirect_url, status: 500)
 
-    get "/#{email_token_with_r.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token_with_r.secret}", headers: service_headers
     expect(email_token_with_r.reload.last_used_at).to be_truthy
     expect(email_token_with_r.reload.usages).to eq(1)
 
@@ -289,7 +289,7 @@ describe 'Email token show' do
     create_membership_mock(user_id: 1, group_id: 1, secret: email_token.secret)
     emails_mock('tokens', email_token.id)
 
-    get "/#{email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{email_token.secret}", headers: service_headers
     expect(email_token.reload.last_used_at).to be_truthy
     expect(email_token.reload.usages).to eq(1)
 
@@ -305,7 +305,7 @@ describe 'Email token show' do
   it 'member should show a retracted email token' do
     as_user(1, email: 'email@example.com')
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{retracted_email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{retracted_email_token.secret}", headers: service_headers
 
     expect(response).to redirect_to(argu_url)
     expect(flash[:notice]).to eq('You are already member of this group')
@@ -315,7 +315,7 @@ describe 'Email token show' do
   it 'member should show a retracted email token with r' do
     as_user(1, email: 'email@example.com')
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{retracted_email_token_with_r.secret}", headers: service_headers
+    get "/argu/tokens/#{retracted_email_token_with_r.secret}", headers: service_headers
 
     expect(response).to redirect_to('https://example.com')
     expect(flash[:notice]).to eq('You are already member of this group')
@@ -325,7 +325,7 @@ describe 'Email token show' do
   it 'member should show an expired email token' do
     as_user(1, email: 'email@example.com')
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{expired_email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{expired_email_token.secret}", headers: service_headers
 
     expect(response).to redirect_to(argu_url)
     expect(flash[:notice]).to eq('You are already member of this group')
@@ -335,7 +335,7 @@ describe 'Email token show' do
   it 'member should show a used email token' do
     as_user(1, email: 'email@example.com')
     authorized_mock(type: 'Group', id: 1, action: 'is_member')
-    get "/#{used_email_token.secret}", headers: service_headers
+    get "/argu/tokens/#{used_email_token.secret}", headers: service_headers
 
     expect(response).to redirect_to(argu_url)
     expect(flash[:notice]).to eq('You are already member of this group')
@@ -347,7 +347,7 @@ describe 'Email token show' do
   def wrong_email_location(token)
     argu_url(
       '/users/wrong_email',
-      r: argu_url('/users/sign_in', r: token.iri, notice: I18n.t('please_login')),
+      r: argu_url('/users/sign_in', r: resource_iri(token), notice: I18n.t('please_login')),
       email: token.email
     )
   end

@@ -9,9 +9,8 @@ gem 'puma', '~> 3.9.1'
 
 gem 'active_model_serializers'
 gem 'active_response', git: 'https://github.com/ontola/active_response', branch: :master
-gem 'activeresource',
-    git: 'https://github.com/rails/activeresource',
-    ref: 'e28f907145c34bcad1d354fa9b25fbd4264e52e9'
+gem 'activeresource', git: 'https://github.com/ArthurWD/activeresource', branch: :master
+gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch: :master
 gem 'bootsnap'
 gem 'bugsnag', '~> 5.0.1'
 gem 'bunny'

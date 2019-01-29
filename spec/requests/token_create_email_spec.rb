@@ -17,7 +17,7 @@ describe 'Token email create' do
   it 'guest should not create valid email token' do
     as_guest
     assert_difference('Token.count', 0) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -41,7 +41,7 @@ describe 'Token email create' do
     as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -65,7 +65,7 @@ describe 'Token email create' do
     as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -85,7 +85,7 @@ describe 'Token email create' do
     as_user
     authorized_mock(type: 'Group', id: -1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -106,7 +106,7 @@ describe 'Token email create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -126,7 +126,7 @@ describe 'Token email create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -151,7 +151,7 @@ describe 'Token email create' do
     user_mock('user3', email: 'user3@example.com', token: ENV['SERVICE_TOKEN'])
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 3) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -176,7 +176,7 @@ describe 'Token email create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -199,7 +199,7 @@ describe 'Token email create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -222,7 +222,7 @@ describe 'Token email create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -245,7 +245,7 @@ describe 'Token email create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -270,7 +270,7 @@ describe 'Token email create' do
     authorized_mock(type: 'Group', id: 1, action: 'update')
     authorized_mock(type: 'CurrentActor', id: 'https://argu.dev/u/1', action: 'show')
     assert_difference('Token.count', 2) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -295,7 +295,7 @@ describe 'Token email create' do
     authorized_mock(type: 'Group', id: 1, action: 'update')
     unauthorized_mock(type: 'CurrentActor', id: 'https://argu.dev/u/1', action: 'show')
     assert_difference('Token.count', 0) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -319,7 +319,7 @@ describe 'Token email create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -344,7 +344,7 @@ describe 'Token email create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {
@@ -368,7 +368,7 @@ describe 'Token email create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'emailTokenRequest',
           attributes: {

@@ -10,9 +10,9 @@ describe 'Token email update' do
   ####################################
   it 'guest should not put update email token' do
     as_guest
-    put token_path(token), params: {
+    put "/argu#{token_path(token)}", params: {
       data: {
-        id: token.iri,
+        id: resource_iri(token),
         type: 'tokens',
         attributes: {
           redirect_url: 'https://example.com'
@@ -31,9 +31,9 @@ describe 'Token email update' do
   it 'user should not put update email token' do
     as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
-    put token_path(token), params: {
+    put "/argu#{token_path(token)}", params: {
       data: {
-        id: token.iri,
+        id: resource_iri(token),
         type: 'tokens',
         attributes: {
           redirect_url: 'https://example.com'
@@ -53,9 +53,9 @@ describe 'Token email update' do
     as_user
     emails_mock('tokens', token.id)
     authorized_mock(type: 'Group', id: 1, action: 'update')
-    put token_path(token), params: {
+    put "/argu#{token_path(token)}", params: {
       data: {
-        id: token.iri,
+        id: resource_iri(token),
         type: 'tokens',
         attributes: {
           redirect_url: 'https://example.com'

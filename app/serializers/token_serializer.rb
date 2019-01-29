@@ -39,7 +39,7 @@ class TokenSerializer < RecordSerializer
   end
 
   def token_url
-    RDF::URI(expand_uri_template(:tokens_iri, secret: object.secret, with_hostname: true))
+    RDF::DynamicURI(expand_uri_template(:tokens_iri, secret: object.secret, with_hostname: true))
   end
 
   def token_url?

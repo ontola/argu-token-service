@@ -57,7 +57,7 @@ class Token < ApplicationRecord
   end
 
   def group
-    @group ||= group_id && Group.new(id: group_id)
+    @group ||= group_id && Group.new(id: group_id, root_id: root_id)
   end
 
   def group=(group)

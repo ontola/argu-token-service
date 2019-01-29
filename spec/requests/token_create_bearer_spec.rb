@@ -13,7 +13,7 @@ describe 'Token bearer create' do
   it 'guest should not create valid bearer token' do
     as_guest
     assert_difference('Token.count', 0) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'bearerToken',
           attributes: {
@@ -35,7 +35,7 @@ describe 'Token bearer create' do
     as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'bearerToken',
           attributes: {
@@ -58,7 +58,7 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'wrongType',
           attributes: {
@@ -77,7 +77,7 @@ describe 'Token bearer create' do
   it 'manager should not create without attributes' do
     as_user
     assert_difference('Token.count', 0) do
-      post '/', headers: service_headers(accept: :json_api)
+      post '/argu/tokens/', headers: service_headers(accept: :json_api)
 
       expect(response.code).to eq('422')
       expect_error_message('param is missing or the value is empty: data')
@@ -89,7 +89,7 @@ describe 'Token bearer create' do
     as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'bearerToken',
           attributes: {
@@ -108,7 +108,7 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', id: -1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'bearerToken',
           attributes: {
@@ -128,7 +128,7 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'bearerToken',
           attributes: {
@@ -148,7 +148,7 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'bearerToken',
           attributes: {
@@ -169,7 +169,7 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
-      post '/', params: {
+      post '/argu/tokens/', params: {
         data: {
           type: 'bearerToken',
           attributes: {

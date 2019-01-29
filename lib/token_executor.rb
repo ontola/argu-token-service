@@ -27,8 +27,13 @@ class TokenExecutor
     end
   end
 
-  def redirect_url
-    token.redirect_url || @membership_request&.headers.try(:[], :location) || argu_url
+  def redirect_url # rubocop:disable Metrics/AbcSize
+    url = token.redirect_url || @membership_request&.headers.try(:[], :location) || argu_url
+    old_frontend = RequestStore.store[:old_frontend]
+    RequestStore.store[:old_frontend] = url.to_s.starts_with?("https://#{Rails.application.config.host_name}")
+    url = DynamicUriHelper.revert(url, ActsAsTenant.current_tenant)
+    RequestStore.store[:old_frontend] = old_frontend
+    url
   end
 
   private

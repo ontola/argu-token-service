@@ -30,14 +30,14 @@ class EmailConflictsController < ApplicationController
   end
 
   def couple_email_entry_iri
-    @couple_email_entry_iri ||= ::RDF::URI("#{request.url}/actions/couple_email#entrypoint")
+    @couple_email_entry_iri ||= ::RDF::DynamicURI("#{requested_url}/actions/couple_email#entrypoint")
   end
 
   def email_conflict_graph # rubocop:disable Metrics/AbcSize
     graph = ::RDF::Graph.new
-    graph << [::RDF::URI(request.url), ::RDF[:type], NS::SCHEMA[:Thing]]
-    graph << [::RDF::URI(request.url), NS::SCHEMA[:name], I18n.t('email_conflicts.title')]
-    graph << [::RDF::URI(request.url), NS::SCHEMA[:text], conflict_description]
+    graph << [::RDF::DynamicURI(requested_url), ::RDF[:type], NS::SCHEMA[:Thing]]
+    graph << [::RDF::DynamicURI(requested_url), NS::SCHEMA[:name], I18n.t('email_conflicts.title')]
+    graph << [::RDF::DynamicURI(requested_url), NS::SCHEMA[:text], conflict_description]
 
     add_couple_action(graph) unless account_exists?
     add_logout_action(graph)
@@ -46,7 +46,7 @@ class EmailConflictsController < ApplicationController
   end
 
   def add_couple_action(graph) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    iri = ::RDF::URI("#{request.url}/actions/couple_email")
+    iri = ::RDF::DynamicURI("#{requested_url}/actions/couple_email")
     entry_point_iri = iri.dup
     entry_point_iri.fragment = :entrypoint
     form_iri = iri.dup
@@ -54,8 +54,8 @@ class EmailConflictsController < ApplicationController
     email_property = RDF::Node.new
     email_node = RDF::Node.new
 
-    graph << [::RDF::URI(request.url), NS::SCHEMA[:potentialAction], iri]
-    graph << [::RDF::URI(request.url), NS::ARGU[:favoriteAction], iri]
+    graph << [::RDF::DynamicURI(requested_url), NS::SCHEMA[:potentialAction], iri]
+    graph << [::RDF::DynamicURI(requested_url), NS::ARGU[:favoriteAction], iri]
 
     graph << [iri, RDF[:type], NS::SCHEMA[:Action]]
     graph << [iri, NS::SCHEMA[:name], I18n.t('email_conflicts.add', email: token.email)]
@@ -82,13 +82,13 @@ class EmailConflictsController < ApplicationController
   end
 
   def add_logout_action(graph) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    iri = ::RDF::URI("#{request.url}/actions/logout")
+    iri = ::RDF::DynamicURI("#{requested_url}/actions/logout")
     entry_point_iri = iri.dup
     entry_point_iri.fragment = :entrypoint
     label = I18n.t("email_conflicts.#{account_exists? ? :switch : :create_new_account}")
 
-    graph << [::RDF::URI(request.url), NS::SCHEMA[:potentialAction], iri]
-    graph << [::RDF::URI(request.url), NS::ARGU[:favoriteAction], iri]
+    graph << [::RDF::DynamicURI(requested_url), NS::SCHEMA[:potentialAction], iri]
+    graph << [::RDF::DynamicURI(requested_url), NS::ARGU[:favoriteAction], iri]
 
     graph << [iri, RDF[:type], NS::SCHEMA[:Action]]
     graph << [iri, NS::SCHEMA[:name], label]
@@ -99,7 +99,7 @@ class EmailConflictsController < ApplicationController
     graph << [entry_point_iri, RDF[:type], NS::SCHEMA[:EntryPoint]]
     graph << [entry_point_iri, NS::SCHEMA[:name], label]
     graph << [entry_point_iri, NS::ARGU[:action], NS::ONTOLA['actions/logout']]
-    graph << [entry_point_iri, NS::ARGU[:href], RDF::URI(argu_url('/users/sign_out'))]
+    graph << [entry_point_iri, NS::ARGU[:href], RDF::DynamicURI(argu_url('/users/sign_out'))]
     graph << [entry_point_iri, NS::SCHEMA[:image], RDF::URI('http://fontawesome.io/icon/user-plus')]
   end
 
@@ -107,6 +107,10 @@ class EmailConflictsController < ApplicationController
     @token ||= Token.find_by(secret: params[:token_secret])
   end
   alias requested_resource token
+
+  def requested_url
+    @requested_url ||= argu_url(request.path)
+  end
 
   def verify_email_conflict
     redirect_to token.iri.to_s if token.email.blank? || token.email == current_user.email

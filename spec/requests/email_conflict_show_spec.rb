@@ -10,7 +10,7 @@ describe 'Email conflict show' do
   ####################################
   it 'guest should show email conflict' do
     as_guest
-    get "/#{token.secret}/email_conflict", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{token.secret}/email_conflict", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('401')
   end
@@ -21,7 +21,7 @@ describe 'Email conflict show' do
   it 'other user should show email conflict' do
     email_check_mock(false)
     as_user(1)
-    get "/#{token.secret}/email_conflict", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{token.secret}/email_conflict", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('200')
   end
@@ -32,7 +32,7 @@ describe 'Email conflict show' do
   it 'user with other email should show email conflict' do
     email_check_mock(true)
     as_user(1)
-    get "/#{token.secret}/email_conflict", headers: service_headers(accept: :n3)
+    get "/argu/tokens/#{token.secret}/email_conflict", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('200')
   end

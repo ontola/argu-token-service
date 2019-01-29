@@ -56,7 +56,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def create_success_location
-    settings_iri_path(Group.new(id: group_id).iri_path, fragment: :"#{token_type}_invite")
+    settings_iri(Group.new(id: group_id, root_id: tree_root.uuid).iri_path, fragment: :"#{token_type}_invite").to_s
   end
   alias destroy_success_location create_success_location
 
@@ -107,11 +107,11 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def new_resource
-    Token.new(group_id: group_id, actor_iri: actor_iri)
+    Token.new(group_id: group_id, actor_iri: actor_iri, root_id: tree_root.uuid)
   end
 
   def parent_resource!
-    @parent_resource ||= Group.new(id: group_id)
+    @parent_resource ||= Group.new(id: group_id, root_id: tree_root.uuid)
   end
 
   def parse_group_id(group_id)

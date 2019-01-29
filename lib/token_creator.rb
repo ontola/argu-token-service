@@ -60,6 +60,10 @@ class TokenCreator
         ).pluck(:email)
   end
 
+  def find_invitee(id)
+    User.find(id, params: {root_id: root_id})
+  end
+
   def initialize_tokens
     self.tokens = batch? ? batch_params.map { |a| Token.new(a) } : Token.new(single_params)
     batch? ? tokens.each(&:generate_token) : tokens.generate_token
@@ -68,7 +72,7 @@ class TokenCreator
   def invitees
     @invitees ||=
       addresses_param
-        .map { |invitee| {invitee: invitee, email: invitee.include?('@') ? invitee : User.find(invitee).email} }
+        .map { |invitee| {invitee: invitee, email: invitee.include?('@') ? invitee : find_invitee(invitee).email} }
         .uniq { |invitee| invitee[:email] }
   end
 
