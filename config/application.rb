@@ -43,8 +43,7 @@ module Service
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore,
                           key: '_Argu_sesion',
-                          domain: :all,
-                          tld_length: Rails.env.staging? ? 3 : 2
+                          domain: Rails.env.staging? ? nil : :all
     config.middleware.use TenantMiddleware
     config.middleware.use RailsLD::Middleware::LinkedDataParams
 
