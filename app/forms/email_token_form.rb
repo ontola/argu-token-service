@@ -18,7 +18,7 @@ class EmailTokenForm < ApplicationForm
     },
     {
       redirect_url: {
-        default_value: ->(r) { RDF::DynamicURI(r.form.target.group.organization.iri).to_s }
+        default_value: ->(_r) { "https://#{ActsAsTenant.current_tenant.iri_prefix}" }
       }
     },
     :hidden,
