@@ -5,6 +5,7 @@ class Token < ApplicationRecord
   include Enhanceable
   include RailsLD::Model
   include Broadcastable
+  enhance Tableable
 
   before_create :set_token_type
 
