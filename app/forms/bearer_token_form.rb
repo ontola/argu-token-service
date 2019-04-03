@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class BearerTokenForm < RailsLD::Form
+class BearerTokenForm < ApplicationForm
   include RegexHelper
 
   fields [

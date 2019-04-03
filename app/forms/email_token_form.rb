@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class EmailTokenForm < RailsLD::Form
+class EmailTokenForm < ApplicationForm
   include RegexHelper
 
   fields [
