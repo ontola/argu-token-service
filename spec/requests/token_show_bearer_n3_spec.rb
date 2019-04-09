@@ -17,52 +17,58 @@ describe 'Bearer token show n3' do
     as_guest
     get '/argu/tokens/invalid_token', headers: service_headers(accept: :n3)
 
-    expect(response.code).to eq('401')
+    expect(response.code).to eq('200')
   end
 
   it 'guest should redirect retracted to login page' do
+    group_mock(1)
     as_guest
     get "/argu/tokens/#{retracted_token.secret}", headers: service_headers(accept: :n3)
 
-    expect(response.code).to eq('401')
+    expect(response.code).to eq('200')
   end
 
   it 'guest should redirect retracted with authorized r to r' do
+    group_mock(1)
     as_guest
     authorized_mock(action: 'show', iri: 'https://example.com')
     get "/argu/tokens/#{retracted_token_with_r.secret}", headers: service_headers(accept: :n3)
 
-    expect(response.code).to eq('401')
+    expect(response.code).to eq('200')
   end
 
   it 'guest should redirect retracted with unauthorized r to login page' do
+    group_mock(1)
     as_guest
     unauthorized_mock(action: 'show', iri: 'https://example.com')
     get "/argu/tokens/#{retracted_token_with_r.secret}", headers: service_headers(accept: :n3)
 
-    expect(response.code).to eq('401')
+    expect(response.code).to eq('200')
   end
 
   it 'guest should redirect with authorized r to login page' do
+    group_mock(1)
     as_guest
     authorized_mock(action: 'show', iri: 'https://example.com')
     get "/argu/tokens/#{token_with_r.secret}", headers: service_headers(accept: :n3)
 
-    expect(response.code).to eq('401')
+    expect(response.code).to eq('200')
   end
 
   it 'guest should redirect to login page' do
+    group_mock(1)
     as_guest
     get "/argu/tokens/#{token.secret}", headers: service_headers(accept: :n3)
 
-    expect(response.code).to eq('401')
+    expect(response.code).to eq('200')
   end
 
   it 'guest should redirect valid token from query param to login page' do
+    group_mock(1)
     as_guest
     get "/argu/tokens?secret=#{token.secret}", headers: service_headers(accept: :n3)
 
-    expect(response.code).to eq('401')
+    expect(response.code).to eq('200')
   end
 
   ####################################

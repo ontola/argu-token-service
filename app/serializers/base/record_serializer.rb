@@ -8,4 +8,8 @@ class RecordSerializer < BaseSerializer
   def export?
     scope&.doorkeeper_scopes&.include? 'export'
   end
+
+  def guest?
+    scope&.doorkeeper_scopes&.include? 'guest'
+  end
 end

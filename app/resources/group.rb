@@ -9,7 +9,7 @@ class Group < ActiveResourceModel
   with_collection :email_tokens,
                   parent_uri_template_opts: ->(r) { {group_id: r.id} }
 
-  %i[organization].each do |method|
+  %i[organization display_name].each do |method|
     define_method method do
       argu_attribute(method)
     end

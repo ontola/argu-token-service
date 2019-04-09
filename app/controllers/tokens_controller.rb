@@ -38,7 +38,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   def check_if_registered
     return super unless action_name == 'show'
     return true if request.head?
-    !current_user.guest? || create_user || raise(Argu::Errors::Unauthorized.new(message: I18n.t('please_login')))
+    !current_user.guest? || create_user || handle_not_logged_in
   end
 
   def create_execute
@@ -94,6 +94,17 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
       else
         raise ActiveRecord::RecordNotFound
       end
+    end
+  end
+
+  def handle_not_logged_in
+    active_response_block do
+      raise(Argu::Errors::Unauthorized.new(message: I18n.t('please_login'))) if active_response_type == :html
+
+      respond_with_resource(
+        resource: resource_by_secret,
+        fields: {bearerTokens: %i[label description login_action type]}
+      )
     end
   end
 
