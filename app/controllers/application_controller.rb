@@ -4,7 +4,7 @@ class ApplicationController < ApiController
   include ActiveResponse::Controller
   include ActiveResponseHelper
 
-  before_action :set_tenant_header
+  prepend_before_action :set_tenant_header
 
   private
 
