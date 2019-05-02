@@ -65,7 +65,7 @@ class TokenCreator
   end
 
   def initialize_tokens
-    self.tokens = batch? ? batch_params.map { |a| Token.new(a) } : Token.new(single_params)
+    self.tokens = batch? ? batch_params.map { |a| token_class.new(a) } : token_class.new(single_params)
     batch? ? tokens.each(&:generate_token) : tokens.generate_token
   end
 
@@ -85,5 +85,9 @@ class TokenCreator
       params
         .slice(:expires_at, :root_id, :message, :redirect_url, :send_mail)
         .merge(actor_iri: actor_iri, group_id: group_id)
+  end
+
+  def token_class
+    type == :email ? EmailToken : Token
   end
 end
