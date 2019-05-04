@@ -3,9 +3,6 @@ en:
     type: "Invite link"
     plural: "Invite links"
     type_new: "New invite link"
-    invitation:
-      label: "Invitation"
-      description: "You have been invited for the group '%{group}'. Please log in to accept the invitation."
     form:
       redirect_url:
         label: "Redirect url after clicking the invite link"

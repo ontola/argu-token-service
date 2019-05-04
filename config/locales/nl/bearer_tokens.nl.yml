@@ -3,9 +3,6 @@ nl:
     type: "Uitnodigingslink"
     plural: "Uitnodigingslinks"
     type_new: "Nieuwe uitnodigingslink"
-    invitation:
-      label: "Uitnodiging"
-      description: "Je bent uitgenodigd voor de groep '%{group}'. Log in om de uitnodiging te accepteren."
     form:
       redirect_url:
         label: "Url om naar door te verwijzen na het klikken op de link"

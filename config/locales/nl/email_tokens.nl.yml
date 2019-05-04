@@ -14,3 +14,6 @@ nl:
       redirect_url:
         label: "Url om naar door te verwijzen na het klikken op de link"
         description: "Geef een url op"
+    invitation:
+      login: "%{email} is uitgenodigd voor de groep '%{group}'. Er bestaat al een account voor dit email adres. Log hiermee in om de uitnodiging te accepteren."
+      accept: "%{email} is uitgenodigd voor de groep '%{group}'. Klik op onderstaande knop om te accepteren. Er zal automatisch een account voor je worden aangemaakt."

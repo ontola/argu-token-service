@@ -15,8 +15,9 @@ Rails.application.routes.draw do
       resources :"#{type}_tokens", path: "#{type}/g/:group_id", only: %i[new create index]
     end
     resources :tokens, path: '', param: :secret, only: %i[create update show destroy] do
+      post :show, on: :member
       get :delete, on: :member
-      resource :email_conflict, only: :show
+      resource :email_conflict, only: %i[show update]
     end
 
     constraints(Argu::WhitelistConstraint) do

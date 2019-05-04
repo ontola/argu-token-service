@@ -10,7 +10,7 @@ class ApplicationController < ApiController
 
   def handle_record_not_found_html(_e)
     return super unless action_name == 'show'
-    redirect_to argu_url('/token', token: params[:secret], error: 'not_found')
+    redirect_to argu_url("/#{tree_root.url}/token", token: params[:secret], error: 'not_found')
   end
 
   def set_tenant_header

@@ -11,7 +11,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   include UriTemplateHelper
   active_response :show, :update, :create, :destroy
 
-  before_action :handle_inactive_token, only: :show, unless: :token_active?
+  prepend_before_action :handle_inactive_token, only: :show, unless: :token_active?
   before_action :redirect_wrong_email, unless: :valid_email?, only: %i[show]
 
   private
@@ -37,7 +37,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def check_if_registered
     return super unless action_name == 'show'
-    return true if request.head?
+    return false unless execute_token?
     !current_user.guest? || create_user || handle_not_logged_in
   end
 
@@ -72,6 +72,10 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     resource_by_secret.update(retracted_at: Time.current)
   end
 
+  def execute_token?
+    @execute_token ||= request.post? || !RDF_CONTENT_TYPES.include?(request.format.symbol)
+  end
+
   def group_id
     @group_id ||= parse_group_id(
       case action_name
@@ -85,10 +89,12 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     )
   end
 
-  def handle_inactive_token
+  def handle_inactive_token # rubocop:disable Metrics/MethodLength
     active_response_block do
-      if api.user_is_group_member?(group_id)
+      if !current_user.guest? && api.user_is_group_member?(group_id)
         redirect_already_member
+      elsif authorize_redirect_resource
+        redirect_to_authorized_r
       elsif active_response_type == :html
         redirect_inactive_token
       else
@@ -102,7 +108,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
       raise(Argu::Errors::Unauthorized.new(message: I18n.t('please_login'))) if active_response_type == :html
 
       respond_with_resource(
-        resource: resource_by_secret,
+        resource: resource_by_secret!,
         fields: {bearerTokens: %i[label description login_action type]}
       )
     end
@@ -142,11 +148,14 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def redirect_already_member
-    respond_with_redirect(location: resource_by_secret.redirect_url || argu_url, notice: I18n.t('already_member'))
+    respond_with_redirect(
+      location: resource_by_secret.redirect_url || argu_url("/#{tree_root.url}"),
+      notice: I18n.t('already_member')
+    )
   end
 
   def redirect_inactive_token
-    respond_with_redirect(location: argu_url('/token', token: params[:secret], error: 'inactive'))
+    respond_with_redirect(location: argu_url("/#{tree_root.url}/token", token: params[:secret], error: 'inactive'))
   end
 
   def redirect_to_authorized_r
@@ -175,18 +184,24 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def respond_with_redirect(opts)
     response.headers['New-Authorization'] = @new_authorization if @new_authorization
+    old_frontend = opts[:location].to_s.starts_with?(Rails.application.config.origin)
+    opts[:location] = DynamicUriHelper.revert(opts[:location], ActsAsTenant.current_tenant, old_frontend: old_frontend)
+    opts[:location] = DynamicUriHelper.rewrite(opts[:location])
     super
   end
 
   def show_execute
-    request.head? ? true : token_executor.execute!
+    execute_token? ? token_executor.execute! : true
   end
 
   def show_success
-    if request.head?
-      head 200
-    else
+    if execute_token?
       respond_with_redirect(location: token_executor.redirect_url, notice: token_executor.notice(cookies[:locale]))
+    else
+      respond_with_resource(
+        resource: resource_by_secret,
+        fields: {bearerTokens: %i[label description login_action type]}
+      )
     end
   end
 
@@ -214,7 +229,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def valid_email?
-    request.head? ? true : resource_by_secret.valid_email?(current_user)
+    current_user.guest? || resource_by_secret.valid_email?(current_user)
   end
 
   def wrong_email_location

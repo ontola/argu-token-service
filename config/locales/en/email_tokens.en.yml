@@ -14,3 +14,6 @@ en:
       redirect_url:
         label: "Redirect url after clicking the invite link"
         description: "Enter a url"
+    invitation:
+      login: "%{email} is invited for the group '%{group}'. An account for this email address already exists. Please log in with this account to accept the invitation."
+      accept: "%{email} is invited for the group '%{group}'. Click the button below to accept. An account will be created for you automatically."

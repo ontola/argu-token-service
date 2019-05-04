@@ -5,6 +5,10 @@ require 'spec_helper'
 describe 'Email conflict show' do
   let(:token) { create(:token, email: 'other@example.com') }
 
+  before do
+    group_mock(1)
+  end
+
   ####################################
   # As Guest
   ####################################
@@ -19,7 +23,7 @@ describe 'Email conflict show' do
   # As Other User
   ####################################
   it 'other user should show email conflict' do
-    email_check_mock(false)
+    email_check_mock('other@example.com', false)
     as_user(1)
     get "/argu/tokens/#{token.secret}/email_conflict", headers: service_headers(accept: :n3)
 
@@ -30,17 +34,10 @@ describe 'Email conflict show' do
   # As User With Other Email
   ####################################
   it 'user with other email should show email conflict' do
-    email_check_mock(true)
+    email_check_mock('other@example.com', true)
     as_user(1)
     get "/argu/tokens/#{token.secret}/email_conflict", headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('200')
-  end
-
-  private
-
-  def email_check_mock(exists)
-    stub_request(:get, expand_service_url(:argu, '/spi/email_addresses', email: 'other@example.com'))
-      .to_return(status: exists ? 200 : 404)
   end
 end

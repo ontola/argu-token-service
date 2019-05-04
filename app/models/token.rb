@@ -31,6 +31,10 @@ class Token < ApplicationRecord
     self.secret = email.present? ? SecureRandom.urlsafe_base64(128) : human_readable_token unless secret?
   end
 
+  def login_iri
+    RDF::URI("https://#{ActsAsTenant.current_tenant.iri_prefix}/u/sign_in?r=#{iri}")
+  end
+
   def to_param
     secret
   end
@@ -38,23 +42,6 @@ class Token < ApplicationRecord
   def update_usage!
     increment(:usages)
     update!(last_used_at: Time.current)
-  end
-
-  def valid_email?(user)
-    email.nil? || user.email_addresses.map { |e| e.attributes['email'] }.include?(email)
-  end
-
-  def email
-    super&.downcase
-  end
-
-  def emails
-    return [] if previous_changes['id']&.first.nil? && previous_changes['id']&.second.present?
-    @emails ||= Email.where(
-      resource_id: id,
-      resource_type: 'tokens',
-      event: 'create'
-    )
   end
 
   def group

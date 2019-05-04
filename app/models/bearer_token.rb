@@ -11,4 +11,8 @@ class BearerToken < Token
     NS::ARGU[:usages],
     NS::ARGU[:destroyAction]
   ]
+
+  def valid_email?(_user)
+    true
+  end
 end

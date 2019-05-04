@@ -2,3 +2,8 @@ en:
   tokens:
     type: "Invite"
     plural: "Invites"
+    invitation:
+      label: "Invitation"
+      login: "You have been invited for the group '%{group}'. Please log in to accept the invitation."
+      accept: "You have been invited for the group '%{group}'. Click the button below to accept."
+      accept_button: "Accept"

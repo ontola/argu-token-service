@@ -5,6 +5,10 @@ require 'spec_helper'
 describe 'Token retract' do
   let(:token) { create(:token) }
 
+  before do
+    group_mock(1)
+  end
+
   ####################################
   # As Guest
   ####################################
@@ -53,7 +57,6 @@ describe 'Token retract' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     emails_mock('tokens', token.id)
-    group_mock(1)
 
     assert_difference('Token.active.count', -1) do
       delete "/argu/tokens/#{token.secret}", headers: service_headers(accept: :json_api)

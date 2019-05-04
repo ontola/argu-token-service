@@ -2,3 +2,8 @@ nl:
   tokens:
     type: "Uitnodiging"
     plural: "Uitnodigingen"
+    invitation:
+      label: "Uitnodiging"
+      login: "Je bent uitgenodigd voor de groep '%{group}'. Log in om de uitnodiging te accepteren."
+      accept: "Je bent uitgenodigd voor de groep '%{group}'. Klik op onderstaande knop om te accepteren."
+      accept_button: "Accepteer"

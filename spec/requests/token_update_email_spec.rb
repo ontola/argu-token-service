@@ -5,6 +5,10 @@ require 'spec_helper'
 describe 'Token email update' do
   let(:token) { create(:token, email: 'email1@example.com') }
 
+  before do
+    group_mock(1)
+  end
+
   ####################################
   # As Guest
   ####################################

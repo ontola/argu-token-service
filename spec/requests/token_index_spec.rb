@@ -5,6 +5,10 @@ require 'spec_helper'
 describe 'Token index' do
   let(:token) { create(:token) }
 
+  before do
+    group_mock(1)
+  end
+
   ####################################
   # As Guest
   ####################################
@@ -35,7 +39,6 @@ describe 'Token index' do
   ####################################
   it 'manager should get index' do
     as_user
-    group_mock(1)
     authorized_mock(type: 'Group', id: 1, action: 'update')
     emails_mock('tokens', token.id)
 

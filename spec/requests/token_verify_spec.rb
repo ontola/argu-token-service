@@ -28,6 +28,10 @@ describe 'Token verify' do
                'HS256')
   end
 
+  before do
+    group_mock(1)
+  end
+
   it 'jwt with wrong combination should 404' do
     get "/argu/tokens/verify?jwt=#{invalid_jwt}", headers: service_headers(accept: :json_api)
 
