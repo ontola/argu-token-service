@@ -16,6 +16,8 @@ class EmailToken < Token
     @account_exists ||= api.email_address_exists?(email)
   end
 
+  def addresses; end
+
   def email
     super&.downcase
   end
