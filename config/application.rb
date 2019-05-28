@@ -21,7 +21,8 @@ require_relative 'initializers/build'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-require_relative '../lib/rails_ld/middleware/linked_data_params'
+require 'linked_rails/middleware/linked_data_params'
+require_relative '../lib/tenant_finder'
 require_relative '../lib/tenant_middleware'
 require_relative '../lib/ns'
 
@@ -45,7 +46,7 @@ module Service
                           key: '_Argu_sesion',
                           domain: Rails.env.staging? ? nil : :all
     config.middleware.use TenantMiddleware
-    config.middleware.use RailsLD::Middleware::LinkedDataParams
+    config.middleware.use LinkedRails::Middleware::LinkedDataParams
 
     config.autoload_paths += %w[lib]
     config.autoload_paths += %W[#{config.root}/app/serializers/base]

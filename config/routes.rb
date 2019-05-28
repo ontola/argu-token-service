@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     resources :tokens, path: '', param: :secret, only: %i[create update show destroy] do
       post :show, on: :member
       get :delete, on: :member
-      resource :email_conflict, only: %i[show update]
+      resource :email_conflict, only: %i[show update], path: :email_conflict
     end
 
     constraints(Argu::WhitelistConstraint) do

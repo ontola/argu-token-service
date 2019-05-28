@@ -1,1 +1,0 @@
-../../service_module/app/serializers/action_item_serializer.rb

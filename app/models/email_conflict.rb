@@ -3,7 +3,8 @@
 class EmailConflict
   include ActiveModel::Model
   include ActiveModel::Serialization
-  include RailsLD::Model
+  include LinkedRails::Model
+  include IRITemplateHelper
   include UrlHelper
 
   attr_accessor :api, :token
@@ -19,12 +20,12 @@ class EmailConflict
 
     [
       [iri, NS::SCHEMA[:potentialAction], action_iri],
-      [iri, NS::ARGU[:favoriteAction], action_iri],
+      [iri, NS::ONTOLA[:favoriteAction], action_iri],
       [action_iri, RDF[:type], NS::SCHEMA[:Action]],
       [action_iri, NS::SCHEMA[:name], I18n.t('email_conflicts.add', email: token.email)],
       [action_iri, NS::SCHEMA[:target], entry_point_iri],
       [action_iri, NS::SCHEMA[:object], token.iri],
-      [action_iri, NS::ARGU[:favoriteAction], true],
+      [action_iri, NS::ONTOLA[:favoriteAction], true],
       [entry_point_iri, RDF[:type], NS::SCHEMA[:EntryPoint]],
       [entry_point_iri, NS::SCHEMA[:name], I18n.t('email_conflicts.add', email: token.email)],
       [entry_point_iri, NS::SCHEMA[:url], RDF::DynamicURI(iri)],
@@ -51,7 +52,7 @@ class EmailConflict
 
     [
       [iri, NS::SCHEMA[:potentialAction], action_iri],
-      [iri, NS::ARGU[:favoriteAction], action_iri],
+      [iri, NS::ONTOLA[:favoriteAction], action_iri],
       [action_iri, RDF[:type], RDF::DynamicURI(argu_url('/AppSignOut'))],
       [action_iri, NS::SCHEMA[:name], label],
       [action_iri, NS::SCHEMA[:url], token.login_iri]

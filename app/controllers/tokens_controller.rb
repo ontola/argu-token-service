@@ -7,7 +7,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   include ActionController::Helpers
   include ActionController::Flash
   include ActionController::Cookies
-  include Destroyable::Controller
+  include LinkedRails::Enhancements::Destroyable::Controller
   include UriTemplateHelper
   active_response :show, :update, :create, :destroy
 
@@ -127,8 +127,12 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     Token.new(group_id: group_id, actor_iri: actor_iri, root_id: tree_root.uuid)
   end
 
-  def parent_resource!
+  def parent_resource
     @parent_resource ||= Group.new(id: group_id, root_id: tree_root.uuid)
+  end
+
+  def parent_resource!
+    parent_resource || raise(ActiveRecord::RecordNotFound)
   end
 
   def parse_group_id(group_id)

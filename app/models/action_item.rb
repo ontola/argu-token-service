@@ -1,1 +1,0 @@
-../../service_module/app/models/action_item.rb

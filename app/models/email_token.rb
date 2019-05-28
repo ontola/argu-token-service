@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class EmailToken < Token
-  enhance Createable
-  enhance Destroyable
-  enhance Actionable
+  enhance LinkedRails::Enhancements::Createable
+  enhance LinkedRails::Enhancements::Destroyable
+  enhance LinkedRails::Enhancements::Actionable
 
   with_columns settings: [
     NS::ARGU[:invitee],
     NS::ARGU[:redirectUrl],
     NS::ARGU[:opened],
-    NS::ARGU[:destroyAction]
+    NS::ONTOLA[:destroyAction]
   ]
 
   def account_exists?(api)

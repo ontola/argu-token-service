@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Group < ActiveResourceModel
-  include RailsLD::Model
+  include LinkedRails::Model
   self.collection_name = 'g'
 
   with_collection :bearer_tokens,

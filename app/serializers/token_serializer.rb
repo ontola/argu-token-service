@@ -13,7 +13,7 @@ class TokenSerializer < RecordSerializer
   attribute :redirect_url, predicate: NS::ARGU[:redirectUrl]
   attribute :label, predicate: NS::SCHEMA[:name]
   attribute :description, predicate: NS::SCHEMA[:text]
-  attribute :login_action, predicate: NS::ARGU[:favoriteAction], if: :login_action?
+  attribute :login_action, predicate: NS::ONTOLA[:favoriteAction], if: :login_action?
 
   triples :accept_action_triples
 
@@ -23,7 +23,7 @@ class TokenSerializer < RecordSerializer
     return [] unless accept_action?
     entry_point = RDF::URI("#{accept_action}#entryPoint")
     [
-      [object.iri, NS::ARGU[:favoriteAction], accept_action],
+      [object.iri, NS::ONTOLA[:favoriteAction], accept_action],
       [accept_action, ::RDF[:type], NS::SCHEMA[:Action]],
       [accept_action, NS::SCHEMA[:name], I18n.t('tokens.invitation.accept_button')],
       [accept_action, NS::SCHEMA[:object], object.iri],

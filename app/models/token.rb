@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Token < ApplicationRecord
-  include ApplicationModel
   include Enhanceable
-  include RailsLD::Model
+  include LinkedRails::Model
+  include ApplicationModel
   include Broadcastable
-  enhance Tableable
+  enhance LinkedRails::Enhancements::Tableable
 
   before_create :set_token_type
 
