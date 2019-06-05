@@ -38,7 +38,9 @@ module Service
     config.api_only = true
     config.frontend_url = "https://#{ENV['FRONTEND_HOSTNAME'] || "app.#{ENV['HOSTNAME']}"}"
     config.host_name = ENV['HOSTNAME']
-    config.origin = "https://#{Rails.application.config.host_name}"
+    config.origin = "https://#{config.host_name}"
+    LinkedRails.host = config.host_name
+    LinkedRails.scheme = :https
 
     config.middleware.use ActionDispatch::Flash
     config.middleware.use ActionDispatch::Cookies
