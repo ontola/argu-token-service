@@ -5,16 +5,25 @@ require_relative '../app/models/bearer_token'
 require_relative '../app/models/email_token'
 
 Rails.application.routes.draw do
-  concerns_from_enhancements
+  concern :nested_actionable do
+    namespace :actions do
+      resources :items, path: '', only: %i[index show], collection: @scope.parent.try(:[], :controller)
+    end
+  end
 
   scope :tokens do
     root 'tokens#show'
     get 'verify', to: 'verifications#show'
 
     %i[bearer email].each do |type|
-      resources :"#{type}_tokens", path: "#{type}/g/:group_id", only: %i[new create index]
+      resources :"#{type}_tokens", path: "#{type}/g/:group_id", only: %i[new create index] do
+        collection do
+          concerns :nested_actionable
+        end
+      end
     end
     resources :tokens, path: '', param: :secret, only: %i[create update show destroy] do
+      include_route_concerns(klass: [EmailToken, BearerToken])
       post :show, on: :member
       get :delete, on: :member
       resource :email_conflict, only: %i[show update], path: :email_conflict

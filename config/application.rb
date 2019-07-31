@@ -25,6 +25,7 @@ require 'linked_rails/middleware/linked_data_params'
 require_relative '../lib/tenant_finder'
 require_relative '../lib/tenant_middleware'
 require_relative '../lib/ns'
+require_relative '../lib/acts_as_tenant/sidekiq_for_service'
 
 module Service
   class Application < Rails::Application

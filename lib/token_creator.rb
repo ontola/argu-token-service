@@ -61,7 +61,7 @@ class TokenCreator
   end
 
   def find_invitee(id)
-    User.find(id, params: {root_id: root_id})
+    User.find(id)
   end
 
   def initialize_tokens

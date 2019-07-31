@@ -2,10 +2,14 @@
 
 class GroupPolicy < RestrictivePolicy
   include ChildHelper
+  include LinkedRails::Policy
 
-  def create_child?(raw_klass)
-    return false unless %i[bearer_tokens email_tokens].include?(raw_klass)
+  private
 
-    Pundit.policy(context, child_instance(record, raw_klass.to_s.classify.constantize)).create?
+  def child_policy(raw_klass)
+    klass = raw_klass.constantize
+    return unless klass <= Token
+
+    Pundit.policy(user_context, child_instance(record, klass))
   end
 end

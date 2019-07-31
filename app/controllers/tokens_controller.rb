@@ -37,7 +37,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def check_if_registered
     return super unless action_name == 'show'
-    return false unless execute_token?
+    return current_user unless execute_token?
     !current_user.guest? || create_user || handle_not_logged_in
   end
 
@@ -56,7 +56,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def create_success_location
-    settings_iri(Group.new(id: group_id, root_id: tree_root.uuid).iri_path, fragment: :"#{token_type}_invite").to_s
+    settings_iri(Group.new(id: group_id).iri_path, fragment: :"#{token_type}_invite").to_s
   end
   alias destroy_success_location create_success_location
 
@@ -128,7 +128,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def parent_resource
-    @parent_resource ||= Group.new(id: group_id, root_id: tree_root.uuid)
+    @parent_resource ||= Group.new(id: group_id)
   end
 
   def parent_resource!

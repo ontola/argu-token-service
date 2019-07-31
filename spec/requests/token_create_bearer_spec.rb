@@ -186,6 +186,24 @@ describe 'Token bearer create' do
     expect(Token.last.redirect_url).to eq('https://example.com')
   end
 
+  it 'manager should create valid bearer token nq' do
+    as_user
+    authorized_mock(type: 'Group', id: 1, action: 'update')
+    assert_difference('Token.count', 1) do
+      post '/argu/tokens/', params: {
+        token: {
+          group_id: 1,
+          root_id: TEST_ROOT_ID,
+          redirect_url: 'https://example.com',
+          message: 'Join this group!'
+        }
+      }, headers: service_headers(accept: :nq)
+    end
+
+    expect(response.code).to eq('201')
+    expect(Token.last.secret.length).to eq(16)
+  end
+
   private
 
   def expect_token_attributes(index = nil)

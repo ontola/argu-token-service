@@ -14,7 +14,7 @@ class TokenExecutor
   def execute!
     create_membership
     confirm_email if token.email
-    create_favorite(token.root_id, token.redirect_url)
+    create_favorite(token.redirect_url)
     true
   end
 
@@ -37,8 +37,8 @@ class TokenExecutor
     api.confirm_email_address(email_record.attributes['email']) if email_record.attributes['confirmed_at'].nil?
   end
 
-  def create_favorite(root_id, iri)
-    api.create_favorite(root_id, iri) if iri
+  def create_favorite(iri)
+    api.create_favorite(iri) if iri
   rescue OAuth2::Error => e
     Bugsnag.notify(e)
   end

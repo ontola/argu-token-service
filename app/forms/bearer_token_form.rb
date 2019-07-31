@@ -6,7 +6,7 @@ class BearerTokenForm < ApplicationForm
   fields [
     {
       redirect_url: {
-        default_value: ->(_r) { "https://#{ActsAsTenant.current_tenant.iri_prefix}" }
+        default_value: -> { "https://#{ActsAsTenant.current_tenant.iri_prefix}" }
       }
     },
     :hidden
@@ -18,7 +18,7 @@ class BearerTokenForm < ApplicationForm
     properties: [
       {
         root_id: {
-          default_value: ->(r) { r.form.target.group.organization.uuid }
+          default_value: -> { target.group.organization.uuid }
         }
       }
     ]

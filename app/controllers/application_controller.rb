@@ -13,6 +13,10 @@ class ApplicationController < ApiController
     redirect_to argu_url("/#{tree_root.url}/token", token: params[:secret], error: 'not_found')
   end
 
+  def parent_resource_klass(opts = params)
+    super || ActiveResourceModel.descendants.detect { |m| m.to_s == parent_resource_type(opts)&.classify }
+  end
+
   def set_tenant_header
     response.headers['Website-Meta'] = website_meta.to_query if tree_root
   end

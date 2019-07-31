@@ -12,6 +12,10 @@ class BearerToken < Token
     NS::ONTOLA[:destroyAction]
   ]
 
+  def action_triples
+    []
+  end
+
   def valid_email?(_user)
     true
   end

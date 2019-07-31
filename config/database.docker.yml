@@ -7,15 +7,10 @@ development: &default
   password: <%= ENV['POSTGRESQL_PASSWORD'] %>
   host: <%= ENV['POSTGRESQL_ADDRESS'] %>
   port: <%= ENV['POSTGRESQL_PORT'] %>
+  schema_search_path: 'public,shared_extensions'
 test:
-  adapter: postgresql
-  encoding: unicode
-  database: postgres
-  username: postgres
-  host: localhost
-  port: 5432
-  pool: 5
-  timeout: 5000
+  <<: *default
+  database: token_service_test
 production: &production
   <<: *default
 staging:

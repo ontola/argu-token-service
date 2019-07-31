@@ -3,6 +3,7 @@
 class Group < ActiveResourceModel
   include LinkedRails::Model
   self.collection_name = 'g'
+  attr_accessor :fetched
 
   with_collection :bearer_tokens,
                   parent_uri_template_opts: ->(r) { {group_id: r.id} }
@@ -16,7 +17,7 @@ class Group < ActiveResourceModel
   end
 
   def bearer_tokens
-    @bearer_tokens ||= BearerToken.where(root_id: root_id, group_id: id)
+    @bearer_tokens ||= BearerToken.where(group_id: id)
   end
 
   def build_child(klass)
@@ -24,7 +25,16 @@ class Group < ActiveResourceModel
   end
 
   def email_tokens
-    @email_tokens ||= EmailToken.where(root_id: root_id, group_id: id)
+    @email_tokens ||= EmailToken.where(root_id: ActsAsTenant.current_tenant.uuid, group_id: id)
+  end
+
+  def self.find_by(opts)
+    return unless opts.keys == %i[id]
+
+    resource = find(opts[:id])
+    resource.id = opts[:id]
+    resource.fetched = true
+    resource
   end
 
   def iri_path(_opts = {})
@@ -37,15 +47,14 @@ class Group < ActiveResourceModel
   private
 
   def argu_attribute(method)
-    fetch unless @fecthed
+    fetch unless fetched
     @attributes[method]
   end
 
   def fetch
     original_id = id
-    load(
-      self.class.format.decode(connection.get(self.class.element_path(id, root_id: root_id), self.class.headers).body)
-    )
+    group = id.to_s.scan(/\D/).present? ? Group.find(:one, from: id) : Group.find(id)
+    @attributes = group.attributes
     @attributes[:id] = original_id
     @fetched = true
   end

@@ -11,6 +11,7 @@ gem 'active_model_serializers'
 gem 'active_response', git: 'https://github.com/ontola/active_response', branch: :master
 gem 'activeresource', git: 'https://github.com/ArthurWD/activeresource', branch: :master
 gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch: :master
+gem 'apartment'
 gem 'bootsnap'
 gem 'bugsnag', '~> 5.0.1'
 gem 'bunny'
@@ -27,9 +28,10 @@ gem 'rdf'
 gem 'rdf-n3'
 gem 'rdf-rdfa'
 gem 'rdf-rdfxml', git: 'https://github.com/ruby-rdf/rdf-rdfxml', ref: 'dd99a73'
-gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers', ref: '71b6222'
+gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers'
 gem 'rdf-turtle'
 gem 'rfc-822', '~> 0.4.1'
+gem 'sidekiq'
 gem 'tzinfo-data'
 gem 'uri_template'
 

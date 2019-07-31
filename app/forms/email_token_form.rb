@@ -7,10 +7,10 @@ class EmailTokenForm < ApplicationForm
     {addresses: {max_length: 5000, pattern: /\A(#{RegexHelper::SINGLE_EMAIL.source},?\s?)+\z/}},
     {
       message: {
-        default_value: lambda do |r|
+        default_value: lambda do
           I18n.t(
             'email_tokens.form.message.default_message',
-            group: r.form.target.group.display_name
+            group: target.group.display_name
           )
         end,
         max_length: 5000
@@ -18,7 +18,7 @@ class EmailTokenForm < ApplicationForm
     },
     {
       redirect_url: {
-        default_value: ->(_r) { "https://#{ActsAsTenant.current_tenant.iri_prefix}" }
+        default_value: -> { "https://#{ActsAsTenant.current_tenant.iri_prefix}" }
       }
     },
     :hidden,
@@ -32,7 +32,7 @@ class EmailTokenForm < ApplicationForm
       {send_mail: {default_value: true}},
       {
         root_id: {
-          default_value: ->(r) { r.form.target.group.organization.uuid }
+          default_value: -> { target.group.organization.uuid }
         }
       }
     ]
