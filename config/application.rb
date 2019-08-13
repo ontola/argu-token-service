@@ -62,5 +62,7 @@ module Service
 
     Rails.application.routes.default_url_options[:host] = "#{config.host_name}/tokens"
     ActiveModelSerializers.config.key_transform = :camel_lower
+
+    Sidekiq.default_worker_options = {queue: 'token_service'}
   end
 end
