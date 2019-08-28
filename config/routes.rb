@@ -11,26 +11,24 @@ Rails.application.routes.draw do
     end
   end
 
-  scope :tokens do
-    root 'tokens#show'
-    get 'verify', to: 'verifications#show'
+  root 'tokens#show'
+  get 'verify', to: 'verifications#show'
 
-    %i[bearer email].each do |type|
-      resources :"#{type}_tokens", path: "#{type}/g/:group_id", only: %i[new create index] do
-        collection do
-          concerns :nested_actionable
-        end
+  %i[bearer email].each do |type|
+    resources :"#{type}_tokens", path: "#{type}/g/:group_id", only: %i[new create index] do
+      collection do
+        concerns :nested_actionable
       end
     end
-    resources :tokens, path: '', param: :secret, only: %i[create update show destroy] do
-      include_route_concerns(klass: [EmailToken, BearerToken])
-      post :show, on: :member
-      get :delete, on: :member
-      resource :email_conflict, only: %i[show update], path: :email_conflict
-    end
+  end
+  resources :tokens, path: '', param: :secret, only: %i[create update show destroy] do
+    include_route_concerns(klass: [EmailToken, BearerToken])
+    post :show, on: :member
+    get :delete, on: :member
+    resource :email_conflict, only: %i[show update], path: :email_conflict
+  end
 
-    constraints(Argu::WhitelistConstraint) do
-      health_check_routes
-    end
+  constraints(Argu::WhitelistConstraint) do
+    health_check_routes
   end
 end
