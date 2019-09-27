@@ -18,7 +18,7 @@ class ApplicationController < ApiController
   end
 
   def set_tenant_header
-    response.headers['Website-Meta'] = website_meta.to_query if tree_root
+    response.headers['Manifest'] = "https://#{tree_root.iri_prefix}/manifest.json" if tree_root
   end
 
   def tree_root
