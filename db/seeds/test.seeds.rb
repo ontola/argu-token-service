@@ -2,7 +2,7 @@
 
 require_relative '../../spec/support/test_root_id'
 
-Tenant.create('argu')
+Tenant.create('argu') unless ApplicationRecord.connection.schema_exists?('argu')
 
 Apartment::Tenant.switch('argu') do # rubocop:disable Metrics/BlockLength
   Token.create!(
