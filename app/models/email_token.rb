@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class EmailToken < Token
-  enhance LinkedRails::Enhancements::Createable
+  enhance LinkedRails::Enhancements::Creatable
   enhance LinkedRails::Enhancements::Destroyable
   enhance LinkedRails::Enhancements::Actionable
 
