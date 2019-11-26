@@ -42,7 +42,7 @@ GIT
 
 GIT
   remote: https://github.com/ontola/rdf-serializers
-  revision: 8c03301db150f41dced23589406ad68a4b53030d
+  revision: fe32021937b572af70edd6b95d8a0b2d23e11c55
   specs:
     rdf-serializers (0.0.7)
       active_model_serializers (~> 0.10)
@@ -204,7 +204,7 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
-    loofah (2.3.1)
+    loofah (2.4.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)

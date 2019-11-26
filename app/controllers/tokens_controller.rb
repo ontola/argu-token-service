@@ -52,7 +52,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def create_success
-    respond_with_new_resource(create_success_options.merge(resource: token_creator.tokens))
+    respond_with_new_resource(create_success_options_rdf.merge(resource: token_creator.tokens))
   end
 
   def create_success_location
@@ -124,7 +124,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def new_resource
-    Token.new(group_id: group_id, actor_iri: actor_iri, root_id: tree_root.uuid)
+    controller_class.new(group_id: group_id, actor_iri: actor_iri, root_id: tree_root.uuid)
   end
 
   def parent_resource

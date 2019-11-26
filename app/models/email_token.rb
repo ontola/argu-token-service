@@ -16,10 +16,6 @@ class EmailToken < Token
     @account_exists ||= api.email_address_exists?(email)
   end
 
-  def action_triples
-    []
-  end
-
   def addresses; end
 
   def email
@@ -33,6 +29,10 @@ class EmailToken < Token
       resource_type: 'tokens',
       event: 'create'
     )
+  end
+
+  def parent_collections(user_context)
+    [group.email_token_collection(user_context: user_context)]
   end
 
   def valid_email?(user)
