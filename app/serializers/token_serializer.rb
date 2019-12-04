@@ -63,7 +63,7 @@ class TokenSerializer < RecordSerializer
   end
 
   def redirect_url
-    RDF::URI(object.redirect_url)
+    RDF::URI(object.redirect_url) if object.redirect_url
   end
 
   def token_url
