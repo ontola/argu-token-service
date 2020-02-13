@@ -22,6 +22,7 @@ require_relative 'initializers/build'
 Bundler.require(*Rails.groups)
 
 require 'linked_rails/middleware/linked_data_params'
+require_relative '../app/adapters/hex_adapter'
 require_relative '../lib/tenant_finder'
 require_relative '../lib/tenant_middleware'
 require_relative '../lib/ns'
@@ -52,6 +53,7 @@ module Service
     config.middleware.use LinkedRails::Middleware::LinkedDataParams
 
     config.autoload_paths += %w[lib]
+    config.autoload_paths += %W[#{config.root}/app/adapters]
     config.autoload_paths += %W[#{config.root}/app/serializers/base]
     config.autoload_paths += %W[#{config.root}/app/models/actions]
     config.autoload_paths += %W[#{config.root}/app/responders]

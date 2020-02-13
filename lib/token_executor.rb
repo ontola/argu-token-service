@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TokenExecutor
-  include JsonApiHelper
+  include JsonAPIHelper
   include UrlHelper
   attr_accessor :token, :user, :api
 

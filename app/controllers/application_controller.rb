@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-class ApplicationController < ApiController
+class ApplicationController < APIController
   include ActiveResponse::Controller
   include ActiveResponseHelper
-
-  prepend_before_action :set_tenant_header
 
   private
 
@@ -15,10 +13,6 @@ class ApplicationController < ApiController
 
   def parent_resource_klass(opts = params)
     super || ActiveResourceModel.descendants.detect { |m| m.to_s == parent_resource_type(opts)&.classify }
-  end
-
-  def set_tenant_header
-    response.headers['Manifest'] = "https://#{tree_root.iri_prefix}/manifest.json" if tree_root
   end
 
   def tree_root
