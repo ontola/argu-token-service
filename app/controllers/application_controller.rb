@@ -6,11 +6,6 @@ class ApplicationController < APIController
 
   private
 
-  def handle_record_not_found_html(_e)
-    return super unless action_name == 'show'
-    redirect_to argu_url("/#{tree_root.url}/token", token: params[:secret], error: 'not_found')
-  end
-
   def parent_resource_klass(opts = params)
     super || ActiveResourceModel.descendants.detect { |m| m.to_s == parent_resource_type(opts)&.classify }
   end

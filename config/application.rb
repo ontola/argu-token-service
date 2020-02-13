@@ -38,7 +38,7 @@ module Service
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
-    config.frontend_url = "https://#{ENV['FRONTEND_HOSTNAME'] || "app.#{ENV['HOSTNAME']}"}"
+    config.frontend_url = "https://#{ENV['HOSTNAME']}"
     config.host_name = ENV['HOSTNAME']
     config.origin = "https://#{config.host_name}"
     LinkedRails.host = config.host_name

@@ -89,14 +89,12 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     )
   end
 
-  def handle_inactive_token # rubocop:disable Metrics/MethodLength
+  def handle_inactive_token
     active_response_block do
       if !current_user.guest? && api.user_is_group_member?(group_id)
         redirect_already_member
       elsif authorize_redirect_resource
         redirect_to_authorized_r
-      elsif active_response_type == :html
-        redirect_inactive_token
       else
         raise ActiveRecord::RecordNotFound
       end
@@ -105,21 +103,10 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def handle_not_logged_in
     active_response_block do
-      raise(Argu::Errors::Unauthorized.new(message: I18n.t('please_login'))) if active_response_type == :html
-
       respond_with_resource(
         resource: resource_by_secret!,
         fields: {bearerTokens: %i[label description login_action type]}
       )
-    end
-  end
-
-  def handle_unauthorized_html(_e)
-    return super unless action_name == 'show'
-    if authorize_redirect_resource
-      redirect_to_authorized_r
-    else
-      redirect_to argu_url('/users/sign_in', r: @_request.env['REQUEST_URI']), notice: I18n.t('please_login')
     end
   end
 
@@ -158,10 +145,6 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     )
   end
 
-  def redirect_inactive_token
-    respond_with_redirect(location: argu_url("/#{tree_root.url}/token", token: params[:secret], error: 'inactive'))
-  end
-
   def redirect_to_authorized_r
     cookies[:token] = resource_by_secret.iri if resource_by_secret.active?
     redirect_to resource_by_secret.redirect_url, notice: resource_by_secret.active? ? I18n.t('please_login') : nil
@@ -188,9 +171,6 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def respond_with_redirect(opts)
     response.headers['New-Authorization'] = @new_authorization if @new_authorization
-    old_frontend = opts[:location].to_s.starts_with?(Rails.application.config.origin)
-    opts[:location] = DynamicUriHelper.revert(opts[:location], ActsAsTenant.current_tenant, old_frontend: old_frontend)
-    opts[:location] = DynamicUriHelper.rewrite(opts[:location])
     super
   end
 
@@ -237,14 +217,6 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def wrong_email_location
-    if active_response_type == :html
-      argu_url(
-        '/users/wrong_email',
-        r: argu_url('/users/sign_in', r: resource_by_secret.iri, notice: I18n.t('please_login')),
-        email: resource_by_secret.email
-      )
-    else
-      "#{resource_by_secret.iri}/email_conflict"
-    end
+    "#{resource_by_secret.iri}/email_conflict"
   end
 end

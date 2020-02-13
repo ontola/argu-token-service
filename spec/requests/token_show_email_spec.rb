@@ -37,13 +37,6 @@ describe 'Email token show' do
   end
 
   shared_examples_for 'bearer token' do
-    example 'get as html' do
-      use_legacy_frontend
-      authenticate
-      get "/argu/tokens/#{token}", headers: service_headers
-      expect_get_html
-    end
-
     example 'get as n3' do
       authenticate
       get "/argu/tokens/#{token}", headers: service_headers(accept: :n3)
@@ -62,14 +55,6 @@ describe 'Email token show' do
 
     context 'with guest' do
       let(:authenticate) { authenticate_as_guest }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :not_found, token: :invalid_token))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -82,14 +67,6 @@ describe 'Email token show' do
 
     context 'with guest with account' do
       let(:authenticate) { authenticate_as_guest_with_account }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :not_found, token: :invalid_token))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -102,13 +79,6 @@ describe 'Email token show' do
 
     context 'with user' do
       let(:authenticate) { authenticate_as_user }
-      let(:expect_get_html) do
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :not_found, token: :invalid_token))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -121,13 +91,6 @@ describe 'Email token show' do
 
     context 'with invitee' do
       let(:authenticate) { authenticate_as_invitee }
-      let(:expect_get_html) do
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :not_found, token: :invalid_token))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -140,13 +103,6 @@ describe 'Email token show' do
 
     context 'with member' do
       let(:authenticate) { authenticate_as_member }
-      let(:expect_get_html) do
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :not_found, token: :invalid_token))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -163,14 +119,6 @@ describe 'Email token show' do
 
     context 'with guest' do
       let(:authenticate) { authenticate_as_guest }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :inactive, token: token))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -183,14 +131,6 @@ describe 'Email token show' do
 
     context 'with guest with account' do
       let(:authenticate) { authenticate_as_guest_with_account }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :inactive, token: token))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -203,13 +143,6 @@ describe 'Email token show' do
 
     context 'with user' do
       let(:authenticate) { authenticate_as_user }
-      let(:expect_get_html) do
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :inactive, token: token))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -222,13 +155,6 @@ describe 'Email token show' do
 
     context 'with invitee' do
       let(:authenticate) { authenticate_as_invitee }
-      let(:expect_get_html) do
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :inactive, token: token))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -241,11 +167,6 @@ describe 'Email token show' do
 
     context 'with member' do
       let(:authenticate) { authenticate_as_member }
-      let(:expect_get_html) do
-        expect(response).to(redirect_to(argu_url('/argu')))
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to eq('You are already member of this group')
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -266,14 +187,21 @@ describe 'Email token show' do
       authorized_mock(action: 'show', iri: 'https://example.com')
     end
 
-    context 'with guest' do
-      let(:authenticate) { authenticate_as_guest }
-      let(:expect_get_html) do
+    context 'with guest without access token' do
+      let(:authenticate) { as_guest_with_account(false) }
+      let(:expect_get_n3) do
+        expect_post_n3
+      end
+      let(:expect_post_n3) do
         expect(response.code).to eq('302')
         expect(response).to redirect_to('https://example.com')
-        expect(flash[:notice]).to be_nil
-        expect(response.cookies['token']).to be_nil
       end
+
+      it_behaves_like 'bearer token'
+    end
+
+    context 'with guest' do
+      let(:authenticate) { authenticate_as_guest }
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -287,12 +215,6 @@ describe 'Email token show' do
 
     context 'with guest with account' do
       let(:authenticate) { authenticate_as_guest_with_account }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to redirect_to('https://example.com')
-        expect(flash[:notice]).to be_nil
-        expect(response.cookies['token']).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -306,11 +228,6 @@ describe 'Email token show' do
 
     context 'with user' do
       let(:authenticate) { authenticate_as_user }
-      let(:expect_get_html) do
-        expect(response).to redirect_to('https://example.com')
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -324,11 +241,6 @@ describe 'Email token show' do
 
     context 'with invitee' do
       let(:authenticate) { authenticate_as_invitee }
-      let(:expect_get_html) do
-        expect(response).to redirect_to('https://example.com')
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -342,11 +254,6 @@ describe 'Email token show' do
 
     context 'with member' do
       let(:authenticate) { authenticate_as_member }
-      let(:expect_get_html) do
-        expect(response).to(redirect_to('https://example.com'))
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to eq('You are already member of this group')
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -372,14 +279,6 @@ describe 'Email token show' do
 
     context 'with guest' do
       let(:authenticate) { authenticate_as_guest }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :inactive, token: retracted_token_with_r.secret))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -392,14 +291,6 @@ describe 'Email token show' do
 
     context 'with guest with account' do
       let(:authenticate) { authenticate_as_guest_with_account }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :inactive, token: retracted_token_with_r.secret))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -412,13 +303,6 @@ describe 'Email token show' do
 
     context 'with user' do
       let(:authenticate) { authenticate_as_user }
-      let(:expect_get_html) do
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :inactive, token: retracted_token_with_r.secret))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -431,13 +315,6 @@ describe 'Email token show' do
 
     context 'with invitee' do
       let(:authenticate) { authenticate_as_invitee }
-      let(:expect_get_html) do
-        expect(response).to(
-          redirect_to(argu_url('/argu/token', error: :inactive, token: retracted_token_with_r.secret))
-        )
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -450,11 +327,6 @@ describe 'Email token show' do
 
     context 'with member' do
       let(:authenticate) { authenticate_as_member }
-      let(:expect_get_html) do
-        expect(response).to(redirect_to('https://example.com'))
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to eq('You are already member of this group')
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -480,12 +352,6 @@ describe 'Email token show' do
 
     context 'with guest' do
       let(:authenticate) { authenticate_as_guest }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to redirect_to('https://example.com')
-        expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
-        expect(response.cookies['token']).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -506,12 +372,6 @@ describe 'Email token show' do
 
     context 'with guest with account' do
       let(:authenticate) { authenticate_as_guest_with_account }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to redirect_to('https://example.com')
-        expect(flash[:notice]).to eq('Please login to accept this invitation')
-        expect(response.cookies['token']).to eq(argu_url("/argu/tokens/#{token_with_r.secret}"))
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -532,12 +392,6 @@ describe 'Email token show' do
 
     context 'with user' do
       let(:authenticate) { authenticate_as_user }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to redirect_to(wrong_email_location(token_with_r, old_fe: true))
-        expect(flash[:notice]).to be_nil
-        expect(response.cookies['token']).to be_nil
-      end
       let(:expect_get_n3) do
         expect_token_not_used(token_with_r)
         expect(response.code).to eq('200')
@@ -559,12 +413,6 @@ describe 'Email token show' do
 
     context 'with invitee' do
       let(:authenticate) { authenticate_as_invitee }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
-        expect(response).to redirect_to('https://example.com')
-        expect(response.cookies['token']).to be_nil
-      end
       let(:expect_get_n3) do
         expect_token_not_used(token_with_r)
         expect(response.code).to eq('200')
@@ -589,12 +437,6 @@ describe 'Email token show' do
 
     context 'with member' do
       let(:authenticate) { authenticate_as_member }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(flash[:notice]).to eq('You are already member of this group')
-        expect(response).to redirect_to('https://example.com')
-        expect(response.cookies['token']).to be_nil
-      end
       let(:expect_get_n3) do
         expect_token_not_used(token_with_r)
         expect(response.code).to eq('200')
@@ -623,12 +465,6 @@ describe 'Email token show' do
 
     context 'with guest' do
       let(:authenticate) { authenticate_as_guest }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to redirect_to(argu_url('/argu/group_memberships/1'))
-        expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
-        expect(response.cookies['token']).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -649,16 +485,6 @@ describe 'Email token show' do
 
     context 'with guest with account' do
       let(:authenticate) { authenticate_as_guest_with_account }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to(
-          redirect_to(
-            redirect_to(argu_url('/users/sign_in', r: "/argu/tokens/#{token}"))
-          )
-        )
-        expect(flash[:notice]).to eq('Please login to accept this invitation')
-        expect(response.cookies['token']).to be_nil
-      end
       let(:expect_get_n3) do
         expect_post_n3
       end
@@ -679,12 +505,6 @@ describe 'Email token show' do
 
     context 'with user' do
       let(:authenticate) { authenticate_as_user }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(response).to redirect_to(wrong_email_location(valid_token, old_fe: true))
-        expect(flash[:notice]).to be_nil
-        expect(response.cookies['token']).to be_nil
-      end
       let(:expect_get_n3) do
         expect_token_not_used(valid_token)
         expect(response.code).to eq('200')
@@ -706,12 +526,6 @@ describe 'Email token show' do
 
     context 'with invitee' do
       let(:authenticate) { authenticate_as_invitee }
-      let(:expect_get_html) do
-        expect(response.code).to eq('302')
-        expect(flash[:notice]).to eq('You have joined the group \'group_name\'')
-        expect(response).to redirect_to(argu_url('/argu/group_memberships/1'))
-        expect(response.cookies['token']).to be_nil
-      end
       let(:expect_get_n3) do
         expect_token_not_used(valid_token)
         expect(response.code).to eq('200')
@@ -737,13 +551,6 @@ describe 'Email token show' do
 
     context 'with member' do
       let(:authenticate) { authenticate_as_member }
-      let(:expect_get_html) do
-        expect_token_not_used(valid_token)
-        expect(response.code).to eq('302')
-        expect(response).to redirect_to(argu_url('/argu/group_memberships/1'))
-        expect(response.cookies['token']).to be_nil
-        expect(flash[:notice]).to eq('You are already member of this group')
-      end
       let(:expect_get_n3) do
         expect_token_not_used(valid_token)
         expect(response.code).to eq('200')
@@ -789,17 +596,6 @@ describe 'Email token show' do
     expect(response.code).to eq('500')
   end
 
-  it 'guest without access token should redirect valid token with authorized r to r' do
-    as_guest_with_account(false)
-    authorized_mock(action: 'show', iri: 'https://example.com')
-    get "/argu/tokens/#{token_with_r.secret}", headers: service_headers
-
-    expect(response.code).to eq('302')
-    expect(response).to redirect_to('https://example.com')
-    expect(flash[:notice]).to eq('Please login to accept this invitation')
-    expect(response.cookies['token']).to eq(resource_iri(token_with_r, iri_prefix: "#{ENV['HOSTNAME']}/argu"))
-  end
-
   private
 
   def expect_no_redirect
@@ -837,7 +633,7 @@ describe 'Email token show' do
 
     argu_url(
       '/argu/users/wrong_email',
-      r: argu_url('/users/sign_in', r: iri, notice: I18n.t('please_login')),
+      r: argu_url('/argu/users/sign_in', r: iri, notice: I18n.t('please_login')),
       email: token.email
     )
   end

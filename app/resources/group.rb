@@ -38,10 +38,7 @@ class Group < ActiveResourceModel
   end
 
   def iri_path(_opts = {})
-    @iri_path ||=
-      DynamicUriHelper
-        .revert(argu_attribute(:iri), ActsAsTenant.current_tenant, old_frontend: true)
-        .gsub(Rails.application.config.origin, '')
+    @iri_path ||= argu_attribute(:iri).gsub(Rails.application.config.origin, '')
   end
 
   private
