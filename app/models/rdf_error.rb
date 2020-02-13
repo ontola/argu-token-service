@@ -1,1 +1,0 @@
-../../service_module/app/models/rdf_error.rb
