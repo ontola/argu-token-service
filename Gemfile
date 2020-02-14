@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.2'
 # Use Puma as the app server
-gem 'puma', '~> 3.9.1'
+gem 'puma'
 
 gem 'active_model_serializers'
 gem 'active_response', git: 'https://github.com/ontola/active_response', branch: :master
