@@ -60,7 +60,7 @@ module Service
     config.autoload_paths += Dir["#{config.root}/app/enhancements/**/"]
     Dir.glob("#{config.root}/app/enhancements/**{,/*/**}/*.rb").each { |file| require_dependency file }
 
-    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/**/*.{rb,yml}')]
 
     Rails.application.routes.default_url_options[:host] = "#{config.host_name}/tokens"
     ActiveModelSerializers.config.key_transform = :camel_lower

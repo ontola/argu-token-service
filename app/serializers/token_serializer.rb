@@ -21,6 +21,7 @@ class TokenSerializer < RecordSerializer
 
   def accept_action_triples # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     return [] unless accept_action?
+
     entry_point = RDF::URI("#{accept_action}#entryPoint")
     [
       [object.iri, NS::ONTOLA[:favoriteAction], accept_action],

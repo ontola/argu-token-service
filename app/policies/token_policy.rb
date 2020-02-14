@@ -36,6 +36,7 @@ class TokenPolicy < RestrictivePolicy
 
   def valid_actor?
     return true if record.actor_iri.blank?
+
     @valid_actor ||=
       user_context.api.authorize_action(resource_type: 'CurrentActor', resource_id: record.actor_iri, action: 'show')
   end

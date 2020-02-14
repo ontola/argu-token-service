@@ -38,6 +38,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   def check_if_registered
     return super unless action_name == 'show'
     return current_user unless execute_token?
+
     !current_user.guest? || create_user || handle_not_logged_in
   end
 
@@ -62,8 +63,10 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def create_user
     return unless resource_by_secret&.active? && resource_by_secret&.email
+
     new_user = api.create_user(resource_by_secret.email, redirect: resource_by_secret.redirect_url)
     return if new_user.blank?
+
     @new_authorization = api.instance_variable_get(:@user_token)
     @current_user = new_user
   end
@@ -124,6 +127,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def parse_group_id(group_id)
     return group_id unless group_id.to_s.include?(Rails.application.config.frontend_url)
+
     path = group_id.gsub(Rails.application.config.frontend_url, '')
     uri_template(:groups_iri).extract(path)['id']
   end
@@ -161,7 +165,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def resource_by_secret
-    @resource ||= Token.find_by(secret: params[:secret])
+    @resource_by_secret ||= Token.find_by(secret: params[:secret])
   end
   alias requested_resource resource_by_secret
 
@@ -193,6 +197,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     if request.format.json_api? && !%w[bearerToken emailTokenRequest].include?(params.require(:data)[:type])
       raise ActionController::UnpermittedParameters.new(%w[type])
     end
+
     @token_creator ||= TokenCreator.new(actor_iri, group_id, params: permit_params)
   end
 

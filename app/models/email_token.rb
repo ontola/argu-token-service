@@ -24,6 +24,7 @@ class EmailToken < Token
 
   def emails
     return [] if previous_changes['id']&.first.nil? && previous_changes['id']&.second.present?
+
     @emails ||= Email.where(
       resource_id: id,
       resource_type: 'tokens',
