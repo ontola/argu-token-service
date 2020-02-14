@@ -45,10 +45,6 @@ module Service
     LinkedRails.scheme = :https
 
     config.middleware.use ActionDispatch::Flash
-    config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore,
-                          key: '_Argu_sesion',
-                          domain: Rails.env.staging? ? nil : :all
     config.middleware.use TenantMiddleware
     config.middleware.use LinkedRails::Middleware::LinkedDataParams
 

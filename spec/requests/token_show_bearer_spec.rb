@@ -167,7 +167,6 @@ describe 'Bearer token show' do
         expect(response.code).to eq('200')
         expect_snackbar('You are already member of this group')
         expect_redirect('https://example.com')
-        expect(response.cookies['token']).to be_nil
       end
 
       it_behaves_like 'bearer token'
@@ -216,7 +215,6 @@ describe 'Bearer token show' do
         expect(response.code).to eq('200')
         expect_snackbar('You are already member of this group')
         expect_redirect('https://example.com')
-        expect(response.cookies['token']).to be_nil
       end
 
       it_behaves_like 'bearer token'
@@ -254,7 +252,6 @@ describe 'Bearer token show' do
         expect(response.code).to eq('200')
         expect_snackbar('You have joined the group \'group_name\'')
         expect_redirect('https://example.com')
-        expect(response.cookies['token']).to be_nil
       end
 
       before do
@@ -278,7 +275,6 @@ describe 'Bearer token show' do
         expect(response.code).to eq('200')
         expect_snackbar('You are already member of this group')
         expect_redirect('https://example.com')
-        expect(response.cookies['token']).to be_nil
       end
 
       before do
@@ -317,7 +313,6 @@ describe 'Bearer token show' do
         expect(response.code).to eq('200')
         expect_snackbar('You have joined the group \'group_name\'')
         expect_redirect(resource_iri(argu_url('/group_memberships/1')))
-        expect(response.cookies['token']).to be_nil
       end
 
       before do
@@ -340,7 +335,6 @@ describe 'Bearer token show' do
         expect(response.code).to eq('200')
         expect_snackbar('You are already member of this group')
         expect_redirect(resource_iri(argu_url('/group_memberships/1')))
-        expect(response.cookies['token']).to be_nil
       end
 
       it_behaves_like 'bearer token'
@@ -359,7 +353,6 @@ describe 'Bearer token show' do
     expect(response.code).to eq('200')
     expect_snackbar('You have joined the group \'group_name\'')
     expect_redirect('https://example.com')
-    expect(response.cookies['token']).to be_nil
   end
 
   it 'user should 500 when failed to create membership' do

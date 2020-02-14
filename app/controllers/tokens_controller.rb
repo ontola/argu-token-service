@@ -6,7 +6,6 @@ require 'token_executor'
 class TokensController < ApplicationController # rubocop:disable Metrics/ClassLength
   include ActionController::Helpers
   include ActionController::Flash
-  include ActionController::Cookies
   include LinkedRails::Enhancements::Destroyable::Controller
   include UriTemplateHelper
   active_response :show, :update, :create, :destroy
@@ -76,7 +75,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def execute_token?
-    @execute_token ||= request.post? || !RDF_CONTENT_TYPES.include?(request.format.symbol)
+    @execute_token ||= request.post?
   end
 
   def group_id
@@ -150,7 +149,6 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def redirect_to_authorized_r
-    cookies[:token] = resource_by_secret.iri if resource_by_secret.active?
     redirect_to resource_by_secret.redirect_url, notice: resource_by_secret.active? ? I18n.t('please_login') : nil
   end
 
@@ -184,7 +182,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def show_success
     if execute_token?
-      respond_with_redirect(location: token_executor.redirect_url, notice: token_executor.notice(cookies[:locale]))
+      respond_with_redirect(location: token_executor.redirect_url, notice: token_executor.notice)
     else
       respond_with_resource(
         resource: resource_by_secret,

@@ -18,10 +18,10 @@ class TokenExecutor
     true
   end
 
-  def notice(locale)
+  def notice
     case @membership_request.status
     when 201
-      I18n.t('group_memberships.welcome', group: group_name(@membership_request), locale: locale)
+      I18n.t('group_memberships.welcome', group: group_name(@membership_request))
     when 304
       I18n.t('already_member')
     end
