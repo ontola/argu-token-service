@@ -225,13 +225,9 @@ describe 'Token bearer create' do
 
   it 'manager should not create bearer token with invalid attributes NQ' do
     as_user
-    authorized_mock(type: 'Group', id: 1, action: 'update')
+    authorized_mock(type: 'Group', id: -1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/argu/tokens/bearer/g/1', params: {
-        bearer_token: {
-          bla: :bla
-        }
-      }, headers: service_headers(accept: :nq)
+      post '/argu/tokens/bearer/g/-1', headers: service_headers(accept: :nq)
 
       expect(response.code).to eq('422')
     end

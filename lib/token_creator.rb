@@ -23,7 +23,7 @@ class TokenCreator
   end
 
   def root_id
-    params.require(:root_id)
+    ActsAsTenant.current_tenant.uuid || params.require(:root_id)
   end
 
   def type
@@ -83,8 +83,8 @@ class TokenCreator
   def single_params
     @single_params ||=
       params
-        .slice(:expires_at, :root_id, :message, :redirect_url, :send_mail)
-        .merge(actor_iri: actor_iri, group_id: group_id)
+        .slice(:expires_at, :message, :redirect_url, :send_mail)
+        .merge(actor_iri: actor_iri, group_id: group_id, root_id: root_id)
   end
 
   def token_class
