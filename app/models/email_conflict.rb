@@ -12,7 +12,7 @@ class EmailConflict
   def couple_action_triples # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     return [] if token.account_exists?(api)
 
-    action_iri = ::RDF::DynamicURI("#{iri}/actions/couple_email")
+    action_iri = ::RDF::URI("#{iri}/actions/couple_email")
     entry_point_iri = action_iri.dup
     entry_point_iri.fragment = :entrypoint
     form_iri = iri.dup
@@ -28,7 +28,7 @@ class EmailConflict
       [action_iri, NS::ONTOLA[:favoriteAction], true],
       [entry_point_iri, RDF[:type], NS::SCHEMA[:EntryPoint]],
       [entry_point_iri, NS::SCHEMA[:name], I18n.t('email_conflicts.add', email: token.email)],
-      [entry_point_iri, NS::SCHEMA[:url], RDF::DynamicURI(iri)],
+      [entry_point_iri, NS::SCHEMA[:url], RDF::URI(iri)],
       [entry_point_iri, NS::SCHEMA[:httpMethod], 'PUT']
     ]
   end
@@ -47,7 +47,7 @@ class EmailConflict
   end
 
   def logout_action_triples # rubocop:disable Metrics/AbcSize
-    action_iri = RDF::DynamicURI("#{iri}/actions/sign_out")
+    action_iri = RDF::URI("#{iri}/actions/sign_out")
     label = I18n.t("email_conflicts.#{token.account_exists?(api) ? :switch : :create_new_account}")
 
     [
@@ -70,6 +70,6 @@ class EmailConflict
   private
 
   def couple_email_entry_iri
-    @couple_email_entry_iri ||= ::RDF::DynamicURI("#{iri}/actions/couple_email#entrypoint")
+    @couple_email_entry_iri ||= ::RDF::URI("#{iri}/actions/couple_email#entrypoint")
   end
 end

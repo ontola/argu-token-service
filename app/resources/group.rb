@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Group < ActiveResourceModel
-  include LinkedRails::Model
   self.collection_name = 'g'
   attr_accessor :fetched
 
@@ -37,8 +36,8 @@ class Group < ActiveResourceModel
     resource
   end
 
-  def iri_path(_opts = {})
-    @iri_path ||= argu_attribute(:iri).gsub(Rails.application.config.origin, '')
+  def iri(_opts = {})
+    @iri ||= RDF::URI(argu_attribute(:iri))
   end
 
   private
