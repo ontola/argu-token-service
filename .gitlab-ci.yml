@@ -1,0 +1,141 @@
+image: ruby:2.7.0
+
+cache:
+  paths:
+    - vendor/
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://localhost:2375
+  INT_IP_WHITELIST: 127.0.0.0/16,0.0.0.0
+  JWT_ENCRYPTION_TOKEN: secret
+  POSTGRESQL_ADDRESS: localhost
+  POSTGRES_DB: testdb
+  POSTGRES_PASSWORD: testdb
+  POSTGRES_USER: testdb
+  POSTGRESQL_PORT: 5432
+  TOKEN_SERVICE_DATABASE: testdb
+  POSTGRESQL_PASSWORD: testdb
+  POSTGRESQL_USERNAME: testdb
+  RAILS_ENV: test
+
+build:
+  stage: build
+  image: docker:18.09.8
+  services:
+    - docker:18.09.8-dind
+  before_script:
+    - cp config/database.docker.yml config/database.yml
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+productionTagManual:
+  stage: manualTag
+  image: docker:18.09.8
+  services:
+    - docker:18.09.8-dind
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:production
+    - docker push $CI_REGISTRY_IMAGE:production
+  when: manual
+
+stagingTagManual:
+  stage: manualTag
+  image: docker:18.09.8
+  services:
+    - docker:18.09.8-dind
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:staging
+    - docker push $CI_REGISTRY_IMAGE:staging
+  when: manual
+
+codeQuality:
+  stage: test
+  before_script:
+    - gem install brakeman
+    - gem install bundle-audit
+    - gem install rubocop -v 0.79.0
+    - gem install rubocop-rails -v 2.4.2
+    - gem install rubocop-rspec -v 1.38.0
+  script:
+    - brakeman -z
+    - rubocop
+    - bundle-audit update && bundle-audit check --ignore CVE-2015-9284
+
+test:
+  stage: test
+  services:
+    - redis
+    - postgres:11
+    - name: docker.elastic.co/elasticsearch/elasticsearch:6.7.2
+      alias: elasticsearch
+      command: [ "bin/elasticsearch", "-Expack.security.enabled=false", "-Ediscovery.type=single-node" ]
+  before_script:
+    - bundle install --deployment --path vendor/bundle
+    - cp config/database.docker.yml config/database.yml
+    - cp config/secrets.docker.yml config/secrets.yml
+    - bundle exec rake db:setup
+  script:
+    - bundle exec rake spec
+    - bundle exec rake test
+
+autoTagProduction:
+  stage: tag
+  image: docker:18.09.8
+  services:
+    - docker:18.09.8-dind
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:production
+    - docker push $CI_REGISTRY_IMAGE:production
+  only:
+    - master
+
+autoTagStaging:
+  stage: tag
+  image: docker:18.09.8
+  services:
+    - docker:18.09.8-dind
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:staging
+    - docker push $CI_REGISTRY_IMAGE:staging
+  only:
+    - develop
+
+productionDevProxy:
+  stage: devProxy
+  before_script:
+    - ''
+  script:
+    - 'curl -i -H "Authorization: Token $SEMAPHORE_TOKEN" -d "project_id=3f8cb928-83b3-4b9c-8203-286e36551824&reference=master" -X POST  https://argu.semaphoreci.com/api/v1alpha/plumber-workflows'
+  when: manual
+
+stagingDevProxy:
+  stage: devProxy
+  before_script:
+    - ''
+  script:
+    - 'curl -i -H "Authorization: Token $SEMAPHORE_TOKEN" -d "project_id=3f8cb928-83b3-4b9c-8203-286e36551824&reference=develop" -X POST  https://argu.semaphoreci.com/api/v1alpha/plumber-workflows'
+  when: manual
+
+stages:
+  - build
+  - manualTag
+  - devProxy
+  - test
+  - tag
