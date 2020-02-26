@@ -6,30 +6,23 @@ cache:
 
 variables:
   DOCKER_DRIVER: overlay2
-  DOCKER_HOST: tcp://localhost:2375
-  INT_IP_WHITELIST: 127.0.0.0/16,0.0.0.0
-  JWT_ENCRYPTION_TOKEN: secret
-  POSTGRESQL_ADDRESS: localhost
   POSTGRES_DB: testdb
   POSTGRES_PASSWORD: testdb
   POSTGRES_USER: testdb
-  POSTGRESQL_PORT: 5432
-  TOKEN_SERVICE_DATABASE: testdb
-  POSTGRESQL_PASSWORD: testdb
-  POSTGRESQL_USERNAME: testdb
-  RAILS_ENV: test
 
 build:
   stage: build
   image: docker:18.09.8
   services:
     - docker:18.09.8-dind
+    - postgres:11
   before_script:
     - cp config/database.docker.yml config/database.yml
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
   script:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
     - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker run --network host --env POSTGRESQL_ADDRESS=localhost --env RAILS_ENV=production $CI_REGISTRY_IMAGE:latest ./bin/rails runner "puts 'succeeded'"
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:latest
 
@@ -122,7 +115,7 @@ productionDevProxy:
   before_script:
     - ''
   script:
-    - 'curl -i -H "Authorization: Token $SEMAPHORE_TOKEN" -d "project_id=3f8cb928-83b3-4b9c-8203-286e36551824&reference=master" -X POST  https://argu.semaphoreci.com/api/v1alpha/plumber-workflows'
+    - eval $PRODUCTION_PIPELINE_TRIGGER
   when: manual
 
 stagingDevProxy:
@@ -130,7 +123,7 @@ stagingDevProxy:
   before_script:
     - ''
   script:
-    - 'curl -i -H "Authorization: Token $SEMAPHORE_TOKEN" -d "project_id=3f8cb928-83b3-4b9c-8203-286e36551824&reference=develop" -X POST  https://argu.semaphoreci.com/api/v1alpha/plumber-workflows'
+    - eval $STAGING_PIPELINE_TRIGGER
   when: manual
 
 stages:
