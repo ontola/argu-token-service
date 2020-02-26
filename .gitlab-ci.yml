@@ -6,6 +6,7 @@ cache:
 
 variables:
   DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
   DOCKER_HOST: tcp://localhost:2375
   INT_IP_WHITELIST: 127.0.0.0/16,0.0.0.0
   JWT_ENCRYPTION_TOKEN: secret
@@ -21,9 +22,9 @@ variables:
 
 build:
   stage: build
-  image: docker:18.09.8
+  image: docker:19.03
   services:
-    - docker:18.09.8-dind
+    - docker:19.03-dind
   before_script:
     - cp config/database.docker.yml config/database.yml
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
@@ -35,9 +36,9 @@ build:
 
 productionTagManual:
   stage: manualTag
-  image: docker:18.09.8
+  image: docker:19.03
   services:
-    - docker:18.09.8-dind
+    - docker:19.03-dind
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
   script:
@@ -48,9 +49,9 @@ productionTagManual:
 
 stagingTagManual:
   stage: manualTag
-  image: docker:18.09.8
+  image: docker:19.03
   services:
-    - docker:18.09.8-dind
+    - docker:19.03-dind
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
   script:
@@ -91,9 +92,9 @@ test:
 
 autoTagProduction:
   stage: tag
-  image: docker:18.09.8
+  image: docker:19.03
   services:
-    - docker:18.09.8-dind
+    - docker:19.03-dind
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
   script:
@@ -105,9 +106,9 @@ autoTagProduction:
 
 autoTagStaging:
   stage: tag
-  image: docker:18.09.8
+  image: docker:19.03
   services:
-    - docker:18.09.8-dind
+    - docker:19.03-dind
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
   script:
