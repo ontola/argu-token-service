@@ -22,7 +22,7 @@ build:
   script:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
     - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
-    - docker run --network host --env POSTGRESQL_ADDRESS=localhost --env RAILS_ENV=production $CI_REGISTRY_IMAGE:latest ./bin/rails runner "puts 'succeeded'"
+    - docker run --network host --env POSTGRESQL_ADDRESS=localhost --env TOKEN_SERVICE_DATABASE=test --env RAILS_ENV=production $CI_REGISTRY_IMAGE:latest ./bin/rails runner "puts 'succeeded'"
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:latest
 

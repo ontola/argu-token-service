@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.2'
+gem 'rails'
 # Use Puma as the app server
 gem 'puma'
 
@@ -11,38 +11,38 @@ gem 'active_model_serializers'
 gem 'active_response', git: 'https://github.com/ontola/active_response', branch: :master
 gem 'activeresource', git: 'https://github.com/ArthurWD/activeresource', branch: :master
 gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch: :master
-gem 'apartment'
 gem 'bootsnap'
-gem 'bugsnag', '~> 5.0.1'
+gem 'bugsnag'
 gem 'bunny'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 gem 'health_check'
 gem 'json-ld'
 gem 'kaminari'
 gem 'linked_rails', git: 'https://github.com/ontola/linked_rails'
-gem 'nokogiri', '~> 1.10.3'
+gem 'nokogiri'
 gem 'oauth2'
 gem 'oj'
 gem 'pragmatic_context'
-gem 'pundit', '~> 1.0.0'
+gem 'pundit'
 gem 'rdf'
 gem 'rdf-n3'
 gem 'rdf-rdfa'
-gem 'rdf-rdfxml', git: 'https://github.com/ruby-rdf/rdf-rdfxml', ref: 'dd99a73'
+gem 'rdf-rdfxml'
 gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers'
 gem 'rdf-turtle'
-gem 'rfc-822', '~> 0.4.1'
-gem 'sidekiq'
+gem 'rfc-822'
+gem 'ros-apartment', git: 'https://github.com/ArthurWD/apartment', ref: '4eb1681', require: 'apartment'
+gem 'sidekiq', '~> 5.2'
 gem 'tzinfo-data'
 gem 'uri_template'
 
 group :development, :production do
-  gem 'pg', '~> 0.19.0'
+  gem 'pg'
 end
 
 group :development, :test do
   gem 'binding_of_caller'
-  gem 'brakeman', '~> 3.4.1'
+  gem 'brakeman'
   gem 'bundler-audit'
   gem 'byebug', platform: :mri
   gem 'rspec-rails'
@@ -53,9 +53,9 @@ end
 
 group :development do
   gem 'better_errors'
-  gem 'listen', '~> 3.1.5'
+  gem 'listen'
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.1'
+  gem 'spring-watcher-listen'
   gem 'web-console'
 end
 
@@ -63,6 +63,6 @@ group :test do
   gem 'assert_difference'
   gem 'factory_girl'
   gem 'factory_girl_rails'
-  gem 'sqlite3', '~> 1.3.13'
+  gem 'sqlite3'
   gem 'webmock'
 end
