@@ -141,6 +141,14 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     resource_by_secret&.redirect_url || super
   end
 
+  def redirect_after_execute
+    respond_with_redirect(
+      location: token_executor.redirect_url,
+      notice: token_executor.notice,
+      reload: true
+    )
+  end
+
   def redirect_already_member
     respond_with_redirect(
       location: resource_by_secret.redirect_url || argu_url("/#{tree_root.url}"),
@@ -176,14 +184,12 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def show_success
-    if execute_token?
-      respond_with_redirect(location: token_executor.redirect_url, notice: token_executor.notice)
-    else
-      respond_with_resource(
-        resource: resource_by_secret,
-        fields: {bearerTokens: %i[label description login_action type]}
-      )
-    end
+    return redirect_after_execute if execute_token?
+
+    respond_with_resource(
+      resource: resource_by_secret,
+      fields: {bearerTokens: %i[label description login_action type]}
+    )
   end
 
   def token_creator
