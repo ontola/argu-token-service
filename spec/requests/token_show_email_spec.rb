@@ -360,7 +360,6 @@ describe 'Email token show' do
       before do
         confirm_email_mock(valid_token.email)
         create_membership_mock(user_id: 1, group_id: 1, secret: token)
-        create_favorite_mock(iri: token_with_r.redirect_url)
         emails_mock('tokens', token_with_r.id)
         email_check_mock(valid_token.email, true)
       end
@@ -380,7 +379,6 @@ describe 'Email token show' do
       before do
         confirm_email_mock(valid_token.email)
         create_membership_mock(user_id: 1, group_id: 1, secret: token)
-        create_favorite_mock(iri: token_with_r.redirect_url)
         emails_mock('tokens', token_with_r.id)
         email_check_mock(valid_token.email, true)
       end
@@ -403,7 +401,6 @@ describe 'Email token show' do
 
       before do
         create_membership_mock(user_id: 1, group_id: 1, secret: token)
-        create_favorite_mock(iri: token_with_r.redirect_url)
       end
 
       it_behaves_like 'bearer token'
@@ -425,7 +422,6 @@ describe 'Email token show' do
 
       before do
         create_membership_mock(user_id: 1, group_id: 1, secret: token)
-        create_favorite_mock(iri: token_with_r.redirect_url)
         emails_mock('tokens', token_with_r.id)
       end
 
@@ -448,7 +444,6 @@ describe 'Email token show' do
       end
 
       before do
-        create_favorite_mock(iri: token_with_r.redirect_url)
         emails_mock('tokens', token_with_r.id)
       end
 
@@ -471,7 +466,6 @@ describe 'Email token show' do
       before do
         confirm_email_mock(valid_token.email)
         create_membership_mock(user_id: 1, group_id: 1, secret: token)
-        create_favorite_mock(iri: valid_token.redirect_url)
         emails_mock('tokens', valid_token.id)
         email_check_mock(valid_token.email, true)
       end
@@ -491,7 +485,6 @@ describe 'Email token show' do
       before do
         confirm_email_mock(valid_token.email)
         create_membership_mock(user_id: 1, group_id: 1, secret: token)
-        create_favorite_mock(iri: valid_token.redirect_url)
         emails_mock('tokens', valid_token.id)
         email_check_mock(valid_token.email, true)
       end
@@ -514,7 +507,6 @@ describe 'Email token show' do
 
       before do
         create_membership_mock(user_id: 1, group_id: 1, secret: token)
-        # create_favorite_mock(iri: valid_token.redirect_url)
       end
 
       it_behaves_like 'bearer token'
@@ -537,7 +529,6 @@ describe 'Email token show' do
 
       before do
         create_membership_mock(user_id: 1, group_id: 1, secret: token)
-        # create_favorite_mock(iri: valid_token.redirect_url)
         emails_mock('tokens', valid_token.id)
       end
 
@@ -565,20 +556,6 @@ describe 'Email token show' do
 
       it_behaves_like 'bearer token'
     end
-  end
-
-  it 'user should redirect when failed to create favorite' do
-    as_user(1, email: 'email@example.com')
-    create_membership_mock(user_id: 1, group_id: 1, secret: token_with_r.secret)
-    emails_mock('tokens', token_with_r.id)
-    create_favorite_mock(iri: token_with_r.redirect_url, status: 500)
-
-    post "/argu/tokens/#{token_with_r.secret}", headers: service_headers(accept: :n3)
-    expect_token_used(token_with_r)
-
-    expect(response.code).to eq('200')
-    expect_snackbar('You have joined the group \'group_name\'')
-    expect_redirect('https://example.com')
   end
 
   it 'user should 500 when failed to create membership' do
