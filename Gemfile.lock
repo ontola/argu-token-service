@@ -30,16 +30,15 @@ GIT
 
 GIT
   remote: https://github.com/ontola/active_response
-  revision: 8925a9ec7128ef62e3d9101d9346ac4998e56893
+  revision: 4a568f7d6b5a06385b4e6f3258c745a4445c249c
   branch: master
   specs:
     active_response (0.0.1)
-      active_model_serializers (~> 0.10)
       railties
 
 GIT
   remote: https://github.com/ontola/linked_rails
-  revision: 5b299350eefff00ba546b521b7fd751be94a60a6
+  revision: 99c156367566e69076f50c66340f12d8d59a136c
   specs:
     linked_rails (0.0.0)
       active_response
@@ -217,7 +216,7 @@ GEM
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.4.0)
+    loofah (2.5.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -316,7 +315,7 @@ GEM
     rdf-turtle (3.1.0)
       ebnf (~> 1.2)
       rdf (~> 3.1)
-    rdf-vocab (3.1.2)
+    rdf-vocab (3.1.4)
       rdf (~> 3.1)
     rdf-xsd (3.1.0)
       rdf (~> 3.1)
@@ -391,7 +390,7 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.10)
-    tzinfo (1.2.6)
+    tzinfo (1.2.7)
       thread_safe (~> 0.1)
     tzinfo-data (1.2019.3)
       tzinfo (>= 1.0.0)
