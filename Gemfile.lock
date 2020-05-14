@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/ArthurWD/activeresource
-  revision: cfc4fd32c83a82dd332b19830baff23fc1993710
+  revision: 7a8ada2c46122565a89dbab6f4e48ce8e651e6a7
   branch: master
   specs:
-    activeresource (5.1.0)
+    activeresource (5.1.1)
       activemodel (>= 5.0, < 7)
       activemodel-serializers-xml (~> 1.0)
       activesupport (>= 5.0, < 7)
