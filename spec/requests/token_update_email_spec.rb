@@ -17,7 +17,7 @@ describe 'Token email update' do
     put "/argu#{token_path(token)}", params: {
       data: {
         id: resource_iri(token),
-        type: 'tokens',
+        type: 'token',
         attributes: {
           redirect_url: 'https://example.com'
         }
@@ -38,7 +38,7 @@ describe 'Token email update' do
     put "/argu#{token_path(token)}", params: {
       data: {
         id: resource_iri(token),
-        type: 'tokens',
+        type: 'token',
         attributes: {
           redirect_url: 'https://example.com'
         }
@@ -60,7 +60,7 @@ describe 'Token email update' do
     put "/argu#{token_path(token)}", params: {
       data: {
         id: resource_iri(token),
-        type: 'tokens',
+        type: 'token',
         attributes: {
           redirect_url: 'https://example.com'
         }
