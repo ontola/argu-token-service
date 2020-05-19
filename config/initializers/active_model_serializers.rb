@@ -1,1 +1,0 @@
-../../service_module/config/initializers/active_model_serializers.rb

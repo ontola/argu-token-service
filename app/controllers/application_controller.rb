@@ -10,6 +10,12 @@ class ApplicationController < APIController
     super || ActiveResourceModel.descendants.detect { |m| m.to_s == parent_resource_type(opts)&.classify }
   end
 
+  def serializer_params
+    {
+      scope: user_context
+    }
+  end
+
   def tree_root
     ActsAsTenant.current_tenant
   end

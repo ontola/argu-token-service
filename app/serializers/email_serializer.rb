@@ -3,7 +3,5 @@
 class EmailSerializer < ActiveModel::Serializer
   delegate :id, to: :object
 
-  has_many :email_events do
-    object.email_events
-  end
+  has_many :email_events
 end

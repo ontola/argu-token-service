@@ -1,1 +1,0 @@
-../../service_module/config/initializers/resource_identifier.rb

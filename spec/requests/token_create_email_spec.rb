@@ -392,8 +392,8 @@ describe 'Token email create' do
 
   def expect_token_attributes(index = 0)
     expect_attributes(
-      %w[type canonicalIRI invitee groupId usages createdAt expiresAt retractedAt
-         opened status message actorIRI clicked iri displayName redirectUrl rootId
+      %w[rdf_type canonical_iri invitee group_id usages created_at expires_at retracted_at
+         opened status message actor_iri clicked iri display_name redirect_url root_id
          label description],
       index
     )

@@ -23,6 +23,8 @@ class Token < ApplicationRecord
     retracted_at.nil? && (expires_at.nil? || expires_at > Time.current) && (max_usages.nil? || usages < max_usages)
   end
 
+  def display_name; end
+
   def parent_collections(user_context)
     [group.bearer_token_collection(user_context: user_context)]
   end
