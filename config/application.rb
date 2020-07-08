@@ -40,6 +40,7 @@ module Service
     config.frontend_url = "https://#{ENV['HOSTNAME']}"
     config.host_name = ENV['HOSTNAME']
     config.origin = "https://#{config.host_name}"
+    config.iri_suffix = 'tokens'
     LinkedRails.host = config.host_name
     LinkedRails.scheme = :https
 
@@ -56,7 +57,7 @@ module Service
 
     config.i18n.load_path += Dir[Rails.root.join('config/locales/**/*.{rb,yml}')]
 
-    Rails.application.routes.default_url_options[:host] = "#{config.host_name}/tokens"
+    Rails.application.routes.default_url_options[:host] = "#{config.host_name}/#{config.iri_suffix}"
     ActiveModelSerializers.config.key_transform = :camel_lower
     Rails.application.routes.default_scope = :tokens
 

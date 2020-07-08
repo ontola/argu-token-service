@@ -302,7 +302,7 @@ describe 'Token bearer create' do
 
   def expect_token_attributes(index = nil)
     expect_attributes(
-      %w[rdf_type canonical_iri group_id usages created_at expires_at retracted_at
+      %w[rdf_type canonical_iri group_id usages created_at expires_at retracted_at actor_iri
          message iri display_name redirect_url root_id token_url label description],
       index
     )

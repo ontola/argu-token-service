@@ -19,7 +19,7 @@ gem 'fast_jsonapi', git: 'https://github.com/fast-jsonapi/fast_jsonapi', ref: '2
 gem 'health_check'
 gem 'json-ld'
 gem 'kaminari'
-gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', branch: 'core-127-fast-serializers'
+gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', branch: 'filtering'
 gem 'nokogiri'
 gem 'oauth2'
 gem 'oj'
@@ -33,7 +33,7 @@ gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers', branch:
 gem 'rdf-turtle'
 gem 'rfc-822'
 gem 'ros-apartment', git: 'https://github.com/ArthurWD/apartment', ref: '4eb1681', require: 'apartment'
-gem 'sidekiq', '~> 5.2'
+gem 'sidekiq', github: 'mperham/sidekiq', branch: '5-x'
 gem 'tzinfo-data'
 gem 'uri_template'
 
@@ -64,6 +64,7 @@ group :test do
   gem 'assert_difference'
   gem 'factory_girl'
   gem 'factory_girl_rails'
+  gem 'minitest-reporters'
   gem 'sqlite3'
   gem 'webmock'
 end

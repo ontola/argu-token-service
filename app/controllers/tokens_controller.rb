@@ -113,7 +113,15 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def new_resource
-    controller_class.new(group_id: group_id, actor_iri: actor_iri, root_id: tree_root.uuid)
+    controller_class.new(new_resource_params)
+  end
+
+  def new_resource_params
+    {
+      actor_iri: actor_iri,
+      group_id: group_id,
+      root_id: tree_root.uuid
+    }
   end
 
   def parent_resource

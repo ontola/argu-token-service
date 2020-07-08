@@ -3,6 +3,7 @@
 class Token < ApplicationRecord
   include Enhanceable
   include LinkedRails::Model
+  include LinkedRails::Model::Filtering
   include ApplicationModel
   include Broadcastable
   enhance LinkedRails::Enhancements::Tableable
@@ -16,7 +17,6 @@ class Token < ApplicationRecord
   }
   validates :group_id, presence: true, numericality: {greater_than: 0}
 
-  filterable group_id: {}, type: {key: :email, values: {email: 'NOT NULL', bearer: 'NULL'}}
   paginates_per 50
 
   def active?
@@ -72,5 +72,15 @@ class Token < ApplicationRecord
 
   def set_token_type
     self.type ||= email.present? ? :EmailToken : :BearerToken
+  end
+
+  class << self
+    def attribute_for_new(opts)
+      {
+        actor_iri: opts[:user_context].user.iri,
+        group: opts[:group],
+        redirect_url: "https://#{ActsAsTenant.current_tenant.iri_prefix}"
+      }
+    end
   end
 end

@@ -394,7 +394,7 @@ describe 'Token email create' do
     expect_attributes(
       %w[rdf_type canonical_iri invitee group_id usages created_at expires_at retracted_at
          opened status message actor_iri clicked iri display_name redirect_url root_id
-         label description],
+         label description send_mail],
       index
     )
   end

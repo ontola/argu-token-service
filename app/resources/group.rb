@@ -19,8 +19,8 @@ class Group < ActiveResourceModel
     @bearer_tokens ||= BearerToken.where(group_id: id)
   end
 
-  def build_child(klass)
-    klass.new(group: self)
+  def build_child(klass, opts = {})
+    klass.build_new(opts.merge(group: self))
   end
 
   def email_tokens

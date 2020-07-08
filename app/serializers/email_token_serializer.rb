@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 class EmailTokenSerializer < TokenSerializer
-  attribute :addresses, predicate: NS::ARGU[:emailAddresses], datatype: NS::XSD[:string], if: method(:never)
   attribute :creator, predicate: NS::SCHEMA[:creator], if: method(:never)
   attribute :email, predicate: NS::ARGU[:email], if: method(:service_scope?)
-  attribute :actor_iri, predicate: NS::ARGU[:actorIRI]
   attribute :clicked, predicate: NS::ARGU[:clicked] do |object|
     object.emails&.first&.clicked? || false
   end
@@ -15,7 +13,7 @@ class EmailTokenSerializer < TokenSerializer
   attribute :status, predicate: NS::ARGU[:status] do |object|
     object.emails&.first&.status
   end
-  attribute :send_mail, predicate: NS::ARGU[:sendMail], datatype: NS::XSD[:boolean], if: method(:service_scope?)
+  attribute :send_mail, predicate: NS::ARGU[:sendMail], datatype: NS::XSD[:boolean]
   attribute :description, predicate: NS::SCHEMA[:text] do |object, params|
     if guest?(object, params)
       I18n.t(

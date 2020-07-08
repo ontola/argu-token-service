@@ -13,6 +13,8 @@ Rails.application.routes.draw do
 
   root 'tokens#show'
   get 'verify', to: 'verifications#show'
+  get '/forms/:id', to: 'forms#show'
+  get '/forms/:module/:id', to: 'forms#show'
 
   %i[bearer email].each do |type|
     resources :"#{type}_tokens", path: "#{type}/g/:group_id", only: %i[new create index] do

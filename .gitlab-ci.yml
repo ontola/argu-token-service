@@ -63,7 +63,7 @@ codeQuality:
   script:
     - brakeman -z
     - rubocop
-    - bundle-audit update && bundle-audit check --ignore CVE-2015-9284 --ignore CVE-2020-8161
+    - bundle-audit update && bundle-audit check
 
 test:
   stage: test

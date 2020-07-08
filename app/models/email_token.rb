@@ -39,4 +39,16 @@ class EmailToken < Token
   def valid_email?(user)
     user.email_addresses.map { |e| e.attributes['email'] }.include?(email)
   end
+
+  class << self
+    def attribute_for_new(opts = {})
+      super.merge(
+        message: I18n.t(
+          'email_tokens.form.message.default_message',
+          group: opts[:group].display_name
+        ),
+        send_mail: true
+      )
+    end
+  end
 end

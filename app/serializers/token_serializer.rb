@@ -35,6 +35,9 @@ class TokenSerializer < RecordSerializer
     end
   end
 
+  attribute :actor_iri, predicate: NS::ARGU[:actorIRI] do |object|
+    RDF::URI(object.actor_iri) if object.is_a?(EmailToken)
+  end
   attribute :usages, predicate: NS::ARGU[:usages]
   attribute :retracted_at, predicate: NS::ARGU[:retractedAt]
   attribute :expires_at, predicate: NS::ARGU[:expiresAt]
@@ -56,6 +59,8 @@ class TokenSerializer < RecordSerializer
   attribute :login_action, predicate: NS::ONTOLA[:favoriteAction], if: method(:login_action?) do
     RDF::URI("https://#{ActsAsTenant.current_tenant.iri_prefix}/u/sign_in")
   end
+  attribute :addresses, predicate: NS::ARGU[:emailAddresses], datatype: NS::XSD[:string], if: method(:never)
+  attribute :send_mail, predicate: NS::ARGU[:sendMail], datatype: NS::XSD[:boolean], if: method(:never)
 
   statements :accept_action_triples
 end
