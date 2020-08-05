@@ -47,7 +47,7 @@ class TokenSerializer < RecordSerializer
   attribute :token_url, predicate: NS::ARGU[:applyLink], if: method(:token_url?) do |object|
     RDF::DynamicURI(expand_uri_template(:tokens_iri, secret: object.secret, with_hostname: true))
   end
-  attribute :redirect_url, predicate: NS::ARGU[:redirectUrl] do |object|
+  attribute :redirect_url, predicate: NS::ONTOLA[:redirectUrl] do |object|
     RDF::URI(object.redirect_url) if object.redirect_url
   end
   attribute :label, predicate: NS::SCHEMA[:name] do

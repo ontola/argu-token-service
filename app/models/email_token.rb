@@ -7,7 +7,7 @@ class EmailToken < Token
 
   with_columns settings: [
     NS::ARGU[:invitee],
-    NS::ARGU[:redirectUrl],
+    NS::ONTOLA[:redirectUrl],
     NS::ARGU[:opened],
     NS::ONTOLA[:destroyAction]
   ]

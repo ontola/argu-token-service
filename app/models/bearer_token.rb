@@ -7,7 +7,7 @@ class BearerToken < Token
 
   with_columns settings: [
     NS::ARGU[:applyLink],
-    NS::ARGU[:redirectUrl],
+    NS::ONTOLA[:redirectUrl],
     NS::ARGU[:usages],
     NS::ONTOLA[:destroyAction]
   ]
