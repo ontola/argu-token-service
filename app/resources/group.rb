@@ -19,21 +19,8 @@ class Group < ActiveResourceModel
     @bearer_tokens ||= BearerToken.where(group_id: id)
   end
 
-  def build_child(klass, opts = {})
-    klass.build_new(opts.merge(group: self))
-  end
-
   def email_tokens
     @email_tokens ||= EmailToken.where(root_id: ActsAsTenant.current_tenant.uuid, group_id: id)
-  end
-
-  def self.find_by(opts)
-    return unless opts.keys == %i[id]
-
-    resource = find(opts[:id])
-    resource.id = opts[:id]
-    resource.fetched = true
-    resource
   end
 
   def iri(_opts = {})
@@ -53,5 +40,20 @@ class Group < ActiveResourceModel
     @attributes = group.attributes
     @attributes[:id] = original_id
     @fetched = true
+  end
+
+  class << self
+    def attributes_for_new(opts = {})
+      {group: opts[:parent]}.merge(super)
+    end
+
+    def find_by(opts)
+      return unless opts.keys == %i[id]
+
+      resource = find(opts[:id])
+      resource.id = opts[:id]
+      resource.fetched = true
+      resource
+    end
   end
 end

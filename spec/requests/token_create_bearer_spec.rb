@@ -10,6 +10,15 @@ describe 'Token bearer create' do
   ####################################
   # As Guest
   ####################################
+  it 'guest should not get new bearer token' do
+    as_guest
+    get '/argu/tokens/bearer/g/1/new', headers: service_headers(accept: :json_api)
+
+    expect(response.code).to eq('401')
+    expect_error_message('Please sign in to continue')
+    expect_error_size(1)
+  end
+
   it 'guest should not create valid bearer token' do
     as_guest
     assert_difference('Token.count', 0) do
@@ -44,6 +53,16 @@ describe 'Token bearer create' do
   ####################################
   # As User
   ####################################
+  it 'user should not get new bearer token' do
+    as_user
+    unauthorized_mock(type: 'Group', id: 1, action: 'update')
+    get '/argu/tokens/bearer/g/1/new', headers: service_headers(accept: :json_api)
+
+    expect(response.code).to eq('403')
+    expect_error_message("You're not authorized for this action. (new)")
+    expect_error_size(1)
+  end
+
   it 'user should not create valid bearer token' do
     as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
@@ -81,6 +100,16 @@ describe 'Token bearer create' do
   ####################################
   # As Manager
   ####################################
+  it 'manager should not get new bearer token' do
+    as_user
+    authorized_mock(type: 'Group', action: 'update')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
+    authorized_mock(type: 'CurrentActor', id: "https://#{ENV['HOSTNAME']}/u/1", action: 'show')
+    get '/argu/tokens/bearer/g/1/new', headers: service_headers(accept: :n3)
+
+    expect(response.code).to eq('200')
+  end
+
   it 'manager should not create token with wrong type' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')

@@ -75,10 +75,11 @@ class Token < ApplicationRecord
   end
 
   class << self
-    def attribute_for_new(opts)
+    def attributes_for_new(opts)
+      parent = opts[:collection]&.parent
       {
         actor_iri: opts[:user_context].user.iri,
-        group: opts[:group],
+        group: opts[:group] || parent.is_a?(Group) ? parent : nil,
         redirect_url: "https://#{ActsAsTenant.current_tenant.iri_prefix}"
       }
     end

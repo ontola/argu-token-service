@@ -23,7 +23,7 @@ class EmailToken < Token
   end
 
   def emails
-    return [] if previous_changes['id']&.first.nil? && previous_changes['id']&.second.present?
+    return [] if id.nil? || previous_changes['id']&.first.nil? && previous_changes['id']&.second.present?
 
     @emails ||= Email.where(
       resource_id: id,
@@ -41,11 +41,13 @@ class EmailToken < Token
   end
 
   class << self
-    def attribute_for_new(opts = {})
-      super.merge(
+    def attributes_for_new(opts = {})
+      super_opts = super
+
+      super_opts.merge(
         message: I18n.t(
           'email_tokens.form.message.default_message',
-          group: opts[:group].display_name
+          group: super_opts[:group].display_name
         ),
         send_mail: true
       )
