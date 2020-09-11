@@ -197,7 +197,7 @@ describe 'Token bearer create' do
 
     expect(response.code).to eq('201')
     expect_token_attributes
-    expect(Token.last.secret.length).to eq(16)
+    expect(Token.last.secret.length).to eq(8)
   end
 
   it 'manager should create bearer token with expired_at attribute' do
@@ -289,7 +289,7 @@ describe 'Token bearer create' do
     end
 
     expect(response.code).to eq('201')
-    expect(Token.last.secret.length).to eq(16)
+    expect(Token.last.secret.length).to eq(8)
   end
 
   it 'manager should create bearer token with expired_at attribute NQ' do
@@ -324,7 +324,7 @@ describe 'Token bearer create' do
 
     expect(response.code).to eq('201')
     expect(Token.last.redirect_url).to eq('https://example.com')
-    expect(Token.last.secret.length).to eq(16)
+    expect(Token.last.secret.length).to eq(8)
   end
 
   private

@@ -66,8 +66,8 @@ class Token < ApplicationRecord
   private
 
   def human_readable_token
-    token = SecureRandom.urlsafe_base64(128).upcase.scan(/[0123456789ACDEFGHJKLMNPQRTUVWXYZ]+/).join
-    token.length >= 16 ? token[0...16] : human_readable_token
+    token = SecureRandom.urlsafe_base64(128).upcase.scan(/[123456789ACDEFGHJKLMNPQRTUVWXYZ]+/).join
+    token.length >= 8 ? token[0...8] : human_readable_token
   end
 
   def set_token_type
