@@ -603,7 +603,7 @@ describe 'Email token show' do
 
     argu_url(
       '/argu/users/wrong_email',
-      r: argu_url('/argu/users/sign_in', r: iri, notice: I18n.t('please_login')),
+      redirect_url: argu_url('/argu/users/sign_in', redirect_url: iri, notice: I18n.t('please_login')),
       email: token.email
     )
   end
