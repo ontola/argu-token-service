@@ -17,6 +17,7 @@ class TokenSerializer < RecordSerializer
         [accept_action, NS::SCHEMA[:target], entry_point],
         [entry_point, ::RDF[:type], NS::SCHEMA[:EntryPoint]],
         [entry_point, NS::SCHEMA[:name], I18n.t('tokens.invitation.accept_button')],
+        [entry_point, NS::SCHEMA[:isPartOf], accept_action],
         [entry_point, NS::SCHEMA[:image], RDF::URI('http://fontawesome.io/icon/check')],
         [entry_point, NS::SCHEMA[:httpMethod], 'POST'],
         [entry_point, NS::SCHEMA[:url], object.iri]

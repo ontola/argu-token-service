@@ -28,6 +28,7 @@ class EmailConflict
       [action_iri, NS::SCHEMA[:object], token.iri],
       [action_iri, NS::ONTOLA[:favoriteAction], true],
       [entry_point_iri, RDF[:type], NS::SCHEMA[:EntryPoint]],
+      [entry_point_iri, NS::SCHEMA[:isPartOf], action_iri],
       [entry_point_iri, NS::SCHEMA[:name], I18n.t('email_conflicts.add', email: token.email)],
       [entry_point_iri, NS::SCHEMA[:url], RDF::URI(iri)],
       [entry_point_iri, NS::SCHEMA[:httpMethod], 'PUT']
