@@ -11,6 +11,7 @@ class TokenSerializer < RecordSerializer
       [
         [object.iri, NS::ONTOLA[:favoriteAction], accept_action],
         [accept_action, ::RDF[:type], NS::SCHEMA[:Action]],
+        [accept_action, NS::SCHEMA[:isPartOf], object.iri],
         [accept_action, NS::SCHEMA[:name], I18n.t('tokens.invitation.accept_button')],
         [accept_action, NS::SCHEMA[:object], object.iri],
         [accept_action, NS::SCHEMA[:target], entry_point],
