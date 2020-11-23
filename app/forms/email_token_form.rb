@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
+require 'argu/inputs/multiple_email_input'
+
 class EmailTokenForm < ApplicationForm
   include RegexHelper
 
-  field :addresses, max_length: 5000, pattern: /\A(#{RegexHelper::SINGLE_EMAIL.source},?\s?)+\z/
+  field :addresses,
+        max_length: 5000,
+        pattern: /(#{RegexHelper::SINGLE_EMAIL.source},?\s?)+/,
+        input_field: Inputs::MultipleEmailInput
   field :message, max_length: 5000
   field :redirect_url
 
