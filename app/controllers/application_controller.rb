@@ -6,6 +6,12 @@ class ApplicationController < APIController
 
   private
 
+  def authorize_action
+    return super unless action_name == 'index'
+
+    authorize new_resource, :index?
+  end
+
   def parent_resource_klass(opts = params)
     super || ActiveResourceModel.descendants.detect { |m| m.to_s == parent_resource_type(opts)&.classify }
   end

@@ -7,6 +7,7 @@ class Token < ApplicationRecord
   include ApplicationModel
   include Broadcastable
   enhance LinkedRails::Enhancements::Tableable
+  enhance LinkedRails::Enhancements::Indexable
 
   before_create :set_token_type
 

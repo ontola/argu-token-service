@@ -45,6 +45,8 @@ module Service
     LinkedRails.host = config.host_name
     LinkedRails.scheme = :https
 
+    config.jwt_encryption_method = :hs512
+
     config.middleware.use ActionDispatch::Flash
     config.middleware.use TenantMiddleware
     config.middleware.use LinkedRails::Middleware::LinkedDataParams

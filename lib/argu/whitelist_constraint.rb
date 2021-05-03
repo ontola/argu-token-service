@@ -1,1 +1,0 @@
-../../service_module/lib/argu/whitelist_constraint.rb

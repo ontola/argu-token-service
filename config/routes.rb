@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'argu/whitelist_constraint'
 require_relative '../app/models/bearer_token'
 require_relative '../app/models/email_token'
 
@@ -30,7 +29,7 @@ Rails.application.routes.draw do
     resource :email_conflict, only: %i[show update], path: :email_conflict
   end
 
-  constraints(Argu::WhitelistConstraint) do
+  constraints(LinkedRails::Constraints::Whitelist) do
     health_check_routes
   end
 end
