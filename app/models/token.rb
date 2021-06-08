@@ -39,7 +39,7 @@ class Token < ApplicationRecord
   end
 
   def login_iri
-    RDF::URI("https://#{ActsAsTenant.current_tenant.iri_prefix}/u/sign_in?#{{redirect_url: iri}.to_param}")
+    RDF::URI("https://#{ActsAsTenant.current_tenant.iri_prefix}/u/session/new?#{{redirect_url: iri}.to_param}")
   end
 
   def to_param

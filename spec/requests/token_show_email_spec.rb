@@ -596,15 +596,7 @@ describe 'Email token show' do
     expect(token.reload.usages).to eq(1)
   end
 
-  def wrong_email_location(token, old_fe: false)
-    return resource_iri(argu_url("/tokens/#{token.secret}/email_conflict")) unless old_fe
-
-    iri = resource_iri(token, iri_prefix: "#{ENV['HOSTNAME']}/argu")
-
-    argu_url(
-      '/argu/users/wrong_email',
-      redirect_url: argu_url('/argu/users/sign_in', redirect_url: iri, notice: I18n.t('please_login')),
-      email: token.email
-    )
+  def wrong_email_location(token)
+    resource_iri(argu_url("/tokens/#{token.secret}/email_conflict"))
   end
 end

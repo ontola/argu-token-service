@@ -59,7 +59,7 @@ class TokenSerializer < RecordSerializer
     I18n.t("tokens.invitation.#{guest?(object, params) ? 'login' : 'accept'}", group: object.group.display_name)
   end
   attribute :login_action, predicate: NS::ONTOLA[:favoriteAction], if: method(:login_action?) do
-    RDF::URI("https://#{ActsAsTenant.current_tenant.iri_prefix}/u/sign_in")
+    RDF::URI("https://#{ActsAsTenant.current_tenant.iri_prefix}/u/session/new")
   end
   attribute :addresses, predicate: NS::ARGU[:emailAddresses], datatype: NS::XSD[:string], if: method(:never)
   attribute :send_mail, predicate: NS::ARGU[:sendMail], datatype: NS::XSD[:boolean], if: method(:never)

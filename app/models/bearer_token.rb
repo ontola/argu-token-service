@@ -15,4 +15,10 @@ class BearerToken < Token
   def valid_email?(_user)
     true
   end
+
+  class << self
+    def collection_from_parent_name(_parent, _params)
+      :bearer_token_collection
+    end
+  end
 end

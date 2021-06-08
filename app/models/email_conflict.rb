@@ -66,7 +66,7 @@ class EmailConflict
   end
 
   def iri_opts
-    {parent_iri: split_iri_segments(token.iri_path)}
+    {parent_iri: split_iri_segments(token.root_relative_iri)}
   end
 
   private

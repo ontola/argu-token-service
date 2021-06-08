@@ -56,7 +56,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def create_success_location
-    settings_iri(Group.new(id: group_id).iri_path, fragment: :"#{token_type}_invite").to_s
+    settings_iri(Group.new(id: group_id).root_relative_iri, fragment: :"#{token_type}_invite").to_s
   end
   alias destroy_success_location create_success_location
 
@@ -111,6 +111,8 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
       )
     end
   end
+
+  def index_association; end
 
   def new_resource
     controller_class.new(new_resource_params)
@@ -169,7 +171,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def redirect_location
-    current_resource.iri_path
+    current_resource.root_relative_iri.to_s
   end
 
   def redirect_wrong_email

@@ -5,10 +5,6 @@ class EmailTokensController < TokensController
 
   private
 
-  def index_collection_name
-    :email_token_collection
-  end
-
   def index_includes
     {}
   end

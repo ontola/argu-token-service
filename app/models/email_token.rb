@@ -52,5 +52,9 @@ class EmailToken < Token
         send_mail: true
       )
     end
+
+    def collection_from_parent_name(_parent, _params)
+      :email_token_collection
+    end
   end
 end
