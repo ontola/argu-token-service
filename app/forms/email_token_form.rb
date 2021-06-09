@@ -6,7 +6,7 @@ class EmailTokenForm < ApplicationForm
   include RegexHelper
 
   field :addresses,
-        max_length: 5000,
+        max_count: 5000,
         pattern: /(#{RegexHelper::SINGLE_EMAIL.source},?\s?)+/,
         input_field: Inputs::MultipleEmailInput
   field :message, max_length: 5000
