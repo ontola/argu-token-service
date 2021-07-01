@@ -6,10 +6,10 @@ class BearerToken < Token
   enhance LinkedRails::Enhancements::Actionable
 
   with_columns settings: [
-    NS::ARGU[:applyLink],
-    NS::ONTOLA[:redirectUrl],
-    NS::ARGU[:usages],
-    NS::ONTOLA[:destroyAction]
+    NS.argu[:applyLink],
+    NS.ontola[:redirectUrl],
+    NS.argu[:usages],
+    NS.ontola[:destroyAction]
   ]
 
   def valid_email?(_user)
@@ -17,8 +17,8 @@ class BearerToken < Token
   end
 
   class << self
-    def collection_from_parent_name(_parent, _params)
-      :bearer_token_collection
+    def route_key
+      :bearer
     end
   end
 end

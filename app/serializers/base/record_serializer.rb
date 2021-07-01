@@ -2,8 +2,8 @@
 
 class RecordSerializer < BaseSerializer
   attribute :iri
-  attribute :created_at, predicate: NS::SCHEMA[:dateCreated]
-  attribute :display_name, predicate: NS::SCHEMA[:name], graph: NS::LL[:add]
+  attribute :created_at, predicate: NS.schema.dateCreated
+  attribute :display_name, predicate: NS.schema.name, graph: NS.ll[:add]
 
   class << self
     def guest?(_object, params)

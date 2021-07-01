@@ -51,6 +51,9 @@ module Service
     config.middleware.use TenantMiddleware
     config.middleware.use LinkedRails::Middleware::LinkedDataParams
 
+    config.cache_stream = ENV['CACHE_STREAM'].presence || 'transactions'
+    config.cache_redis_database = (ENV['CACHE_REDIS_DATABASE'])&.to_i || 8
+
     config.autoload_paths += %w[lib]
     config.autoload_paths += %W[#{config.root}/app/serializers/base]
     config.autoload_paths += %W[#{config.root}/app/models/actions]

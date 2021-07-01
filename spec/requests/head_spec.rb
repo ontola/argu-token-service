@@ -16,9 +16,7 @@ describe 'Head' do
 
   it 'handles a wrong iri prefix' do
     find_tenant_mock("#{ENV['HOSTNAME']}\/wrong\/tokens.*", shortnames: %w[argu wrong])
-    Rails.application.config.origin = Rails.application.config.origin.sub('https', 'http')
     head "/wrong/tokens/#{token.secret}", headers: service_headers(accept: :nq)
-    assert_redirected_to resource_iri(token).to_s
-    Rails.application.config.origin = Rails.application.config.origin.sub('http', 'https')
+    assert_redirected_to resource_iri(token).to_s.sub('http', 'https')
   end
 end

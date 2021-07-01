@@ -49,7 +49,7 @@ describe 'Token retract' do
 
     expect(response.code).to eq('404')
 
-    expect_error_message('No resource present to authorize')
+    expect_error_message('ActiveRecord::RecordNotFound')
     expect_error_size(1)
   end
 

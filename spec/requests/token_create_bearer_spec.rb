@@ -12,39 +12,15 @@ describe 'Token bearer create' do
   ####################################
   it 'guest should not get new bearer token' do
     as_guest
-    get '/argu/tokens/bearer/g/1/new', headers: service_headers(accept: :json_api)
+    get '/argu/tokens/g/1/bearer/new', headers: service_headers(accept: :nq)
 
-    expect(response.code).to eq('401')
-    expect_error_message('Please sign in to continue')
-    expect_error_size(1)
+    assert_disabled_form(error: nil)
   end
 
   it 'guest should not create valid bearer token' do
     as_guest
     assert_difference('Token.count', 0) do
-      post '/argu/tokens/', params: {
-        data: {
-          type: 'bearerToken',
-          attributes: {
-            group_id: 1
-          }
-        }
-      }, headers: service_headers(accept: :json_api)
-    end
-
-    expect(response.code).to eq('401')
-    expect_error_message('Please sign in to continue')
-    expect_error_size(1)
-  end
-
-  it 'guest should not create valid bearer token NQ' do
-    as_guest
-    assert_difference('Token.count', 0) do
-      post '/argu/tokens/bearer/g/1', params: {
-        bearer_token: {
-          root_id: TEST_ROOT_ID
-        }
-      }, headers: service_headers(accept: :nq)
+      post '/argu/tokens/g/1/bearer', headers: service_headers(accept: :nq)
     end
 
     expect(response.code).to eq('401')
@@ -56,41 +32,17 @@ describe 'Token bearer create' do
   it 'user should not get new bearer token' do
     as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
-    get '/argu/tokens/bearer/g/1/new', headers: service_headers(accept: :json_api)
+    get '/argu/tokens/g/1/bearer/new', headers: service_headers(accept: :nq)
 
-    expect(response.code).to eq('403')
-    expect_error_message("You're not authorized for this action. (new)")
-    expect_error_size(1)
-  end
-
-  it 'user should not create valid bearer token' do
-    as_user
-    unauthorized_mock(type: 'Group', id: 1, action: 'update')
-    assert_difference('Token.count', 0) do
-      post '/argu/tokens/', params: {
-        data: {
-          type: 'bearerToken',
-          attributes: {
-            group_id: 1,
-            root_id: TEST_ROOT_ID
-          }
-        }
-      }, headers: service_headers(accept: :json_api)
-    end
-
-    expect(response.code).to eq('403')
-    expect_error_message("You're not authorized for this action. (create)")
-    expect_error_size(1)
+    assert_disabled_form(error: nil)
   end
 
   it 'user should not create valid bearer token NQ' do
     as_user
     unauthorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/argu/tokens/bearer/g/1', params: {
-        bearer_token: {
-          root_id: TEST_ROOT_ID
-        }
+      post '/argu/tokens/g/1/bearer', params: {
+        bearer_token: {}
       }, headers: service_headers(accept: :nq)
     end
 
@@ -104,59 +56,20 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', action: 'update')
     authorized_mock(type: 'Group', id: 1, action: 'update')
-    authorized_mock(type: 'CurrentActor', id: "https://#{ENV['HOSTNAME']}/u/1", action: 'show')
-    get '/argu/tokens/bearer/g/1/new', headers: service_headers(accept: :n3)
+    authorized_mock(type: 'CurrentActor', id: "http://#{ENV['HOSTNAME']}/u/1", action: 'show')
+    get '/argu/tokens/g/1/bearer/new', headers: service_headers(accept: :n3)
 
     expect(response.code).to eq('200')
   end
 
-  it 'manager should not create token with wrong type' do
+  it 'manager should not create without attributes' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/argu/tokens/', params: {
-        data: {
-          type: 'wrongType',
-          attributes: {
-            group_id: 1,
-            root_id: TEST_ROOT_ID
-          }
-        }
-      }, headers: service_headers(accept: :json_api)
+      post '/argu/tokens/g/1/bearer', headers: service_headers(accept: :nq)
 
       expect(response.code).to eq('422')
-      expect_error_message('found unpermitted parameter: :type')
-      expect_error_size(1)
-    end
-  end
-
-  it 'manager should not create without attributes' do
-    as_user
-    assert_difference('Token.count', 0) do
-      post '/argu/tokens/', headers: service_headers(accept: :json_api)
-
-      expect(response.code).to eq('422')
-      expect_error_message('param is missing or the value is empty: data')
-      expect_error_size(1)
-    end
-  end
-
-  it 'manager should not create bearer token with invalid attributes' do
-    as_user
-    unauthorized_mock(type: 'Group', id: 1, action: 'update')
-    assert_difference('Token.count', 0) do
-      post '/argu/tokens/', params: {
-        data: {
-          type: 'bearerToken',
-          attributes: {
-            bla: 'blabla'
-          }
-        }
-      }, headers: service_headers(accept: :json_api)
-
-      expect(response.code).to eq('422')
-      expect_error_message('param is missing or the value is empty: group_id')
-      expect_error_size(1)
+      expect_ontola_action(snackbar: 'param is missing or the value is empty')
     end
   end
 
@@ -164,89 +77,51 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', id: -1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/argu/tokens/', params: {
-        data: {
-          type: 'bearerToken',
-          attributes: {
-            group_id: -1,
-            root_id: TEST_ROOT_ID
-          }
+      post '/argu/tokens/g/-1/bearer', params: {
+        bearer_token: {
+          redirect_url: 'https://example.com'
         }
-      }, headers: service_headers(accept: :json_api)
+      }, headers: service_headers(accept: :nq)
     end
 
     expect(response.code).to eq('422')
-    expect_error_message('Group must be greater than 0')
-    expect_error_size(1)
-  end
-
-  it 'manager should create valid bearer token' do
-    as_user
-    authorized_mock(type: 'Group', id: 1, action: 'update')
-    assert_difference('Token.count', 1) do
-      post '/argu/tokens/', params: {
-        data: {
-          type: 'bearerToken',
-          attributes: {
-            group_id: 1,
-            root_id: TEST_ROOT_ID
-          }
-        }
-      }, headers: service_headers(accept: :json_api)
-    end
-
-    expect(response.code).to eq('201')
-    expect_token_attributes
-    expect(Token.last.secret.length).to eq(8)
-  end
-
-  it 'manager should create bearer token with expired_at attribute' do
-    as_user
-    authorized_mock(type: 'Group', id: 1, action: 'update')
-    assert_difference('Token.count', 1) do
-      post '/argu/tokens/', params: {
-        data: {
-          type: 'bearerToken',
-          attributes: {
-            group_id: 1,
-            root_id: TEST_ROOT_ID,
-            expires_at: 1.day.from_now
-          }
-        }
-      }, headers: service_headers(accept: :json_api)
-    end
-
-    expect(response.code).to eq('201')
-    expect_token_attributes
-    expect(Token.last.expires_at).to be_truthy
   end
 
   it 'manager should create bearer token with redirect_url' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
-      post '/argu/tokens/', params: {
-        data: {
-          type: 'bearerToken',
-          attributes: {
-            group_id: 1,
-            root_id: TEST_ROOT_ID,
-            redirect_url: 'https://example.com'
-          }
+      post '/argu/tokens/g/1/bearer', params: {
+        bearer_token: {
+          redirect_url: 'https://example.com'
         }
-      }, headers: service_headers(accept: :json_api)
+      }, headers: service_headers(accept: :nq)
     end
 
     expect(response.code).to eq('201')
-    expect_token_attributes
     expect(Token.last.redirect_url).to eq('https://example.com')
+  end
+
+  it 'manager should create bearer token with expired_at attribute' do
+    as_user
+    authorized_mock(type: 'Group', id: 1, action: 'update')
+    assert_difference('Token.count', 1) do
+      post '/argu/tokens/g/1/bearer', params: {
+        bearer_token: {
+          expires_at: 1.day.from_now
+        }
+      }, headers: service_headers(accept: :nq)
+    end
+
+    expect(response.code).to eq('201')
+    expect(Token.last.expires_at).to be_truthy
   end
 
   it 'manager should not create without attributes NQ' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/argu/tokens/bearer/g/1', headers: service_headers(accept: :nq)
+      post '/argu/tokens/g/1/bearer', headers: service_headers(accept: :nq)
 
       expect(response.code).to eq('422')
     end
@@ -256,7 +131,7 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', id: -1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/argu/tokens/bearer/g/-1', headers: service_headers(accept: :nq)
+      post '/argu/tokens/g/-1/bearer', headers: service_headers(accept: :nq)
 
       expect(response.code).to eq('422')
     end
@@ -266,10 +141,8 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', id: -1, action: 'update')
     assert_difference('Token.count', 0) do
-      post '/argu/tokens/bearer/g/-1', params: {
-        bearer_token: {
-          root_id: TEST_ROOT_ID
-        }
+      post '/argu/tokens/g/-1/bearer', params: {
+        bearer_token: {}
       }, headers: service_headers(accept: :nq)
     end
 
@@ -280,9 +153,8 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
-      post '/argu/tokens/bearer/g/1', params: {
+      post '/argu/tokens/g/1/bearer', params: {
         bearer_token: {
-          root_id: TEST_ROOT_ID,
           redirect_url: 'https://example.com'
         }
       }, headers: service_headers(accept: :nq)
@@ -296,9 +168,8 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
-      post '/argu/tokens/bearer/g/1', params: {
+      post '/argu/tokens/g/1/bearer', params: {
         bearer_token: {
-          root_id: TEST_ROOT_ID,
           redirect_url: 'https://example.com',
           expires_at: 1.day.from_now
         }
@@ -313,9 +184,8 @@ describe 'Token bearer create' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
-      post '/argu/tokens/bearer/g/1', params: {
+      post '/argu/tokens/g/1/bearer', params: {
         bearer_token: {
-          root_id: TEST_ROOT_ID,
           redirect_url: 'https://example.com',
           message: 'Join this group!'
         }
@@ -325,15 +195,5 @@ describe 'Token bearer create' do
     expect(response.code).to eq('201')
     expect(Token.last.redirect_url).to eq('https://example.com')
     expect(Token.last.secret.length).to eq(8)
-  end
-
-  private
-
-  def expect_token_attributes(index = nil)
-    expect_attributes(
-      %w[rdf_type canonical_iri group_id usages created_at expires_at retracted_at actor_iri
-         message iri display_name redirect_url root_id token_url label description],
-      index
-    )
   end
 end

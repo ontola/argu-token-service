@@ -6,10 +6,10 @@ class EmailToken < Token
   enhance LinkedRails::Enhancements::Actionable
 
   with_columns settings: [
-    NS::ARGU[:invitee],
-    NS::ONTOLA[:redirectUrl],
-    NS::ARGU[:opened],
-    NS::ONTOLA[:destroyAction]
+    NS.argu[:invitee],
+    NS.ontola[:redirectUrl],
+    NS.argu[:opened],
+    NS.ontola[:destroyAction]
   ]
 
   def account_exists?(api)
@@ -53,8 +53,8 @@ class EmailToken < Token
       )
     end
 
-    def collection_from_parent_name(_parent, _params)
-      :email_token_collection
+    def route_key
+      :email
     end
   end
 end

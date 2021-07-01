@@ -16,11 +16,11 @@ class Group < ActiveResourceModel
   end
 
   def bearer_tokens
-    @bearer_tokens ||= BearerToken.where(group_id: id)
+    @bearer_tokens ||= ::BearerToken.where(group_id: id)
   end
 
   def email_tokens
-    @email_tokens ||= EmailToken.where(root_id: ActsAsTenant.current_tenant.uuid, group_id: id)
+    @email_tokens ||= ::EmailToken.where(root_id: ActsAsTenant.current_tenant.uuid, group_id: id)
   end
 
   def iri(_opts = {})
@@ -54,6 +54,10 @@ class Group < ActiveResourceModel
       resource.id = opts[:id]
       resource.fetched = true
       resource
+    end
+
+    def route_key
+      :g
     end
   end
 end

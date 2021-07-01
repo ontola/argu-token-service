@@ -231,10 +231,10 @@ describe 'Bearer token show' do
     context 'with guest' do
       let(:authenticate) { authenticate_as_guest }
       let(:expect_get_n3) do
-        expect_post_n3
+        expect(response.code).to eq('200')
       end
       let(:expect_post_n3) do
-        expect(response.code).to eq('200')
+        expect(response.code).to eq('401')
       end
 
       it_behaves_like 'bearer token'
@@ -286,10 +286,10 @@ describe 'Bearer token show' do
     context 'with guest' do
       let(:authenticate) { authenticate_as_guest }
       let(:expect_get_n3) do
-        expect_post_n3
+        expect(response.code).to eq('200')
       end
       let(:expect_post_n3) do
-        expect(response.code).to eq('200')
+        expect(response.code).to eq('401')
       end
 
       it_behaves_like 'bearer token'

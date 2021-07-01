@@ -19,7 +19,7 @@ gem 'fast_jsonapi', git: 'https://github.com/fast-jsonapi/fast_jsonapi', ref: '2
 gem 'health_check'
 gem 'json-ld'
 gem 'kaminari'
-gem 'linked_rails', git: 'https://github.com/ontola/linked_rails'
+gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', branch: :refactor
 gem 'nokogiri'
 gem 'oauth2'
 gem 'oj'

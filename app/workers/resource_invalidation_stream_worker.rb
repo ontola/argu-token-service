@@ -1,0 +1,1 @@
+../../service_module/app/workers/resource_invalidation_stream_worker.rb

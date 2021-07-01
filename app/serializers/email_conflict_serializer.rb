@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class EmailConflictSerializer < BaseSerializer
-  attribute :label, predicate: NS::SCHEMA[:name]
-  attribute :description, predicate: NS::SCHEMA[:text]
+  attribute :label, predicate: NS.schema.name
+  attribute :description, predicate: NS.schema.text
   statements :action_triples
 
   class << self

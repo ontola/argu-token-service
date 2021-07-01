@@ -6,8 +6,11 @@ class Token < ApplicationRecord
   include LinkedRails::Model::Filtering
   include ApplicationModel
   include Broadcastable
+  enhance LinkedRails::Enhancements::Actionable
   enhance LinkedRails::Enhancements::Tableable
   enhance LinkedRails::Enhancements::Indexable
+  enhance LinkedRails::Enhancements::Updatable
+  enhance LinkedRails::Enhancements::Destroyable
 
   before_create :set_token_type
 
@@ -64,6 +67,8 @@ class Token < ApplicationRecord
     group.organization
   end
 
+  def singular_resource=(_val); end
+
   private
 
   def human_readable_token
@@ -77,12 +82,21 @@ class Token < ApplicationRecord
 
   class << self
     def attributes_for_new(opts)
-      parent = opts[:collection]&.parent
+      parent = opts[:parent]
       {
         actor_iri: opts[:user_context].user.iri,
         group: opts[:group] || parent.is_a?(Group) ? parent : nil,
         redirect_url: "https://#{ActsAsTenant.current_tenant.iri_prefix}"
       }
+    end
+
+    def requested_single_resource(params, _user_context)
+      find_by(secret: params[:id] || params[:token_id])
+    end
+    alias requested_singular_resource requested_single_resource
+
+    def route_key
+      ''
     end
   end
 end

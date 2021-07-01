@@ -1,10 +1,10 @@
 en:
   email_conflicts:
     title: "Other email address"
-    description: "The invitation you are following is meant for %{email}. This address is not linked to the account you are currently logged in with."
+    description: "The invitation you are following is meant for **%{email}**. This address is not linked to the account you are currently logged in with."
     email_list: "Email addresses linked to your account:"
-    account_exists: "An account for %{email} already exists. Log out and log in with this other account to accept the invitation."
-    link_or_logout: "You can either add %{email} to your account, or create a new account for %{email}."
+    account_exists: "An account for **%{email}** already exists. Log out and log in with this other account to accept the invitation."
+    link_or_logout: "You can either add **%{email}** to your account, or create a new account for **%{email}**."
     add: "Add %{email} to your account"
     switch: "Switch account"
     create_new_account: "Create new account"

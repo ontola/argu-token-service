@@ -58,15 +58,9 @@ describe 'Token email update' do
     emails_mock('tokens', token.id)
     authorized_mock(type: 'Group', id: 1, action: 'update')
     put "/argu#{token_path(token)}", params: {
-      data: {
-        id: resource_iri(token),
-        type: 'token',
-        attributes: {
-          redirect_url: 'https://example.com'
-        }
-      }
-    }, headers: service_headers(accept: :json_api)
-    expect(response.code).to eq('204')
+      token: {redirect_url: 'https://example.com'}
+    }, headers: service_headers(accept: :nq)
+    expect(response.code).to eq('200')
     expect(token.reload.redirect_url).to eq('https://example.com')
   end
 end

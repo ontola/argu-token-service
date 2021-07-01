@@ -6,6 +6,8 @@ class EmailConflict
   include LinkedRails::Model
   include IRITemplateHelper
   include UrlHelper
+  enhance LinkedRails::Enhancements::Singularable
+  enhance LinkedRails::Enhancements::Updatable
 
   attr_accessor :api, :token
 
@@ -19,19 +21,19 @@ class EmailConflict
     form_iri.fragment = :form
 
     [
-      [iri, NS::SCHEMA[:potentialAction], action_iri],
-      [iri, NS::ONTOLA[:favoriteAction], action_iri],
-      [action_iri, RDF[:type], NS::SCHEMA[:Action]],
-      [action_iri, NS::SCHEMA[:isPartOf], iri],
-      [action_iri, NS::SCHEMA[:name], I18n.t('email_conflicts.add', email: token.email)],
-      [action_iri, NS::SCHEMA[:target], entry_point_iri],
-      [action_iri, NS::SCHEMA[:object], token.iri],
-      [action_iri, NS::ONTOLA[:favoriteAction], true],
-      [entry_point_iri, RDF[:type], NS::SCHEMA[:EntryPoint]],
-      [entry_point_iri, NS::SCHEMA[:isPartOf], action_iri],
-      [entry_point_iri, NS::SCHEMA[:name], I18n.t('email_conflicts.add', email: token.email)],
-      [entry_point_iri, NS::SCHEMA[:url], RDF::URI(iri)],
-      [entry_point_iri, NS::SCHEMA[:httpMethod], 'PUT']
+      [iri, NS.schema.potentialAction, action_iri],
+      [iri, NS.ontola[:favoriteAction], action_iri],
+      [action_iri, RDF[:type], NS.schema.Action],
+      [action_iri, NS.schema.isPartOf, iri],
+      [action_iri, NS.schema.name, I18n.t('email_conflicts.add', email: token.email)],
+      [action_iri, NS.schema.target, entry_point_iri],
+      [action_iri, NS.schema.object, token.iri],
+      [action_iri, NS.ontola[:favoriteAction], true],
+      [entry_point_iri, RDF[:type], NS.schema.EntryPoint],
+      [entry_point_iri, NS.schema.isPartOf, action_iri],
+      [entry_point_iri, NS.schema.name, I18n.t('email_conflicts.add', email: token.email)],
+      [entry_point_iri, NS.schema.url, RDF::URI(iri)],
+      [entry_point_iri, NS.schema.httpMethod, 'PUT']
     ]
   end
 
@@ -53,11 +55,11 @@ class EmailConflict
     label = I18n.t("email_conflicts.#{token.account_exists?(api) ? :switch : :create_new_account}")
 
     [
-      [iri, NS::SCHEMA[:potentialAction], action_iri],
-      [iri, NS::ONTOLA[:favoriteAction], action_iri],
+      [iri, NS.schema.potentialAction, action_iri],
+      [iri, NS.ontola[:favoriteAction], action_iri],
       [action_iri, RDF[:type], RDF::DynamicURI(argu_url('/AppSignOut'))],
-      [action_iri, NS::SCHEMA[:name], label],
-      [action_iri, NS::SCHEMA[:url], token.login_iri]
+      [action_iri, NS.schema.name, label],
+      [action_iri, NS.schema.url, token.login_iri]
     ]
   end
 
@@ -73,5 +75,17 @@ class EmailConflict
 
   def couple_email_entry_iri
     @couple_email_entry_iri ||= ::RDF::URI("#{iri}/actions/couple_email#entrypoint")
+  end
+
+  class << self
+    def requested_singular_resource(params, user_context)
+      token = LinkedRails.iri_mapper.parent_from_params(params, user_context)
+
+      new(api: user_context.api, token: token)
+    end
+
+    def singular_route_key
+      :email_conflict
+    end
   end
 end
