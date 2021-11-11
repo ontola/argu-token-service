@@ -9,6 +9,7 @@ class EmailToken < Token
     NS.argu[:invitee],
     NS.ontola[:redirectUrl],
     NS.argu[:opened],
+    NS.ontola[:updateAction],
     NS.ontola[:destroyAction]
   ]
 

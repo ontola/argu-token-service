@@ -7,3 +7,9 @@ en:
       redirect_url:
         label: "Redirect url after clicking the invite link"
         description: "Enter a url"
+      expires_at:
+        label: "Valid until"
+        description: "Leave empty for unlimited usage"
+      max_usages:
+        label: "Usage limit"
+        description: "Leave empty for unlimited usage"

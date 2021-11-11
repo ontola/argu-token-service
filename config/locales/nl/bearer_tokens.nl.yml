@@ -7,3 +7,9 @@ nl:
       redirect_url:
         label: "Url om naar door te verwijzen na het klikken op de link"
         description: "Geef een url op"
+      expires_at:
+        label: "Geldig tot"
+        description: "Laat leeg voor onbeperkt gebruik"
+      max_usages:
+        label: "Aantal keer te gebruiken"
+        description: "Laat leeg voor onbeperkt gebruik"

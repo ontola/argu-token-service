@@ -41,6 +41,7 @@ class TokenSerializer < RecordSerializer
     RDF::URI(object.actor_iri) if object.is_a?(EmailToken) && object.actor_iri
   end
   attribute :usages, predicate: NS.argu[:usages]
+  attribute :max_usages, predicate: NS.argu[:maxUsages]
   attribute :retracted_at, predicate: NS.argu[:retractedAt]
   attribute :expires_at, predicate: NS.argu[:expiresAt]
   attribute :group_id, predicate: NS.argu[:groupId]

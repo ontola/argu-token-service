@@ -21,6 +21,10 @@ require_relative 'initializers/build'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+require 'json/ld/api'
+require 'json/ld/context'
+require 'json/ld/reader'
+require 'json/ld/writer'
 require 'linked_rails/middleware/linked_data_params'
 require_relative '../lib/tenant_finder'
 require_relative '../lib/tenant_middleware'

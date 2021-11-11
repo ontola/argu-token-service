@@ -131,9 +131,9 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def permit_params
-    @permit_params ||=
-      attribute_params
-        .permit(%i[actor_iri expires_at group_id root_id message redirect_url send_mail addresses] + [addresses: []])
+    @permit_params ||= attribute_params.permit(
+      %i[actor_iri expires_at group_id root_id max_usages message redirect_url send_mail addresses] + [addresses: []]
+    )
   end
 
   def r_for_guest_token
@@ -152,7 +152,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def redirect_location
-    current_resource.root_relative_iri.to_s
+    current_resource.iri.to_s
   end
 
   def redirect_wrong_email

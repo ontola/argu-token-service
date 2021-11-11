@@ -83,7 +83,7 @@ class TokenCreator
   def single_params
     @single_params ||=
       params
-        .slice(:expires_at, :message, :redirect_url, :send_mail)
+        .slice(:expires_at, :max_usages, :message, :redirect_url, :send_mail)
         .merge(actor_iri: actor_iri, group_id: group_id, root_id: root_id)
   end
 
