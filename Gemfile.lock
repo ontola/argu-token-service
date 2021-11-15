@@ -49,33 +49,33 @@ GIT
 
 GIT
   remote: https://github.com/ontola/active_response
-  revision: e9f13b07446585387e9799336c60296358f6e9c8
+  revision: 4486c79d27f593176175bc7582d71dbb179ebad1
   branch: master
   specs:
-    active_response (0.0.1)
+    active_response (0.0.3)
       railties
 
 GIT
   remote: https://github.com/ontola/linked_rails
-  revision: b351c0035f8871b301dbd4a52ea778c3a8ba0cf5
-  branch: refactor
+  revision: e30ff955603a12459733d0e442749a896a15e284
+  branch: collections-dsl
   specs:
-    linked_rails (0.0.0)
-      active_response
+    linked_rails (0.0.3)
+      active_response (~> 0.0.2)
       kaminari-activerecord
       pundit
       rdf
-      rdf-serializers
+      rdf-serializers (~> 0.0.10)
       rdf-vocab
       uri_template
 
 GIT
   remote: https://github.com/ontola/rdf-serializers
-  revision: e74faf784d4a80341891593acfb896a204e1082c
-  branch: fast-jsonapi
+  revision: baad12916a1f65159ee58187593d99c3224ad3ca
   specs:
-    rdf-serializers (0.0.7)
-      fast_jsonapi
+    rdf-serializers (0.0.10)
+      jsonapi-serializer (>= 2.1.0)
+      oj
       railties (>= 4.2.0, < 7)
       rdf (~> 3.0)
 
@@ -152,7 +152,7 @@ GEM
     ansi (1.5.0)
     assert_difference (1.0.0)
       activesupport (>= 3.0.0)
-    ast (2.4.0)
+    ast (2.4.2)
     better_errors (2.6.0)
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
@@ -206,10 +206,10 @@ GEM
     hamster (3.0.0)
       concurrent-ruby (~> 1.0)
     hashdiff (1.0.1)
-    health_check (3.0.0)
+    health_check (3.1.0)
       railties (>= 5.0)
     htmlentities (4.3.4)
-    i18n (1.8.10)
+    i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     json-canonicalization (0.2.0)
     json-ld (3.1.1)
@@ -220,6 +220,8 @@ GEM
       rack (~> 2.0)
       rdf (~> 3.1)
     jsonapi-renderer (0.2.2)
+    jsonapi-serializer (2.2.0)
+      activesupport (>= 4.2)
     jwt (2.2.1)
     kaminari (1.2.1)
       activesupport (>= 4.1.0)
@@ -237,7 +239,7 @@ GEM
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.10.0)
+    loofah (2.12.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -245,7 +247,7 @@ GEM
     marcel (1.0.1)
     method_source (1.0.0)
     mini_mime (1.1.0)
-    mini_portile2 (2.5.3)
+    mini_portile2 (2.6.1)
     minitest (5.14.4)
     minitest-reporters (1.4.2)
       ansi
@@ -259,8 +261,8 @@ GEM
     net-http-persistent (3.1.0)
       connection_pool (~> 2.2)
     nio4r (2.5.7)
-    nokogiri (1.11.7)
-      mini_portile2 (~> 2.5.0)
+    nokogiri (1.12.5)
+      mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     oauth2 (1.4.4)
       faraday (>= 0.8, < 2.0)
@@ -268,10 +270,10 @@ GEM
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
-    oj (3.10.5)
-    parallel (1.19.1)
-    parser (2.7.1.2)
-      ast (~> 2.4.0)
+    oj (3.13.9)
+    parallel (1.21.0)
+    parser (3.0.2.0)
+      ast (~> 2.4.1)
     pg (1.2.2)
     pragmatic_context (0.2.1)
       activemodel
@@ -279,9 +281,9 @@ GEM
     public_suffix (4.0.3)
     puma (5.3.2)
       nio4r (~> 2.0)
-    pundit (2.1.0)
+    pundit (2.1.1)
       activesupport (>= 3.0.0)
-    racc (1.5.2)
+    racc (1.6.0)
     rack (2.2.3)
     rack-protection (2.0.8.1)
       rack
@@ -305,7 +307,7 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.3.0)
+    rails-html-sanitizer (1.4.2)
       loofah (~> 2.3)
     railties (6.0.3.7)
       actionpack (= 6.0.3.7)
@@ -314,7 +316,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.20.3, < 2.0)
     rainbow (3.0.0)
-    rake (13.0.3)
+    rake (13.0.6)
     rb-fsevent (0.10.3)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
@@ -341,11 +343,12 @@ GEM
     rdf-turtle (3.1.0)
       ebnf (~> 1.2)
       rdf (~> 3.1)
-    rdf-vocab (3.1.13)
+    rdf-vocab (3.1.14)
       rdf (~> 3.1, >= 3.1.12)
     rdf-xsd (3.1.0)
       rdf (~> 3.1)
     redis (4.1.4)
+    regexp_parser (2.1.1)
     request_store (1.5.0)
       rack (>= 1.4)
     rexml (3.2.5)
@@ -367,19 +370,24 @@ GEM
       rspec-mocks (~> 3.9.0)
       rspec-support (~> 3.9.0)
     rspec-support (3.9.2)
-    rubocop (0.83.0)
+    rubocop (0.92.0)
       parallel (~> 1.10)
-      parser (>= 2.7.0.1)
+      parser (>= 2.7.1.5)
       rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.7)
       rexml
+      rubocop-ast (>= 0.5.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-rails (2.4.2)
+    rubocop-ast (1.13.0)
+      parser (>= 3.0.1.1)
+    rubocop-rails (2.5.2)
+      activesupport
       rack (>= 1.1)
       rubocop (>= 0.72.0)
-    rubocop-rspec (1.38.1)
+    rubocop-rspec (1.39.0)
       rubocop (>= 0.68.1)
-    ruby-progressbar (1.10.1)
+    ruby-progressbar (1.11.0)
     safe_yaml (1.0.5)
     sparql (3.1.0)
       builder (~> 3.2)
@@ -414,7 +422,7 @@ GEM
       thread_safe (~> 0.1)
     tzinfo-data (1.2019.3)
       tzinfo (>= 1.0.0)
-    unicode-display_width (1.7.0)
+    unicode-display_width (1.8.0)
     uri_template (0.7.0)
     web-console (4.0.1)
       actionview (>= 6.0.0)
@@ -428,7 +436,7 @@ GEM
     websocket-driver (0.7.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.4.2)
+    zeitwerk (2.5.1)
 
 PLATFORMS
   ruby
@@ -474,9 +482,9 @@ DEPENDENCIES
   rfc-822
   ros-apartment!
   rspec-rails
-  rubocop
-  rubocop-rails
-  rubocop-rspec
+  rubocop (~> 0.92.0)
+  rubocop-rails (~> 2.5.2)
+  rubocop-rspec (~> 1.39.0)
   sidekiq!
   spring
   spring-watcher-listen

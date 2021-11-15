@@ -88,6 +88,7 @@ describe 'Token email create' do
 
   it 'manager should not create bearer token for group_id < 0' do
     as_user
+    group_mock(-1)
     authorized_mock(type: 'Group', id: -1, action: 'update')
     assert_difference('Token.count', 0) do
       post '/argu/tokens/g/-1/email', params: {
@@ -221,30 +222,30 @@ describe 'Token email create' do
   it 'manager should create valid email token request with valid actor_iri' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
-    authorized_mock(type: 'CurrentActor', id: 'https://argu.dev/u/1', action: 'show')
+    authorized_mock(type: 'CurrentActor', id: 'https://argu.dev/u/2', action: 'show')
     assert_difference('Token.count', 2) do
       post '/argu/tokens/g/1/email', params: {
         email_token: {
           addresses: ['email1@example.com', 'email2@example.com'],
-          actor_iri: 'https://argu.dev/u/1',
+          actor_iri: 'https://argu.dev/u/2',
           send_mail: true
         }
       }, headers: service_headers(accept: :nq)
     end
 
     expect(response.code).to eq('201')
-    expect(Token.last.actor_iri).to eq('https://argu.dev/u/1')
+    expect(Token.last.actor_iri).to eq('https://argu.dev/u/2')
   end
 
   it 'manager should not create valid email token request with invalid actor_iri' do
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
-    unauthorized_mock(type: 'CurrentActor', id: 'https://argu.dev/u/1', action: 'show')
+    unauthorized_mock(type: 'CurrentActor', id: 'https://argu.dev/u/2', action: 'show')
     assert_difference('Token.count', 0) do
       post '/argu/tokens/g/1/email', params: {
         email_token: {
           addresses: ['email1@example.com', 'email2@example.com'],
-          actor_iri: 'https://argu.dev/u/1',
+          actor_iri: 'https://argu.dev/u/2',
           send_mail: true
         }
       }, headers: service_headers(accept: :nq)

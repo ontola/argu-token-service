@@ -3,8 +3,9 @@
 class BearerToken < Token
   enhance LinkedRails::Enhancements::Creatable
   enhance LinkedRails::Enhancements::Destroyable
-  enhance LinkedRails::Enhancements::Actionable
-
+  collection_options(
+    title: -> { I18n.t('bearer_tokens.plural') }
+  )
   with_columns settings: [
     NS.argu[:applyLink],
     NS.ontola[:redirectUrl],

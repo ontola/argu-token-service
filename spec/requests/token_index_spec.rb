@@ -16,8 +16,8 @@ describe 'Token index' do
     as_guest
     get "/argu/tokens/g/#{token.group_id}/bearer", headers: service_headers(accept: :json_api)
 
-    expect(response.code).to eq('401')
-    expect_error_message('Please sign in to continue')
+    expect(response.code).to eq('403')
+    expect_error_message("You're not authorized for this action. (index)")
     expect_error_size(1)
   end
 

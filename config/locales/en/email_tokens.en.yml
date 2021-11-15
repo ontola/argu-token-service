@@ -1,8 +1,11 @@
 en:
+  actions:
+    email_tokens:
+      actions:
+        label: "New email invite"
   email_tokens:
     type: "Email invite"
     plural: "Email invites"
-    type_new: "New email invite"
     form:
       message:
         default_message: "I invite you to join the group '%{group}'."

@@ -3,10 +3,15 @@ nl:
   actions:
     default:
       submit: "Opslaan"
+      create:
+        success: "%{type} succesvol aangemaakt"
+      update:
+        success: "%{type} succesvol opgeslagen"
       destroy:
         label: "Vernietigen"
         description: "Dit object en alle bijbehorende data zal permanent verwijderd worden. Deze actie is niet ongedaan te maken."
         submit: "Verwijder"
+        success: "%{type} succesvol verwijderd"
       publish:
         label: "Publiceer"
         submit: "Publiceer"

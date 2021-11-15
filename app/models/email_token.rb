@@ -3,8 +3,9 @@
 class EmailToken < Token
   enhance LinkedRails::Enhancements::Creatable
   enhance LinkedRails::Enhancements::Destroyable
-  enhance LinkedRails::Enhancements::Actionable
-
+  collection_options(
+    title: -> { I18n.t('email_tokens.plural') }
+  )
   with_columns settings: [
     NS.argu[:invitee],
     NS.ontola[:redirectUrl],

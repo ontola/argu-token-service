@@ -3,10 +3,15 @@ en:
   actions:
     default:
       submit: "Save"
+      create:
+        success: "%{type} created successfully"
+      update:
+        success: "%{type} saved successfully"
       destroy:
         label: "Destroy"
         description: "This object and all related data will be permanently removed. This cannot be undone."
         submit: "Delete"
+        success: "%{type} deleted successfully"
       publish:
         label: "Publish"
         submit: "Publish"

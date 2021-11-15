@@ -4,10 +4,8 @@ class Group < ActiveResourceModel
   self.collection_name = 'g'
   attr_accessor :fetched
 
-  with_collection :bearer_tokens,
-                  parent_uri_template_opts: ->(r) { {group_id: r.id} }
-  with_collection :email_tokens,
-                  parent_uri_template_opts: ->(r) { {group_id: r.id} }
+  with_collection :bearer_tokens
+  with_collection :email_tokens
 
   %i[organization display_name].each do |method|
     define_method method do
@@ -36,7 +34,7 @@ class Group < ActiveResourceModel
 
   def fetch
     original_id = id
-    group = id.to_s.scan(/\D/).present? ? Group.find(:one, from: id) : Group.find(id)
+    group = id.to_s.include?('/') ? Group.find(:one, from: id) : Group.find(id)
     @attributes = group.attributes
     @attributes[:id] = original_id
     @fetched = true

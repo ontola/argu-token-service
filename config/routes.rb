@@ -11,12 +11,13 @@ Rails.application.routes.draw do
 
   root 'tokens#show'
   get 'verify', to: 'verifications#show'
+  resources :tokens, only: :show
 
   singular_linked_resource(EmailConflict)
   linked_resource(EmailToken)
   linked_resource(BearerToken)
   linked_resource(Group)
-  linked_resource(Token) do
+  linked_resource(Token, collection: false) do
     post '', to: 'tokens#accept', singular_route: true
   end
 

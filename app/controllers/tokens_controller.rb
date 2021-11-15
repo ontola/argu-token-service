@@ -7,7 +7,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   include ActionController::Helpers
   include ActionController::Flash
   include UriTemplateHelper
-  active_response :show, :update, :create, :destroy, :accept
+  active_response :show, :update, :create, :destroy, :accept, :index
 
   prepend_before_action :handle_inactive_token, only: %i[accept show], unless: :token_active?
   before_action :redirect_wrong_email, unless: :valid_email?, only: %i[accept show]
@@ -36,12 +36,18 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     @attribute_params ||= params.require(controller_name.singularize)
   end
 
+  def authorize_action
+    super
+
+    validate_actor
+  end
+
   def authorize_redirect_resource
     api.authorize_redirect_resource(current_resource)
   end
 
   def check_if_registered
-    return current_user if action_name == 'show'
+    return current_user if SAFE_METHODS.include?(request.method)
     return super unless action_name == 'accept' && current_resource.email?
 
     !current_user.guest? || create_user || handle_not_logged_in
@@ -54,7 +60,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def create_failure
-    respond_with_invalid_resource(resource: token_creator)
+    respond_with_invalid_resource(errors: token_creator.error_messages, resource: token_creator)
   end
 
   def create_success
@@ -99,20 +105,6 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
         fields: {bearerTokens: %i[label description login_action type]}
       )
     end
-  end
-
-  def index_association; end
-
-  def new_resource
-    controller_class.new(new_resource_params)
-  end
-
-  def new_resource_params
-    {
-      actor_iri: actor_iri,
-      group_id: parent_resource.id,
-      root_id: tree_root.uuid
-    }
   end
 
   def parent_resource
@@ -161,10 +153,6 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     end
   end
 
-  def current_resource!
-    current_resource || raise(ActiveRecord::RecordNotFound)
-  end
-
   def show_success
     respond_with_resource(
       resource: current_resource,
@@ -190,6 +178,14 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def update_execute
     current_resource.update(permit_params)
+  end
+
+  def validate_actor
+    return true if actor_iri.blank? || actor_iri == current_user.iri
+
+    verdict =  user_context.api.authorize_action(resource_type: 'CurrentActor', resource_id: actor_iri, action: 'show')
+
+    verdict || raise(Argu::Errors::Forbidden.new(query: action_name))
   end
 
   def valid_email?

@@ -6,7 +6,6 @@ class EmailConflict
   include LinkedRails::Model
   include IRITemplateHelper
   include UrlHelper
-  enhance LinkedRails::Enhancements::Singularable
   enhance LinkedRails::Enhancements::Updatable
 
   attr_accessor :api, :token

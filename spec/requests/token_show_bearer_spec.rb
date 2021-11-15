@@ -354,7 +354,7 @@ describe 'Bearer token show' do
 
   def expect_snackbar(text)
     expect(response.headers['Exec-Action']).to(
-      include("actions/snackbar?#{{text: text}.to_param}")
+      include("actions/snackbar?#{{text: text}.to_param.gsub('+', '%20')}")
     )
   end
 

@@ -14,8 +14,8 @@ class TokenCreator
     batch? ? tokens.each(&:save!) : tokens.save!
   end
 
-  def errors
-    batch? ? tokens&.map(&:errors) : tokens&.errors
+  def error_messages # rubocop:disable Metrics/CyclomaticComplexity
+    batch? ? tokens&.map(&:errors)&.reduce({}, &:merge) : tokens&.errors&.messages
   end
 
   def location

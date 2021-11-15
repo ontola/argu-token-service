@@ -8,8 +8,8 @@ gem 'rails'
 gem 'puma'
 
 gem 'active_model_serializers'
-gem 'active_response', git: 'https://github.com/ontola/active_response', branch: :master
 gem 'activeresource', git: 'https://github.com/ArthurWD/activeresource', branch: :master
+gem 'active_response', git: 'https://github.com/ontola/active_response', branch: :master
 gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch: :master
 gem 'bootsnap'
 gem 'bugsnag'
@@ -19,7 +19,7 @@ gem 'fast_jsonapi', git: 'https://github.com/fast-jsonapi/fast_jsonapi', ref: '2
 gem 'health_check'
 gem 'json-ld'
 gem 'kaminari'
-gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', branch: :refactor
+gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', branch: 'collections-dsl'
 gem 'nokogiri'
 gem 'oauth2'
 gem 'oj'
@@ -29,7 +29,7 @@ gem 'rdf'
 gem 'rdf-n3'
 gem 'rdf-rdfa'
 gem 'rdf-rdfxml'
-gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers', branch: 'fast-jsonapi'
+gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers'
 gem 'rdf-turtle'
 gem 'rfc-822'
 gem 'ros-apartment', git: 'https://github.com/ArthurWD/apartment', ref: '4eb1681', require: 'apartment'
@@ -47,9 +47,9 @@ group :development, :test do
   gem 'bundler-audit'
   gem 'byebug', platform: :mri
   gem 'rspec-rails'
-  gem 'rubocop'
-  gem 'rubocop-rails'
-  gem 'rubocop-rspec'
+  gem 'rubocop', '~> 0.92.0'
+  gem 'rubocop-rails', '~> 2.5.2'
+  gem 'rubocop-rspec', '~> 1.39.0'
 end
 
 group :development do

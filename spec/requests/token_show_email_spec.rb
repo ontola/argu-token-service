@@ -187,19 +187,6 @@ describe 'Email token show' do
       authorized_mock(action: 'show', iri: 'https://example.com')
     end
 
-    context 'with guest without access token' do
-      let(:authenticate) { as_guest_with_account(false) }
-      let(:expect_get_n3) do
-        expect_post_n3
-      end
-      let(:expect_post_n3) do
-        expect(response.code).to eq('302')
-        expect(response).to redirect_to('https://example.com')
-      end
-
-      it_behaves_like 'bearer token'
-    end
-
     context 'with guest' do
       let(:authenticate) { authenticate_as_guest }
       let(:expect_get_n3) do
@@ -576,7 +563,7 @@ describe 'Email token show' do
 
   def expect_snackbar(text)
     expect(response.headers['Exec-Action']).to(
-      include("actions/snackbar?#{{text: text}.to_param}")
+      include("actions/snackbar?#{{text: text}.to_param.gsub('+', '%20')}")
     )
   end
 

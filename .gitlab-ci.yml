@@ -57,9 +57,9 @@ codeQuality:
   before_script:
     - gem install brakeman
     - gem install bundle-audit
-    - gem install rubocop -v 0.79.0
-    - gem install rubocop-rails -v 2.4.2
-    - gem install rubocop-rspec -v 1.38.0
+    - gem install rubocop -v 0.92.0
+    - gem install rubocop-rails -v 2.5.2
+    - gem install rubocop-rspec -v 1.39.0
   script:
     - brakeman -z
     - rubocop

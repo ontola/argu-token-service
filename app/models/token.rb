@@ -6,13 +6,14 @@ class Token < ApplicationRecord
   include LinkedRails::Model::Filtering
   include ApplicationModel
   include Broadcastable
-  enhance LinkedRails::Enhancements::Actionable
-  enhance LinkedRails::Enhancements::Tableable
-  enhance LinkedRails::Enhancements::Indexable
   enhance LinkedRails::Enhancements::Updatable
   enhance LinkedRails::Enhancements::Destroyable
+  collection_options(
+    parent_iri: -> { %w[tokens] + (parent&.iri_elements || []) }
+  )
 
   before_create :set_token_type
+  attr_accessor :creator
 
   scope :active, lambda {
     where('retracted_at IS NULL AND (expires_at IS NULL OR expires_at > ?)'\
@@ -85,6 +86,7 @@ class Token < ApplicationRecord
       parent = opts[:parent]
       {
         actor_iri: opts[:user_context].user.iri,
+        creator: opts[:user_context].user,
         group: opts[:group] || parent.is_a?(Group) ? parent : nil,
         redirect_url: "https://#{ActsAsTenant.current_tenant.iri_prefix}"
       }

@@ -12,7 +12,7 @@ class TokenPolicy < RestrictivePolicy
   end
 
   def create?
-    update_group? && valid_actor?
+    update_group?
   end
 
   def destroy?
@@ -37,12 +37,5 @@ class TokenPolicy < RestrictivePolicy
     @update_group ||=
       !user_context.guest? &&
       user_context.api.authorize_action(resource_type: 'Group', resource_id: record.group_id, action: 'update')
-  end
-
-  def valid_actor?
-    return true if record.actor_iri.blank?
-
-    @valid_actor ||=
-      user_context.api.authorize_action(resource_type: 'CurrentActor', resource_id: record.actor_iri, action: 'show')
   end
 end

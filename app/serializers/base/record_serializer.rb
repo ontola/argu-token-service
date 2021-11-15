@@ -7,7 +7,7 @@ class RecordSerializer < BaseSerializer
 
   class << self
     def guest?(_object, params)
-      params[:scope]&.doorkeeper_scopes&.include? 'guest'
+      params[:scope].guest? || params[:scope]&.doorkeeper_scopes&.include?('guest')
     end
   end
 end
