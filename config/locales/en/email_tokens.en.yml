@@ -1,7 +1,7 @@
 en:
   actions:
     email_tokens:
-      actions:
+      create:
         label: "New email invite"
   email_tokens:
     type: "Email invite"
