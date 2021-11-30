@@ -1,0 +1,19 @@
+de:
+  email_conflicts:
+    title: Andere E-Mail Adresse
+    description: >-
+      Die Einladung, der Sie folgen, ist für **%{email}** bestimmt.
+      Diese Adresse ist nicht mit dem Konto verknüpft, mit dem Sie derzeit
+      eingeloggt sind.
+    email_list: 'E-Mail-Adressen, die mit Ihrem Konto verknüpft sind:'
+    account_exists: >-
+      Ein Konto für **%{email}** existiert bereits. Melden Sie sich ab
+      und melden Sie sich mit diesem anderen Konto an, um die Einladung
+      anzunehmen.
+    link_or_logout: >-
+      Sie können entweder **%{email}** zu Ihrem Konto
+      hinzufügen, oder ein neues Konto für **%{email}**
+      erstellen.
+    add: ' %{email} zu Ihrem Konto hinzufügen'
+    switch: Konto wechseln
+    create_new_account: Neues Konto erstellen

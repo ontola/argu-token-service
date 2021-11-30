@@ -1,0 +1,18 @@
+de:
+  actions:
+    bearer_tokens:
+      create:
+        label: Neuer Einladungslink
+  bearer_tokens:
+    type: Einladungs-Link
+    plural: Einladungs-Links
+    form:
+      redirect_url:
+        label: Umleitung der URL nach Anklicken des Einladungslinks
+        description: Eingabe einer Url
+      expires_at:
+        label: Gültig bis
+        description: Leer lassen für unbegrenzte Nutzung
+      max_usages:
+        label: Begrenzung der Nutzung
+        description: Leer lassen für unbegrenzte Nutzung

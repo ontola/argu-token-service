@@ -1,0 +1,28 @@
+de:
+  actions:
+    email_tokens:
+      create:
+        label: Neue E-Mail-Einladung
+  email_tokens:
+    type: E-Mail-Einladung
+    plural: E-Mail-Einladungen
+    form:
+      message:
+        default_message: Ich lade Sie ein, der Gruppe '%{group}' beizutreten.
+        label: Nachricht
+        description: Geben Sie eine Nachricht für in der E-Mail
+      addresses:
+        label: E-Mail-Adressen
+        description: Geben Sie eine oder mehrere E-Mail-Adressen ein
+      redirect_url:
+        label: Umleitung der URL nach Anklicken des Einladungslinks
+        description: Eingabe einer Url
+    invitation:
+      login: >-
+        %{email} ist eingeladen für die Gruppe '%{group}'. Ein Konto für diese
+        E-Mail-Adresse existiert bereits. Bitte melden Sie sich mit diesem Konto
+        an, um die Einladung anzunehmen.
+      accept: >-
+        %{email} ist für die Gruppe '%{group}' eingeladen. Klicken Sie auf die
+        Schaltfläche unten, um die Einladung anzunehmen. Es wird automatisch ein
+        Konto für Sie erstellt.

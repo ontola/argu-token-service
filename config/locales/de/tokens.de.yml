@@ -1,0 +1,13 @@
+de:
+  tokens:
+    type: Einladen
+    plural: Einladungen
+    invitation:
+      label: Einladung
+      login: >-
+        Du wurdest für die Gruppe '%{group}' eingeladen. Bitte melden Sie sich an,
+        um die Einladung anzunehmen.
+      accept: >-
+        Sie wurden für die Gruppe '%{group}' eingeladen. Klicken Sie auf die
+        Schaltfläche unten, um die Einladung anzunehmen.
+      accept_button: Akzeptieren Sie

@@ -1,0 +1,19 @@
+de:
+  actions:
+    default:
+      submit: Speichern
+      create:
+        success: '%{type} erfolgreich erstellt'
+      update:
+        success: '%{type} erfolgreich gespeichert'
+      destroy:
+        label: Zerstören
+        description: >-
+          Dieses Objekt und alle zugehörigen Daten werden dauerhaft entfernt.
+          Dies kann nicht rückgängig gemacht werden.
+        submit: Löschen
+        success: '%{type} erfolgreich gelöscht'
+      publish:
+        label: veröffentlichen
+        submit: veröffentlichen
+        description: Entwurfsversion, noch nicht veröffentlicht.

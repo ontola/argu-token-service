@@ -1,0 +1,6 @@
+de:
+  group_memberships:
+    welcome: Sie sind der Gruppe '%{group}' beigetreten
+  please_login: Bitte loggen Sie sich ein, um diese Einladung anzunehmen
+  already_member: Sie sind bereits Mitglied in dieser Gruppe
+  edit_type: Bearbeiten
