@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails'
+gem 'rails', '~> 6.0'
 # Use Puma as the app server
 gem 'puma'
 
@@ -33,7 +33,7 @@ gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers', branch:
 gem 'rdf-turtle'
 gem 'rfc-822'
 gem 'ros-apartment', git: 'https://github.com/ArthurWD/apartment', ref: '4eb1681', require: 'apartment'
-gem 'sidekiq', github: 'mperham/sidekiq', branch: '5-x'
+gem 'sidekiq'
 gem 'tzinfo-data'
 gem 'uri_template'
 
