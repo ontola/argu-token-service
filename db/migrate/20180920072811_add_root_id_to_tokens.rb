@@ -1,5 +1,5 @@
 class AddRootIdToTokens < ActiveRecord::Migration[5.0]
-  include UriTemplateHelper
+  include URITemplateHelper
 
   def change
     enable_extension 'uuid-ossp'

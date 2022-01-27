@@ -49,7 +49,7 @@ GIT
 
 GIT
   remote: https://github.com/ontola/active_response
-  revision: 4486c79d27f593176175bc7582d71dbb179ebad1
+  revision: 6ca39fb81936c8fe0dc796949e3577a33b747f32
   branch: master
   specs:
     active_response (0.0.3)
@@ -57,10 +57,10 @@ GIT
 
 GIT
   remote: https://github.com/ontola/linked_rails
-  revision: 2462ed2440d331aac83006f3c03b594812fdc0df
-  branch: collections-dsl
+  revision: b0141f0dad06dc0cfa8c0c476faa9df4b2493719
+  branch: refactor-includes
   specs:
-    linked_rails (0.0.3)
+    linked_rails (0.0.4)
       active_response (~> 0.0.2)
       kaminari-activerecord
       pundit
@@ -71,12 +71,13 @@ GIT
 
 GIT
   remote: https://github.com/ontola/rdf-serializers
-  revision: baad12916a1f65159ee58187593d99c3224ad3ca
+  revision: ef10c737fe37023bc2dd2fbe5017758d2b74fc6a
+  branch: refactor-includes
   specs:
-    rdf-serializers (0.0.10)
+    rdf-serializers (0.0.11)
       jsonapi-serializer (>= 2.1.0)
       oj
-      railties (>= 4.2.0, < 7)
+      railties (>= 4.2.0, < 8)
       rdf (~> 3.0)
 
 GEM
@@ -203,13 +204,11 @@ GEM
     haml (5.1.2)
       temple (>= 0.8.0)
       tilt
-    hamster (3.0.0)
-      concurrent-ruby (~> 1.0)
     hashdiff (1.0.1)
     health_check (3.1.0)
       railties (>= 5.0)
     htmlentities (4.3.4)
-    i18n (1.8.11)
+    i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     json-canonicalization (0.2.0)
     json-ld (3.1.1)
@@ -239,7 +238,7 @@ GEM
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.12.0)
+    loofah (2.14.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -247,8 +246,8 @@ GEM
     marcel (1.0.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.6.1)
-    minitest (5.14.4)
+    mini_portile2 (2.8.0)
+    minitest (5.15.0)
     minitest-reporters (1.4.2)
       ansi
       builder
@@ -261,8 +260,8 @@ GEM
     net-http-persistent (3.1.0)
       connection_pool (~> 2.2)
     nio4r (2.5.8)
-    nokogiri (1.12.5)
-      mini_portile2 (~> 2.6.1)
+    nokogiri (1.13.3)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     oauth2 (1.4.4)
       faraday (>= 0.8, < 2.0)
@@ -270,7 +269,7 @@ GEM
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
-    oj (3.13.9)
+    oj (3.13.11)
     parallel (1.21.0)
     parser (3.0.2.0)
       ast (~> 2.4.1)
@@ -281,7 +280,7 @@ GEM
     public_suffix (4.0.6)
     puma (5.5.2)
       nio4r (~> 2.0)
-    pundit (2.1.1)
+    pundit (2.2.0)
       activesupport (>= 3.0.0)
     racc (1.6.0)
     rack (2.2.3)
@@ -320,8 +319,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rdf (3.1.15)
-      hamster (~> 3.0)
+    rdf (3.2.5)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (3.1.0)
       rdf (~> 3.1)
@@ -343,8 +341,8 @@ GEM
     rdf-turtle (3.1.0)
       ebnf (~> 1.2)
       rdf (~> 3.1)
-    rdf-vocab (3.1.14)
-      rdf (~> 3.1, >= 3.1.12)
+    rdf-vocab (3.2.1)
+      rdf (~> 3.2, >= 3.2.4)
     rdf-xsd (3.1.0)
       rdf (~> 3.1)
     redis (4.1.4)
@@ -436,7 +434,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.5.1)
+    zeitwerk (2.5.4)
 
 PLATFORMS
   ruby

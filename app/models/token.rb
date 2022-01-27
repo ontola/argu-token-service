@@ -35,7 +35,7 @@ class Token < ApplicationRecord
   end
 
   def iri_opts
-    {secret: secret}
+    {id: secret}
   end
 
   def generate_token
@@ -90,6 +90,14 @@ class Token < ApplicationRecord
         group: opts[:group] || parent.is_a?(Group) ? parent : nil,
         redirect_url: "https://#{ActsAsTenant.current_tenant.iri_prefix}"
       }
+    end
+
+    def ids_for_iris(scope)
+      scope.pluck(:secret)
+    end
+
+    def iri_template
+      @iri_template ||= LinkedRails::URITemplate.new('/tokens{/id}{#fragment}')
     end
 
     def requested_single_resource(params, _user_context)

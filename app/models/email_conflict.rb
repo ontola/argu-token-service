@@ -4,7 +4,7 @@ class EmailConflict
   include ActiveModel::Model
   include ActiveModel::Serialization
   include LinkedRails::Model
-  include IRITemplateHelper
+  include URITemplateHelper
   include UrlHelper
   enhance LinkedRails::Enhancements::Updatable
 
@@ -77,6 +77,10 @@ class EmailConflict
   end
 
   class << self
+    def iri_template
+      @iri_template ||= LinkedRails::URITemplate.new('{/parent_iri*}/email_conflict')
+    end
+
     def requested_singular_resource(params, user_context)
       token = LinkedRails.iri_mapper.parent_from_params(params, user_context)
 

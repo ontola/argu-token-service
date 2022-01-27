@@ -26,6 +26,7 @@ require 'json/ld/context'
 require 'json/ld/reader'
 require 'json/ld/writer'
 require 'linked_rails/middleware/linked_data_params'
+require 'linked_rails/middleware/error_handling'
 require_relative '../lib/tenant_finder'
 require_relative '../lib/tenant_middleware'
 require_relative '../lib/ns'
@@ -52,17 +53,18 @@ module Service
 
     config.jwt_encryption_method = :hs512
 
+    config.middleware.insert_after ActionDispatch::DebugExceptions, LinkedRails::Middleware::ErrorHandling
+    config.middleware.insert_after ActionDispatch::DebugExceptions, TenantMiddleware
     config.middleware.use ActionDispatch::Flash
-    config.middleware.use TenantMiddleware
     config.middleware.use LinkedRails::Middleware::LinkedDataParams
 
     config.cache_stream = ENV['CACHE_STREAM'].presence || 'transactions'
     config.cache_redis_database = (ENV['CACHE_REDIS_DATABASE'])&.to_i || 8
     config.stream_redis_database = (ENV['STREAM_REDIS_DATABASE'])&.to_i || 7
 
+    config.autoloader = :zeitwerk
     config.autoload_paths += %w[lib]
     config.autoload_paths += %W[#{config.root}/app/serializers/base]
-    config.autoload_paths += %W[#{config.root}/app/models/actions]
     config.autoload_paths += %W[#{config.root}/app/responders]
     config.autoload_paths += Dir["#{config.root}/app/enhancements/**/"]
     Dir.glob("#{config.root}/app/enhancements/**{,/*/**}/*.rb").each { |file| require_dependency file }

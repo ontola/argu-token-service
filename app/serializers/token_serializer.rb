@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TokenSerializer < RecordSerializer
-  extend UriTemplateHelper
+  extend URITemplateHelper
   class << self
     def accept_action_triples(object, params) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       return [] unless accept_action?(object, params)
@@ -48,7 +48,7 @@ class TokenSerializer < RecordSerializer
   attribute :message, predicate: NS.argu[:message]
   attribute :root_id, predicate: NS.argu[:rootId], datatype: NS.xsd.string
   attribute :token_url, predicate: NS.argu[:applyLink], if: method(:token_url?) do |object|
-    RDF::DynamicURI(expand_uri_template(:tokens_iri, secret: object.secret, with_hostname: true))
+    LinkedRails.iri(path: Token.iri_template.expand(id: object.secret))
   end
   attribute :redirect_url, predicate: NS.ontola[:redirectUrl] do |object|
     RDF::URI(object.redirect_url) if object.redirect_url

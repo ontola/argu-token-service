@@ -45,8 +45,20 @@ describe 'Token index' do
     get "/argu/tokens/g/#{token.group_id}/bearer", headers: service_headers(accept: :nq)
 
     expect(response.code).to eq('200')
-    view = expect_triple(resource_iri(token.group.bearer_token_collection), NS.ontola[:pages], nil).objects.first
-    expect_triple(view, NS.as[:totalItems], 1)
+    expect_triple(resource_iri(token.group.bearer_token_collection), NS.ontola[:pages], nil).objects.first
+    expect_triple(resource_iri(token.group.bearer_token_collection), NS.as[:totalItems], 1)
+    refute_triple(nil, nil, resource_iri(token))
+  end
+
+  it 'manager should get index page 1' do
+    as_user
+    authorized_mock(type: 'Group', id: 1, action: 'update')
+    emails_mock('tokens', token.id)
+
+    get "/argu/tokens/g/#{token.group_id}/bearer?page=1", headers: service_headers(accept: :nq)
+
+    expect(response.code).to eq('200')
+    expect_triple(resource_iri(token.group.bearer_token_collection(page: 1)), NS.as[:totalItems], 1)
     expect_triple(nil, nil, resource_iri(token))
   end
 end

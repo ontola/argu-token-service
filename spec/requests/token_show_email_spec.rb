@@ -546,7 +546,7 @@ describe 'Email token show' do
   end
 
   it 'user should 500 when failed to create membership' do
-    as_user(1, email: 'email@example.com')
+    authenticate_as_invitee
     create_membership_mock(user_id: 1, group_id: 1, secret: valid_token.secret, response: 403)
     post "/argu/tokens/#{valid_token.secret}", headers: service_headers(accept: :n3)
 

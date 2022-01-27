@@ -6,7 +6,7 @@ require 'token_executor'
 class TokensController < ApplicationController # rubocop:disable Metrics/ClassLength
   include ActionController::Helpers
   include ActionController::Flash
-  include UriTemplateHelper
+  include URITemplateHelper
   active_response :show, :update, :create, :destroy, :accept, :index
 
   prepend_before_action :handle_inactive_token, only: %i[accept show], unless: :token_active?
