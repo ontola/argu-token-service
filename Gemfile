@@ -32,7 +32,9 @@ gem 'rdf-rdfxml'
 gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers', branch: 'refactor-includes'
 gem 'rdf-turtle'
 gem 'rfc-822'
-gem 'ros-apartment', git: 'https://github.com/ArthurWD/apartment', ref: '4eb1681', require: 'apartment'
+gem 'ros-apartment',
+    git: 'https://github.com/rails-on-services/apartment',
+    require: 'apartment'
 gem 'sidekiq'
 gem 'tzinfo-data'
 gem 'uri_template'
