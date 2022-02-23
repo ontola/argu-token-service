@@ -3,7 +3,6 @@
 class EmailConflictSerializer < BaseSerializer
   attribute :label, predicate: NS.schema.name
   attribute :description, predicate: NS.schema.text
-  statements :action_triples
 
   class << self
     def action_triples(object, _params)
