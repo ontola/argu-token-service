@@ -35,8 +35,7 @@ GIT
 
 GIT
   remote: https://github.com/ontola/linked_rails
-  revision: b0141f0dad06dc0cfa8c0c476faa9df4b2493719
-  branch: refactor-includes
+  revision: a46ea7ab20604cbe2eed9dd2e605bc22cbfe01e9
   specs:
     linked_rails (0.0.4)
       active_response (~> 0.0.2)
@@ -186,7 +185,7 @@ GEM
       railties (>= 3.0.0)
     faraday (1.0.0)
       multipart-post (>= 1.2, < 3)
-    ffi (1.12.2)
+    ffi (1.15.5)
     globalid (1.0.0)
       activesupport (>= 5.0)
     haml (5.1.2)
