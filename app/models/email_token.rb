@@ -13,6 +13,7 @@ class EmailToken < Token
     NS.ontola[:updateAction],
     NS.ontola[:destroyAction]
   ]
+  after_create :send_invite_mail
 
   def account_exists?(api)
     @account_exists ||= api.email_address_exists?(email)
@@ -40,6 +41,21 @@ class EmailToken < Token
 
   def valid_email?(user)
     user.email_addresses.map { |e| e.attributes['email'] }.include?(email)
+  end
+
+  private
+
+  def send_invite_mail
+    SendEmailWorker.perform_async(
+      :email_token_created,
+      email,
+      {
+        iri: iri,
+        message: message,
+        group_id: group_id,
+        actor_iri: actor_iri
+      }
+    )
   end
 
   class << self

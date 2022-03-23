@@ -102,6 +102,9 @@ describe 'Token email create' do
   end
 
   it 'manager should create valid email token request with missing send_mail' do
+    email_created_mock('email1@example.com')
+    email_created_mock('email2@example.com')
+
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
@@ -114,9 +117,14 @@ describe 'Token email create' do
 
     expect(response.code).to eq('201')
     expect(Token.last.send_mail).to be_falsey
+
+    assert_email_sent(count: 2)
   end
 
   it 'manager should create valid email token request' do
+    email_created_mock('email1@example.com')
+    email_created_mock('email2@example.com')
+
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
@@ -130,9 +138,13 @@ describe 'Token email create' do
 
     expect(response.code).to eq('201')
     expect(Token.last.secret.length).to eq(171)
+    assert_email_sent(count: 2)
   end
 
   it 'manager should create valid email token request with shortnames without duplicates' do
+    email_created_mock('user1@example.com')
+    email_created_mock('user2@example.com')
+    email_created_mock('user3@example.com')
     as_user
     user_mock('user2', email: 'user2@example.com', token: ENV['SERVICE_TOKEN'])
     user_mock('user3', email: 'user3@example.com', token: ENV['SERVICE_TOKEN'])
@@ -150,9 +162,12 @@ describe 'Token email create' do
     expect(Token.last.secret.length).to eq(171)
     expect(Token.last.invitee).to eq('user3')
     expect(Token.last.email).to eq('user3@example.com')
+    assert_email_sent(count: 3)
   end
 
   it 'manager should create email token request with expired_at attribute' do
+    email_created_mock('email1@example.com')
+    email_created_mock('email2@example.com')
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
@@ -167,9 +182,12 @@ describe 'Token email create' do
 
     expect(response.code).to eq('201')
     expect(Token.last.expires_at).to be_truthy
+    assert_email_sent(count: 2)
   end
 
   it 'manager should create email token request with redirect_url' do
+    email_created_mock('email1@example.com')
+    email_created_mock('email2@example.com')
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
@@ -184,9 +202,12 @@ describe 'Token email create' do
 
     expect(response.code).to eq('201')
     expect(Token.last.redirect_url).to eq('https://example.com')
+    assert_email_sent(count: 2)
   end
 
   it 'manager should create valid email token request with send_mail false' do
+    email_created_mock('email1@example.com')
+    email_created_mock('email2@example.com')
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
@@ -200,9 +221,12 @@ describe 'Token email create' do
 
     expect(response.code).to eq('201')
     expect(Token.last.send_mail).to be_falsey
+    assert_email_sent(count: 2)
   end
 
   it 'manager should create valid email token request with message' do
+    email_created_mock('email1@example.com', message: 'Hello world.')
+    email_created_mock('email2@example.com', message: 'Hello world.')
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 2) do
@@ -217,9 +241,12 @@ describe 'Token email create' do
 
     expect(response.code).to eq('201')
     expect(Token.last.message).to eq('Hello world.')
+    assert_email_sent(count: 2)
   end
 
   it 'manager should create valid email token request with valid actor_iri' do
+    email_created_mock('email1@example.com', actor_iri: 'https://argu.dev/u/2')
+    email_created_mock('email2@example.com', actor_iri: 'https://argu.dev/u/2')
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     authorized_mock(type: 'CurrentActor', id: 'https://argu.dev/u/2', action: 'show')
@@ -235,6 +262,7 @@ describe 'Token email create' do
 
     expect(response.code).to eq('201')
     expect(Token.last.actor_iri).to eq('https://argu.dev/u/2')
+    assert_email_sent(count: 2)
   end
 
   it 'manager should not create valid email token request with invalid actor_iri' do
@@ -256,6 +284,7 @@ describe 'Token email create' do
   end
 
   it 'manager should create valid email token request without duplicates' do
+    email_created_mock('email2@example.com')
     token
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
@@ -270,9 +299,12 @@ describe 'Token email create' do
 
     expect(response.code).to eq('201')
     expect(Token.last.secret.length).to eq(171)
+    assert_email_sent(count: 1)
   end
 
   it 'manager should duplicate retracted and expired tokens' do
+    email_created_mock('retracted@example.com')
+    email_created_mock('expired@example.com')
     retracted_token
     expired_token
     as_user
@@ -288,9 +320,11 @@ describe 'Token email create' do
 
     expect(response.code).to eq('201')
     expect(Token.last.secret.length).to eq(171)
+    assert_email_sent(count: 2)
   end
 
   it 'manager should duplicate with different redirect_url' do
+    email_created_mock(token.email)
     token
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
@@ -306,9 +340,11 @@ describe 'Token email create' do
 
     expect(response.code).to eq('201')
     expect(Token.last.secret.length).to eq(171)
+    assert_email_sent(count: 1)
   end
 
   it 'manager should create email tokens on root collection' do
+    email_created_mock('email1@example.com')
     as_user
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 1) do
@@ -324,6 +360,7 @@ describe 'Token email create' do
     expect(response.code).to eq('201')
     expect(Token.last.group_id).to eq(1)
     expect(Token.last.secret.length).to eq(171)
+    assert_email_sent(count: 1)
   end
 
   it 'manager should not create email tokens on root collection without group_id' do
@@ -339,5 +376,18 @@ describe 'Token email create' do
     end
 
     expect(response.code).to eq('422')
+  end
+
+  private
+
+  def email_created_mock(email, group_id: 1, actor_iri: nil, message: nil)
+    create_email_mock(
+      'email_token_created',
+      email,
+      actor_iri: actor_iri,
+      group_id: group_id,
+      iri: /.+/,
+      message: message
+    )
   end
 end
