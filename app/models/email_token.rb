@@ -4,6 +4,7 @@ class EmailToken < Token
   enhance LinkedRails::Enhancements::Creatable
   enhance LinkedRails::Enhancements::Destroyable
   collection_options(
+    include_members: true,
     title: -> { I18n.t('email_tokens.plural') }
   )
   with_columns settings: [

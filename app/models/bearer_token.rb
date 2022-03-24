@@ -4,6 +4,7 @@ class BearerToken < Token
   enhance LinkedRails::Enhancements::Creatable
   enhance LinkedRails::Enhancements::Destroyable
   collection_options(
+    include_members: true,
     title: -> { I18n.t('bearer_tokens.plural') }
   )
   with_columns settings: [
