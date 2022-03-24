@@ -26,16 +26,6 @@ class EmailToken < Token
     super&.downcase
   end
 
-  def emails
-    return [] if id.nil? || previous_changes['id']&.first.nil? && previous_changes['id']&.second.present?
-
-    @emails ||= Email.where(
-      resource_id: id,
-      resource_type: 'tokens',
-      event: 'create'
-    )
-  end
-
   def parent_collections(user_context)
     [group.email_token_collection(user_context: user_context)]
   end

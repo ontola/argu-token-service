@@ -19,16 +19,7 @@ class EmailTokenSerializer < TokenSerializer
 
   attribute :creator, predicate: NS.schema.creator, if: method(:never)
   attribute :email, predicate: NS.argu[:email], if: method(:service_scope?)
-  attribute :clicked, predicate: NS.argu[:clicked] do |object|
-    object.emails&.first&.clicked? || false
-  end
   attribute :invitee, predicate: NS.argu[:invitee]
-  attribute :opened, predicate: NS.argu[:opened] do |object|
-    object.emails&.first&.opened? || false
-  end
-  attribute :status, predicate: NS.argu[:status] do |object|
-    object.emails&.first&.status
-  end
   attribute :send_mail, predicate: NS.argu[:sendMail], datatype: NS.xsd.boolean
   attribute :description, predicate: NS.schema.text do |object, params|
     if object.new_record?
