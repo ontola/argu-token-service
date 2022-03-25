@@ -13,7 +13,6 @@ gem 'active_response', git: 'https://github.com/ontola/active_response', branch:
 gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch: :master
 gem 'bootsnap'
 gem 'bugsnag'
-gem 'bunny'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 gem 'fast_jsonapi', git: 'https://github.com/fast-jsonapi/fast_jsonapi', ref: '2de80d48896751d30fb410e042fd21a710100423'
 gem 'health_check'

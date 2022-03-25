@@ -1,1 +1,0 @@
-../../service_module/app/workers/broadcast_worker.rb
