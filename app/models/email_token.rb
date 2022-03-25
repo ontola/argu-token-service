@@ -14,6 +14,7 @@ class EmailToken < Token
     NS.ontola[:updateAction],
     NS.ontola[:destroyAction]
   ]
+  before_create :set_mail_identifier
   after_create :send_invite_mail
 
   def account_exists?(api)
@@ -36,17 +37,22 @@ class EmailToken < Token
 
   private
 
-  def send_invite_mail
+  def send_invite_mail # rubocop:disable Metrics/MethodLength
     SendEmailWorker.perform_async(
       :email_token_created,
       email,
       {
         iri: iri,
+        mail_identifier: mail_identifier,
         message: message,
         group_id: group_id,
         actor_iri: actor_iri
       }
     )
+  end
+
+  def set_mail_identifier
+    self.mail_identifier = SecureRandom.uuid
   end
 
   class << self

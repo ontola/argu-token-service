@@ -21,6 +21,9 @@ class EmailTokenSerializer < TokenSerializer
   attribute :email, predicate: NS.argu[:email], if: method(:service_scope?)
   attribute :invitee, predicate: NS.argu[:invitee]
   attribute :send_mail, predicate: NS.argu[:sendMail], datatype: NS.xsd.boolean
+  attribute :email_status, predicate: NS.argu[:emailStatus] do |object|
+    LinkedRails.iri(path: "email/email_messages/#{object.mail_identifier}") if object.mail_identifier
+  end
   attribute :description, predicate: NS.schema.text do |object, params|
     if object.new_record?
       nil

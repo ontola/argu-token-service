@@ -387,6 +387,7 @@ describe 'Token email create' do
       actor_iri: actor_iri,
       group_id: group_id,
       iri: /.+/,
+      mail_identifier: /.+/,
       message: message
     )
   end

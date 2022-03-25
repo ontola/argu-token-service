@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_11_152606) do
+ActiveRecord::Schema.define(version: 2022_03_24_145927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gist"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 2021_11_11_152606) do
     t.string "redirect_url"
     t.uuid "root_id", null: false
     t.string "type", null: false
+    t.uuid "mail_identifier"
     t.index ["expires_at", "retracted_at", "group_id"], name: "index_tokens_on_expires_at_and_retracted_at_and_group_id"
     t.index ["root_id"], name: "index_tokens_on_root_id"
     t.index ["secret"], name: "index_tokens_on_secret"
