@@ -9,6 +9,7 @@ class Token < ApplicationRecord
   enhance LinkedRails::Enhancements::Updatable
   enhance LinkedRails::Enhancements::Destroyable
   collection_options(
+    include_members: true,
     parent_iri: -> { %w[tokens] + (parent&.iri_elements || []) }
   )
 
