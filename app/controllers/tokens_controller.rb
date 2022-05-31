@@ -55,7 +55,9 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
   def create_execute
     token_creator.create!
-  rescue ActiveRecord::ActiveRecordError
+  rescue ActiveRecord::ActiveRecordError => e
+    raise(e) if e.is_a?(ActiveRecord::StatementInvalid)
+
     false
   end
 
