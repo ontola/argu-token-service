@@ -47,6 +47,7 @@ module Service
     config.frontend_url = "https://#{ENV['HOSTNAME']}"
     config.host_name = ENV['HOSTNAME']
     config.origin = "https://#{config.host_name}"
+    config.service_name = 'tokens'
     config.iri_suffix = 'tokens'
     LinkedRails.host = config.host_name
     LinkedRails.scheme = :https
