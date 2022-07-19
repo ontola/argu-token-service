@@ -1,0 +1,19 @@
+FROM ruby:2.7.0-alpine
+
+RUN apk --update --no-cache add openssh-client postgresql-dev libffi-dev libxml2 libxml2-dev libxslt libxslt-dev
+RUN apk --update --no-cache add git build-base pkgconfig sqlite-dev
+
+# throw errors if Gemfile has been modified since Gemfile.lock
+RUN bundle config --global frozen 1
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+ADD Gemfile /usr/src/app/
+ADD Gemfile.lock /usr/src/app/
+
+RUN bundle install
+
+EXPOSE 3000
+
+CMD ["./bin/rails", "server", "-b", "0.0.0.0", "-p", "3003"]

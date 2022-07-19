@@ -16,8 +16,6 @@
 db/*.sqlite3
 
 # Ignore secrets
-secrets.yml
-/config/database.yml
 *.env
 
 # Ignore Byebug command history file.
