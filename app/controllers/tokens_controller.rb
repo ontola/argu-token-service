@@ -109,21 +109,6 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     end
   end
 
-  def parent_resource
-    super || parent_from_iri
-  end
-
-  def parent_from_iri
-    Group.new(id: parse_group_id(permit_params.require(:group_id)))
-  end
-
-  def parse_group_id(group_id)
-    return group_id unless group_id.to_s.include?(LinkedRails.iri.to_s)
-
-    path = group_id.gsub(LinkedRails.iri.to_s, '')
-    uri_template(:groups_iri).extract(path)['id']
-  end
-
   def permit_params
     @permit_params ||= attribute_params.permit(
       %i[actor_iri expires_at group_id root_id max_usages message redirect_url send_mail addresses] + [addresses: []]

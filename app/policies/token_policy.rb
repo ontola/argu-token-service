@@ -34,6 +34,8 @@ class TokenPolicy < RestrictivePolicy
   private
 
   def update_group?
+    return false if record.group_id.blank?
+
     @update_group ||=
       !user_context.guest? &&
       user_context.api.authorize_action(resource_type: 'Group', resource_id: record.group_id, action: 'update')

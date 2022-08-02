@@ -6,6 +6,8 @@ class Token < ApplicationRecord
   include LinkedRails::Model::Filtering
   include ApplicationModel
   include Broadcastable
+  extend URITemplateHelper
+
   enhance LinkedRails::Enhancements::Updatable
   enhance LinkedRails::Enhancements::Destroyable
   collection_options(
@@ -99,6 +101,23 @@ class Token < ApplicationRecord
 
     def iri_template
       @iri_template ||= LinkedRails::URITemplate.new('/tokens{/id}{#fragment}')
+    end
+
+    def parse_group_id(group_id)
+      return group_id unless group_id.to_s.include?(LinkedRails.iri.to_s)
+
+      path = group_id.gsub(LinkedRails.iri.to_s, '')
+      uri_template(:groups_iri).extract(path)['id']
+    end
+
+    def requested_index_resource(params, user_context)
+      group_id = params[name.underscore].try(:[], :group_id)
+      return super unless group_id
+
+      parent = Group.new(id: parse_group_id(group_id))
+      collection_name = collection_from_parent_name(parent, params)
+
+      parent.send(collection_name, index_collection_params(params, user_context)) if collection_name
     end
 
     def requested_single_resource(params, _user_context)

@@ -375,7 +375,7 @@ describe 'Token email create' do
       }, headers: service_headers(accept: :nq)
     end
 
-    expect(response.code).to eq('422')
+    expect(response.code).to eq('403')
   end
 
   private

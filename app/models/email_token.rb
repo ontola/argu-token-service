@@ -59,6 +59,8 @@ class EmailToken < Token
     def attributes_for_new(opts = {})
       super_opts = super
 
+      return {} unless opts.key?(:group)
+
       super_opts.merge(
         message: I18n.t(
           'email_tokens.form.message.default_message',
