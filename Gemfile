@@ -15,11 +15,12 @@ gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch:
 gem 'bootsnap'
 gem 'bugsnag'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
+gem 'emp_json', '1.3.0'
 gem 'fast_jsonapi', git: 'https://github.com/fast-jsonapi/fast_jsonapi', ref: '2de80d48896751d30fb410e042fd21a710100423'
 gem 'health_check'
 gem 'json-ld'
 gem 'kaminari'
-gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', branch: :empathy
+gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', branch: :parsing
 gem 'nokogiri'
 gem 'oauth2'
 gem 'oj'
