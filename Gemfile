@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby '2.7.0'
+ruby '3.0.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0'
+gem 'rails', '~> 7'
 # Use Puma as the app server
 gem 'puma'
 
 gem 'active_model_serializers'
-gem 'activeresource', git: 'https://github.com/ArthurWD/activeresource', branch: :master
+gem 'activeresource'
 gem 'active_response', git: 'https://github.com/ontola/active_response', branch: :master
 gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch: :master
 gem 'bootsnap'

@@ -1,11 +1,13 @@
-image: ruby:2.7.0
+image: ruby:3.0.2
 
 cache:
   paths:
     - vendor/
 
 variables:
+  DOCKER_BUILDKIT: 0
   DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://docker:2375
   JWT_ENCRYPTION_TOKEN: secret
   POSTGRES_PASSWORD: password
   POSTGRES_USER: postgres
@@ -80,7 +82,6 @@ test:
     - bundle exec rake db:setup
   script:
     - bundle exec rake spec
-    - bundle exec rake test
 
 autoTagProduction:
   stage: tag

@@ -68,7 +68,7 @@ describe 'Token email create' do
     authorized_mock(type: 'Group', action: 'update')
     authorized_mock(type: 'Group', id: 1, action: 'update')
     authorized_mock(type: 'CurrentActor', id: "http://#{ENV['HOSTNAME']}/u/1", action: 'show')
-    get '/argu/tokens/g/1/email/new', headers: service_headers(accept: :n3)
+    get '/argu/tokens/g/1/email/new', headers: service_headers(accept: :nq)
 
     assert_enabled_form
   end
@@ -146,8 +146,8 @@ describe 'Token email create' do
     email_created_mock('user2@example.com')
     email_created_mock('user3@example.com')
     as_user
-    user_mock('user2', email: 'user2@example.com', token: ENV['SERVICE_TOKEN'])
-    user_mock('user3', email: 'user3@example.com', token: ENV['SERVICE_TOKEN'])
+    user_mock('user2', email: 'user2@example.com')
+    user_mock('user3', email: 'user3@example.com')
     authorized_mock(type: 'Group', id: 1, action: 'update')
     assert_difference('Token.count', 3) do
       post '/argu/tokens/g/1/email', params: {
