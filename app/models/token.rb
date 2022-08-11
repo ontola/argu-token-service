@@ -5,7 +5,6 @@ class Token < ApplicationRecord
   include LinkedRails::Model
   include LinkedRails::Model::Filtering
   include ApplicationModel
-  include Broadcastable
   extend URITemplateHelper
 
   enhance LinkedRails::Enhancements::Updatable

@@ -172,7 +172,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
 
     verdict =  user_context.api.authorize_action(resource_type: 'CurrentActor', resource_id: actor_iri, action: 'show')
 
-    verdict || raise(Argu::Errors::Forbidden.new(query: action_name))
+    verdict || raise(LinkedRails::Errors::Forbidden.new(query: action_name))
   end
 
   def valid_email?

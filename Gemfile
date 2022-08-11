@@ -20,7 +20,7 @@ gem 'fast_jsonapi', git: 'https://github.com/fast-jsonapi/fast_jsonapi', ref: '2
 gem 'health_check'
 gem 'json-ld'
 gem 'kaminari'
-gem 'linked_rails', '0.0.4.pre.g2c53724b3'
+gem 'linked_rails', '0.0.4.pre.g72bb595fe'
 gem 'nokogiri'
 gem 'oauth2'
 gem 'oj'
