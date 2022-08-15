@@ -182,7 +182,7 @@ GEM
       scanf (~> 1.0)
       sxp (~> 1.2)
       unicode-types (~> 1.7)
-    emp_json (1.3.0)
+    emp_json (1.4.0)
     erubi (1.11.0)
     factory_girl (4.9.0)
       activesupport (>= 3.0.0)
@@ -236,7 +236,7 @@ GEM
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
     link_header (0.0.8)
-    linked_rails (0.0.4.pre.g72bb595fe)
+    linked_rails (0.0.4.pre.g4c8e21c9f)
       active_response (~> 0.0.2)
       emp_json (>= 1.3.0)
       kaminari-activerecord
@@ -515,7 +515,7 @@ DEPENDENCIES
   bundler-audit
   byebug
   dotenv-rails
-  emp_json (= 1.3.0)
+  emp_json (= 1.4.0)
   factory_girl
   factory_girl_rails
   fakeredis!
@@ -523,7 +523,7 @@ DEPENDENCIES
   health_check
   json-ld
   kaminari
-  linked_rails (= 0.0.4.pre.g72bb595fe)
+  linked_rails (= 0.0.4.pre.g4c8e21c9f)
   listen
   minitest-reporters
   nokogiri
