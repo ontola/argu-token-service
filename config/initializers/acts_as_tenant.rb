@@ -1,1 +1,0 @@
-../../service_module/config/initializers/acts_as_tenant.rb

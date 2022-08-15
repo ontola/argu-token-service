@@ -1,1 +1,0 @@
-../../service_module/config/initializers/rails_console.rb

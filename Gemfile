@@ -34,9 +34,6 @@ gem 'rdf-rdfxml'
 gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers', branch: 'refactor-includes'
 gem 'rdf-turtle'
 gem 'rfc-822'
-gem 'ros-apartment',
-    git: 'https://github.com/rails-on-services/apartment',
-    require: 'apartment'
 gem 'sidekiq'
 gem 'tzinfo-data'
 gem 'uri_template'
@@ -59,8 +56,6 @@ end
 group :development do
   gem 'better_errors'
   gem 'listen'
-  gem 'spring'
-  gem 'spring-watcher-listen'
   gem 'web-console'
 end
 
