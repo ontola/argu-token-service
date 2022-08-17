@@ -36,7 +36,7 @@ describe 'Email token show' do
     group_mock(1)
   end
 
-  shared_examples_for 'bearer token' do
+  shared_examples_for 'email token' do
     example 'get as n3' do
       authenticate
       get "/argu/tokens/#{token}", headers: service_headers(accept: :n3)
@@ -62,7 +62,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with guest with account' do
@@ -74,7 +74,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with user' do
@@ -86,7 +86,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with invitee' do
@@ -98,7 +98,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with member' do
@@ -110,7 +110,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
   end
 
@@ -126,7 +126,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with guest with account' do
@@ -138,7 +138,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with user' do
@@ -150,7 +150,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with invitee' do
@@ -162,7 +162,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with member' do
@@ -176,7 +176,7 @@ describe 'Email token show' do
         expect_redirect(resource_iri(argu_url))
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
   end
 
@@ -197,7 +197,7 @@ describe 'Email token show' do
         expect(response).to redirect_to('https://example.com')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with guest with account' do
@@ -210,7 +210,7 @@ describe 'Email token show' do
         expect(response).to redirect_to('https://example.com')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with user' do
@@ -223,7 +223,7 @@ describe 'Email token show' do
         expect(response).to redirect_to('https://example.com')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with invitee' do
@@ -236,7 +236,7 @@ describe 'Email token show' do
         expect(response).to redirect_to('https://example.com')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with member' do
@@ -252,7 +252,7 @@ describe 'Email token show' do
         expect_redirect('https://example.com')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
   end
 
@@ -272,7 +272,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with guest with account' do
@@ -284,7 +284,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with user' do
@@ -296,7 +296,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with invitee' do
@@ -308,7 +308,7 @@ describe 'Email token show' do
         expect(response.code).to eq('404')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with member' do
@@ -324,7 +324,7 @@ describe 'Email token show' do
         expect_redirect('https://example.com')
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
   end
 
@@ -351,7 +351,7 @@ describe 'Email token show' do
         email_check_mock(valid_token.email, true)
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with guest with account' do
@@ -370,7 +370,7 @@ describe 'Email token show' do
         email_check_mock(valid_token.email, true)
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with user' do
@@ -390,7 +390,7 @@ describe 'Email token show' do
         create_membership_mock(user_id: 1, group_id: 1, secret: token)
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with invitee' do
@@ -412,7 +412,7 @@ describe 'Email token show' do
         emails_mock('tokens', token_with_r.id)
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with member' do
@@ -434,7 +434,7 @@ describe 'Email token show' do
         emails_mock('tokens', token_with_r.id)
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
   end
 
@@ -457,7 +457,7 @@ describe 'Email token show' do
         email_check_mock(valid_token.email, true)
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with guest with account' do
@@ -476,7 +476,7 @@ describe 'Email token show' do
         email_check_mock(valid_token.email, true)
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with user' do
@@ -496,7 +496,7 @@ describe 'Email token show' do
         create_membership_mock(user_id: 1, group_id: 1, secret: token)
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with invitee' do
@@ -519,7 +519,7 @@ describe 'Email token show' do
         emails_mock('tokens', valid_token.id)
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
 
     context 'with member' do
@@ -541,7 +541,7 @@ describe 'Email token show' do
         emails_mock('tokens', valid_token.id)
       end
 
-      it_behaves_like 'bearer token'
+      it_behaves_like 'email token'
     end
   end
 
