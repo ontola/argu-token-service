@@ -59,7 +59,7 @@ class EmailToken < Token
     def attributes_for_new(opts = {})
       super_opts = super
 
-      return {} unless opts.key?(:group)
+      return super_opts if super_opts[:group].blank?
 
       super_opts.merge(
         message: I18n.t(

@@ -7,10 +7,14 @@ class EmailTokenForm < ApplicationForm
 
   field :addresses,
         max_count: 5000,
+        min_count: 1,
         pattern: /(#{RegexHelper::SINGLE_EMAIL.source},?\s?)+/,
         input_field: Inputs::MultipleEmailInput
-  field :message, max_length: 5000
-  field :redirect_url
+  field :message,
+        max_length: 5000,
+        min_count: 1
+  field :redirect_url,
+        min_count: 1
 
   hidden do
     field :send_mail
