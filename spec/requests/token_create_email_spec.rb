@@ -141,6 +141,25 @@ describe 'Token email create' do
     assert_email_sent(count: 2)
   end
 
+  it 'manager should create valid dutch email token request' do
+    email_created_mock('email1@example.com', language: 'nl')
+
+    as_user(1, language: 'nl')
+    authorized_mock(type: 'Group', id: 1, action: 'update')
+    assert_difference('Token.count', 1) do
+      post '/argu/tokens/g/1/email', params: {
+        email_token: {
+          addresses: ['email1@example.com'],
+          send_mail: true
+        }
+      }, headers: service_headers(accept: :nq)
+    end
+
+    expect(response.code).to eq('201')
+    expect(Token.last.secret.length).to eq(171)
+    assert_email_sent(count: 1)
+  end
+
   it 'manager should create valid email token request with shortnames without duplicates' do
     email_created_mock('user1@example.com')
     email_created_mock('user2@example.com')
@@ -380,7 +399,7 @@ describe 'Token email create' do
 
   private
 
-  def email_created_mock(email, group_id: 1, actor_iri: nil, message: nil)
+  def email_created_mock(email, group_id: 1, actor_iri: nil, message: nil, language: 'en')
     create_email_mock(
       'email_token_created',
       email,
@@ -388,7 +407,8 @@ describe 'Token email create' do
       group_id: group_id,
       iri: /.+/,
       mail_identifier: /.+/,
-      message: message
+      message: message,
+      recipient: {language: language}
     )
   end
 end
