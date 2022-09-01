@@ -32,6 +32,15 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
     nil
   end
 
+  def add_copy_action
+    return unless token_type&.to_sym == :bearer && token_creator.tokens.is_a?(Token)
+
+    add_exec_action_header(
+      headers,
+      ontola_copy_action(token_creator.tokens.iri.to_s)
+    )
+  end
+
   def attribute_params
     @attribute_params ||= params.require(controller_name.singularize)
   end
@@ -66,6 +75,7 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   end
 
   def create_success
+    add_copy_action
     respond_with_new_resource(create_success_options_rdf.merge(resource: token_creator.tokens))
   end
 

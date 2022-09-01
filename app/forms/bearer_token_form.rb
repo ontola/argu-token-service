@@ -5,10 +5,8 @@ class BearerTokenForm < ApplicationForm
 
   field :redirect_url,
         min_count: 1
-  field :max_usages,
-        min_count: 1
-  field :expires_at,
-        min_count: 1
+  field :max_usages
+  field :expires_at
 
   hidden do
     field :root_id

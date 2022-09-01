@@ -44,7 +44,7 @@ class TokenSerializer < RecordSerializer
   attribute :max_usages, predicate: NS.argu[:maxUsages]
   attribute :retracted_at, predicate: NS.argu[:retractedAt]
   attribute :expires_at, predicate: NS.argu[:expiresAt]
-  attribute :group_id, predicate: NS.argu[:groupId]
+  attribute :group_id, predicate: NS.argu[:group]
   attribute :message, predicate: NS.argu[:message]
   attribute :root_id, predicate: NS.argu[:rootId], datatype: NS.xsd.string
   attribute :token_url, predicate: NS.argu[:applyLink], if: method(:token_url?) do |object|

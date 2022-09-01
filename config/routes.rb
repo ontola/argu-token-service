@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   linked_resource(Token, collection: false) do
     post '', to: 'tokens#accept', singular_route: true
   end
+  post '(*parent_iri)', to: 'tokens#create'
 
   constraints(LinkedRails::Constraints::Whitelist) do
     health_check_routes

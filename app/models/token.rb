@@ -1,17 +1,22 @@
 # frozen_string_literal: true
 
-class Token < ApplicationRecord
+class Token < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Enhanceable
   include LinkedRails::Model
   include LinkedRails::Model::Filtering
   include ApplicationModel
   extend URITemplateHelper
 
+  enhance LinkedRails::Enhancements::Creatable
   enhance LinkedRails::Enhancements::Updatable
   enhance LinkedRails::Enhancements::Destroyable
   collection_options(
+    display: :settingsTable,
     include_members: true,
     parent_iri: -> { %w[tokens] + (parent&.iri_elements || []) }
+  )
+  filterable(
+    NS.ontola[:redirectUrl] => {}
   )
 
   before_create :set_token_type
@@ -92,6 +97,12 @@ class Token < ApplicationRecord
         group: opts[:group] || parent.is_a?(Group) ? parent : nil,
         redirect_url: "https://#{ActsAsTenant.current_tenant.iri_prefix}"
       }
+    end
+
+    def collection_from_parent_name(parent, params)
+      return super unless self == Token
+
+      params.require(:token).key?(:addresses) ? 'email_token_collection' : 'bearer_token_collection'
     end
 
     def ids_for_iris(scope)

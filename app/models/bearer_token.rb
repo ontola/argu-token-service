@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class BearerToken < Token
-  enhance LinkedRails::Enhancements::Creatable
   enhance LinkedRails::Enhancements::Destroyable
   collection_options(
     include_members: true,
