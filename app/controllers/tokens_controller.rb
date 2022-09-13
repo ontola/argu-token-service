@@ -180,9 +180,9 @@ class TokensController < ApplicationController # rubocop:disable Metrics/ClassLe
   def validate_actor
     return true if actor_iri.blank? || actor_iri == current_user.iri
 
-    verdict =  user_context.api.authorize_action(resource_type: 'CurrentActor', resource_id: actor_iri, action: 'show')
-
-    verdict || raise(LinkedRails::Errors::Forbidden.new(query: action_name))
+    user_context.api.authorize_action(resource_type: 'CurrentActor', resource_id: actor_iri, action: 'show')
+  rescue OAuth2::Error
+    raise(LinkedRails::Errors::Forbidden.new(query: action_name))
   end
 
   def valid_email?

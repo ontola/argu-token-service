@@ -26,7 +26,7 @@ describe 'Token index' do
   ####################################
   it 'user should not get index' do
     as_user
-    unauthorized_mock(type: 'Group', id: 1, action: 'update')
+    unauthorized_mock(iri: LinkedRails.iri(path: "/argu/g/#{token.group_id}/group_memberships"), action: 'show')
     get "/argu/tokens/g/#{token.group_id}/bearer", headers: service_headers(accept: :json_api)
 
     expect(response.code).to eq('403')
@@ -39,7 +39,7 @@ describe 'Token index' do
   ####################################
   it 'manager should get index' do
     as_user
-    authorized_mock(type: 'Group', id: 1, action: 'update')
+    authorized_mock(iri: LinkedRails.iri(path: "/argu/g/#{token.group_id}/group_memberships"), action: 'show')
     emails_mock('tokens', token.id)
 
     get "/argu/tokens/g/#{token.group_id}/bearer", headers: service_headers(accept: :nq)
@@ -52,7 +52,7 @@ describe 'Token index' do
 
   it 'manager should get index page 1' do
     as_user
-    authorized_mock(type: 'Group', id: 1, action: 'update')
+    authorized_mock(iri: LinkedRails.iri(path: "/argu/g/#{token.group_id}/group_memberships"), action: 'show')
     emails_mock('tokens', token.id)
 
     get "/argu/tokens/g/#{token.group_id}/bearer?page=1", headers: service_headers(accept: :nq)
