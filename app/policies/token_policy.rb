@@ -52,7 +52,7 @@ class TokenPolicy < RestrictivePolicy
     @index_group_memberships ||=
       !user_context.guest? && api_authorization(
         action: :show,
-        resource_iri: iri_from_template(:group_memberships_iri, group_id: record.group.id)
+        resource_iri: iri_from_template(:group_memberships_iri, parent_iri: record.group.iri_elements)
       )
   end
 end
